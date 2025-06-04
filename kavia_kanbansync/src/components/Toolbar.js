@@ -15,10 +15,10 @@ function downloadExcelTemplate() {
   XLSX.writeFile(wb, 'kanban_cards_template.xlsx');
 }
 
-// PUBLIC_INTERFACE
 function Toolbar() {
   const { addColumn, bulkInsertCards, columns } = useKanban();
   const inputRef = useRef();
+  const { showToast } = useFeedback();
 
   const handleAddColumn = async () => {
     const title = prompt('Column Title:');
@@ -38,8 +38,7 @@ function Toolbar() {
       // Expecting [header, ...rows]
       const [header, ...entries] = rows;
       if (!header) {
-        // eslint-disable-next-line no-console
-        console.log("[Excel Bulk Upload] No header row found in excel file.");
+        showToast("No header row found in Excel file.", "error");
         return;
       }
 
@@ -49,17 +48,9 @@ function Toolbar() {
       const idx = Number(colTitle) - 1;
       const col = columns[idx];
       if (!col) {
-        alert('Invalid column selection.');
-        // eslint-disable-next-line no-console
-        console.log("[Excel Bulk Upload] Invalid column selection input:", colTitle, "Selected idx:", idx, "Columns:", columns);
+        showToast('Invalid column selection.', "error");
         return;
       }
-
-      // Show header/preview for debugging
-      // eslint-disable-next-line no-console
-      console.log("[Excel Bulk Upload] Header parsed:", header);
-      // eslint-disable-next-line no-console
-      console.log("[Excel Bulk Upload] First 3 raw row arrays:", entries.slice(0,3));
 
       // Fields required in DB (as per Supabase schema)
       const allowedFields = ['feature', 'description', 'assignee', 'notes', 'priority', 'status', 'due_date'];
@@ -84,34 +75,25 @@ function Toolbar() {
         // Require 'feature' field to be non-empty 
         .filter(card => card && typeof card.feature === 'string' && card.feature.trim().length > 0);
 
-      // Debug print mapped cards preview
-      // eslint-disable-next-line no-console
-      console.log("[Excel Bulk Upload] Mapped card objects (preview, up to 3):", cards.slice(0,3));
-
       if (cards.length === 0) {
-        alert('No valid cards found in the file. Make sure "feature" column is filled.');
-        // eslint-disable-next-line no-console
-        console.log("[Excel Bulk Upload] 0 valid cards mapped; check your Excel file content.");
+        showToast('No valid cards found in the file. Make sure "feature" column is filled.', "error");
         return;
       }
       try {
-        // Extra: validate that all required fields for DB row exist in at least one card (warn if common mistake)
-        // (feature is always required, column_id and position added server-side, others optional for bulk insert)
-        // eslint-disable-next-line no-console
         if (!cards.every(c => c.feature)) {
+          // Non-blocking, so just log
+          // eslint-disable-next-line no-console
           console.log("[Excel Bulk Upload] One or more mapped cards missing 'feature'");
         }
         // Call actual bulk insertion
         const error = await bulkInsertCards(col.id, cards);
         if (error) {
-          alert(`Bulk upload failed: ${error.message || error}`);
-          // eslint-disable-next-line no-console
-          console.error('Supabase error bulk inserting cards:', error, "Payload:", {col_id: col.id, cards});
+          showToast(`Bulk upload failed: ${error.message || error}`, "error");
+        } else {
+          showToast(`Bulk upload succeeded (${cards.length} cards added)`, "success");
         }
       } catch (e) {
-        alert('Bulk upload encountered an error: ' + (e.message || e));
-        // eslint-disable-next-line no-console
-        console.error('Exception uploading cards:', e, "Payload:", rows);
+        showToast('Bulk upload encountered an error: ' + (e.message || e), "error");
       }
       inputRef.current.value = '';
     };
