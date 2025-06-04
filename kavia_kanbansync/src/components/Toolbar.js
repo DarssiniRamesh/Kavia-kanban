@@ -104,15 +104,13 @@ function Toolbar() {
           });
           // Parse due_date to yyyy-mm-dd format if present and is numeric (Excel)
           if (obj.due_date && typeof obj.due_date === 'number') {
-            obj.due_date = XLSX.SSF.format('yyyy-mm-dd', obj.due_date);
+            obj.due_date = require('xlsx').SSF.format('yyyy-mm-dd', obj.due_date);
           }
-          // Stringify/trim all values except due_date (to catch "feature": "  foo  ")
           Object.keys(obj).forEach(k => {
             if (typeof obj[k] === 'string') obj[k] = obj[k].trim();
           });
           return obj;
         })
-        // Require 'feature' field to be non-empty 
         .filter(card => card && typeof card.feature === 'string' && card.feature.trim().length > 0);
 
       if (cards.length === 0) {
@@ -121,11 +119,9 @@ function Toolbar() {
       }
       try {
         if (!cards.every(c => c.feature)) {
-          // Non-blocking, so just log
           // eslint-disable-next-line no-console
           console.log("[Excel Bulk Upload] One or more mapped cards missing 'feature'");
         }
-        // Call actual bulk insertion
         const error = await bulkInsertCards(col.id, cards);
         if (error) {
           showToast(`Bulk upload failed: ${error.message || error}`, "error");
@@ -135,30 +131,81 @@ function Toolbar() {
       } catch (e) {
         showToast('Bulk upload encountered an error: ' + (e.message || e), "error");
       }
-      inputRef.current.value = '';
     };
-    reader.readAsArrayBuffer(file);
-  };
-
+/* ---------- UI rendering section below ---------- */
   return (
-    <div className="kanban-toolbar">
-      <button className="btn" onClick={handleAddColumn}>
-        + Add Column
-      </button>
-      <button className="btn" onClick={downloadExcelTemplate}>
-        Download Excel Template
-      </button>
-      <label className="btn" style={{ marginLeft: 8 }}>
-        Bulk Upload Excel
-        <input
-          type="file"
-          accept=".xlsx,.xls"
-          style={{ display: 'none' }}
-          ref={inputRef}
-          onChange={handleExcelUpload}
-        />
-      </label>
-    </div>
+    <>
+      <div className="kanban-toolbar">
+        <button className="btn" onClick={handleAddColumn}>
+          + Add Column
+        </button>
+        <button className="btn" onClick={downloadExcelTemplate}>
+          Download Excel Template
+        </button>
+        <label className="btn" style={{ marginLeft: 8 }}>
+          Bulk Upload Excel
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            style={{ display: 'none' }}
+            ref={inputRef}
+            onChange={handleExcelUpload}
+          />
+        </label>
+      </div>
+      {/* Add Column Modal */}
+      {addColumnModal && (
+        <div className="kanban-modal-overlay" onClick={() => setAddColumnModal(false)}>
+          <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
+            <button className="kanban-modal-close" onClick={() => setAddColumnModal(false)} title="Close">×</button>
+            <form onSubmit={handleAddColumnSubmit}>
+              <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 12 }}>Add New Column</div>
+              <input
+                type="text"
+                placeholder="Column Title"
+                value={newColTitle}
+                onChange={e => setNewColTitle(e.target.value)}
+                required
+                style={{ padding: 6, fontSize: '1.08em', width: '100%', marginBottom: 18, borderRadius: 4, border: '1px solid #334266' }}
+              />
+              <div style={{ display: "flex", gap: 8 }}>
+                <button className="btn" type="submit">Add Column</button>
+                <button className="btn" type="button" onClick={() => setAddColumnModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* Bulk Upload Select Column Modal */}
+      {bulkUploadState.showModal && (
+        <div className="kanban-modal-overlay" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))}>
+          <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
+            <button className="kanban-modal-close" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))} title="Close">×</button>
+            <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 14 }}>
+              Bulk Upload: Pick a column for these cards
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <div>Select a column:</div>
+              <div style={{ margin: "9px 0"}}>
+                <select
+                  style={{ width: "100%", padding: 6, fontSize: "1em" }}
+                  onChange={e => handleConfirmBulkUpload(e.target.value)}
+                  defaultValue=""
+                >
+                  <option value="" disabled>Choose column...</option>
+                  {columns.map((c, i) => (
+                    <option value={i} key={c.id}>{c.title}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div style={{ color: "#acdffc", fontSize: "0.96em", margin: "7px 0 0 1px" }}>
+              Cards parsed from file: <strong>{bulkUploadState.entries.length}</strong>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

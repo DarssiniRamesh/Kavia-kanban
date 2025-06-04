@@ -32,16 +32,35 @@ function Column({ column, index }) {
     }),
   });
 
+  // Modal state: delete/rename
+  const [modal, setModal] = React.useState({ type: null });
+
+  const { showToast } = require("../KanbanBoard"); // Import here to avoid circular deps for Feedback
+
   const handleRename = () => {
-    const newTitle = prompt('Rename column:', column.title);
-    if (newTitle && newTitle !== column.title) {
-      updateColumn(column.id, { title: newTitle });
-    }
+    setModal({ type: "rename", value: column.title });
   };
+
   const handleDelete = () => {
-    if (window.confirm('Delete this column and all cards inside?')) {
-      deleteColumn(column.id);
+    setModal({ type: "delete" });
+  };
+
+  const doRename = async () => {
+    if (
+      modal.value &&
+      modal.value.trim() &&
+      modal.value !== column.title
+    ) {
+      await updateColumn(column.id, { title: modal.value.trim() });
+      showToast && showToast("Column renamed!", "success");
     }
+    setModal({ type: null });
+  };
+
+  const doDelete = async () => {
+    await deleteColumn(column.id);
+    showToast && showToast("Column deleted.", "success");
+    setModal({ type: null });
   };
 
   return (
