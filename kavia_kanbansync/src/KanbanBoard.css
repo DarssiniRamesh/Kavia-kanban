@@ -30,6 +30,18 @@
   background: var(--base-dark);
 }
 
+/* Drag cues for draggable columns */
+.kanban-board > div[role="listitem"] {
+  cursor: grab;
+  transition: box-shadow 0.16s, outline 0.14s, opacity .17s;
+}
+.kanban-board > div[role="listitem"]:focus-visible .kanban-column {
+  outline: 3px solid #38B2AC !important;
+  box-shadow: 0 2px 14px #38B2AC66;
+  z-index: 52;
+}
+/* Extra drag-visual emphasis is handled inline */
+
 .kanban-column {
   flex: 0 0 330px;
   background: var(--base-light);
