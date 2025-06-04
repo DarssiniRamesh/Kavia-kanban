@@ -1,11 +1,9 @@
 import React, { useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
 
-// PUBLIC_INTERFACE
 /**
- * ToastModal
- * Enhanced toast/modal notification with colored status bar, highly visible close button,
- * increased padding, spacing, shadow, font, and fade/slide-in animation.
- * Usage: <ToastModal message="..." type="success|error|info" onClose={...} />
+ * PUBLIC_INTERFACE
+ * ToastModal - rendered via React Portal to ensure it floats over all board/filter UI.
  */
 export default function ToastModal({ message, type = "success", onClose, duration = 3000 }) {
   // Track mount state for animation-out
@@ -35,98 +33,101 @@ export default function ToastModal({ message, type = "success", onClose, duratio
     info:  "ℹ️",
   };
 
-  return (
-    <div
-      className="kanban-toast-modal-overlay"
-      style={{
-        position: "fixed",
-        left: "50%",
-        bottom: 42,
-        transform: "translateX(-50%)",
-        zIndex: 4000,
-        pointerEvents: "none",
-        minWidth: 280,
-        maxWidth: 420,
-      }}
-      aria-live="polite"
-    >
+  // Only render if browser (for SSR/hydration safety)
+  if (typeof document === "undefined") return null;
+
+  // Portals always rendered into document.body
+  return ReactDOM.createPortal(
+    <>
       <div
-        className={
-          "kanban-toast-modal" +
-          (leaving ? " kanban-toast-modal-leave" : " kanban-toast-modal-enter")
-        }
+        className="kanban-toast-modal-overlay"
         style={{
-          pointerEvents: "auto",
-          background: "#1e2043",
-          boxShadow: "0 6px 36px 0 rgba(0,0,0,0.20), 0 2.5px 10px 0 #38B2AC29",
-          borderRadius: 14,
-          minHeight: 62,
-          display: "flex",
-          alignItems: "flex-start",
-          fontSize: "1.11em",
-          fontWeight: 500,
-          padding: "0",
-          transition: "box-shadow .24s, background .16s",
-          overflow: "hidden",
-          position: "relative",
+          position: "fixed",
+          left: "50%",
+          bottom: 42,
+          transform: "translateX(-50%)",
+          zIndex: 5200, // Highest in app for always above
+          pointerEvents: "none",
+          minWidth: 280,
+          maxWidth: 420,
         }}
-        role="alert"
+        aria-live="polite"
       >
-        {/* Colored status indicator bar */}
         <div
+          className={
+            "kanban-toast-modal" +
+            (leaving ? " kanban-toast-modal-leave" : " kanban-toast-modal-enter")
+          }
           style={{
-            width: 8,
-            minHeight: "100%",
-            background: getIndicatorColor(type),
-            boxShadow: "1px 0 8px 0 " + getIndicatorColor(type) + "66",
-            borderTopLeftRadius: 13,
-            borderBottomLeftRadius: 13,
-            flexShrink: 0,
-            transition: "background .18s",
-            marginRight: 0,
-          }}
-          aria-hidden="true"
-        />
-        {/* Toast Main Content */}
-        <div
-          style={{
+            pointerEvents: "auto",
+            background: "#1e2043",
+            boxShadow: "0 6px 36px 0 rgba(0,0,0,0.20), 0 2.5px 10px 0 #38B2AC29",
+            borderRadius: 14,
+            minHeight: 62,
             display: "flex",
-            flexDirection: "row",
             alignItems: "flex-start",
-            gap: 13,
-            width: "100%",
-            padding: "18px 18px 18px 23px",
-            minHeight: 46,
-            flex: 1,
-            fontSize: "1.12em",
-            fontWeight: 600,
-            color: "#fff",
-            lineHeight: 1.56,
-            letterSpacing: ".011em",
-            background: "none",
-            border: "none",
+            fontSize: "1.11em",
+            fontWeight: 500,
+            padding: "0",
+            transition: "box-shadow .24s, background .16s",
+            overflow: "hidden",
+            position: "relative",
           }}
+          role="alert"
         >
-          <span role="img" aria-label={type + " icon"} style={{
-            fontSize: "1.37em",
-            margin: "2px 0 0 1px"
-          }}>
-            {typeIcons[type] || typeIcons.info}
-          </span>
-          <span style={{ flex: 1, alignSelf: "center", wordBreak: "break-word" }}>{message}</span>
-          <button
-            className="kanban-toast-close"
-            title="Close"
-            onClick={() => { setLeaving(true); setTimeout(() => onClose && onClose(), 200); }}
-            tabIndex={0}
-            aria-label="Close"
+          <div
+            style={{
+              width: 8,
+              minHeight: "100%",
+              background: getIndicatorColor(type),
+              boxShadow: "1px 0 8px 0 " + getIndicatorColor(type) + "66",
+              borderTopLeftRadius: 13,
+              borderBottomLeftRadius: 13,
+              flexShrink: 0,
+              transition: "background .18s",
+              marginRight: 0,
+            }}
+            aria-hidden="true"
+          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              gap: 13,
+              width: "100%",
+              padding: "18px 18px 18px 23px",
+              minHeight: 46,
+              flex: 1,
+              fontSize: "1.12em",
+              fontWeight: 600,
+              color: "#fff",
+              lineHeight: 1.56,
+              letterSpacing: ".011em",
+              background: "none",
+              border: "none",
+            }}
           >
-            ×
-          </button>
+            <span role="img" aria-label={type + " icon"} style={{
+              fontSize: "1.37em",
+              margin: "2px 0 0 1px"
+            }}>
+              {typeIcons[type] || typeIcons.info}
+            </span>
+            <span style={{ flex: 1, alignSelf: "center", wordBreak: "break-word" }}>{message}</span>
+            <button
+              className="kanban-toast-close"
+              title="Close"
+              onClick={() => { setLeaving(true); setTimeout(() => onClose && onClose(), 200); }}
+              tabIndex={0}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
         </div>
-      </div>
-      <style>
-        {`
+        <style>
+          {`
 .kanban-toast-modal-enter {
   animation: toastSlideFadeIn .3s cubic-bezier(0.27,0.92,0.31,1.12);
   opacity: 1;
@@ -164,8 +165,10 @@ export default function ToastModal({ message, type = "success", onClose, duratio
   opacity: 1;
   outline: none;
 }
-        `}
-      </style>
-    </div>
+          `}
+        </style>
+      </div>
+    </>,
+    document.body
   );
 }
