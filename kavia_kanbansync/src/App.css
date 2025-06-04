@@ -348,11 +348,43 @@ body {
   margin-top: 10px;
 }
 
-/*==== TOAST MODAL ====*/
+/*==== TOAST MODAL (Enhanced) ====*/
 .kanban-toast-modal-overlay {
   pointer-events: none;
 }
 .kanban-toast-modal {
   pointer-events: auto;
   transition: background 0.22s;
+}
+
+/* Modern Toast transitions & indicator bar via .kanban-toast-modal-enter/leave, bar, and close button.
+   These are managed in the component for flexible JS-driven animation.
+*/
+.kanban-toast-modal-enter {
+  /* Slide-fade-in handled in ToastModal.js */
+}
+.kanban-toast-modal-leave {
+  /* Slide-fade-out handled in ToastModal.js */
+}
+.kanban-toast-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.61em;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.84;
+  cursor: pointer;
+  padding: 1px 8px 1px 8px;
+  margin-left: 9px;
+  border-radius: 99px;
+  transition: background .15s, color .12s, opacity .16s;
+  box-shadow: none;
+  pointer-events: all;
+}
+.kanban-toast-close:hover, .kanban-toast-close:focus {
+  background: #22326930;
+  color: #92fee8;
+  opacity: 1;
+  outline: none;
 }
