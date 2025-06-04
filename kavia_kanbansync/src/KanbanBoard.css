@@ -24,11 +24,30 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
   position: sticky;
   top: 61px;
   z-index: 5; /* Lowered, overlays/modals always 9999+ */
   border-radius: 0 0 10px 10px;
   border-bottom: 1px solid var(--border-color);
+  transition: padding .18s;
+}
+@media (max-width: 900px) {
+  .kanban-toolbar {
+    padding-left: 6vw;
+    padding-right: 4vw;
+    gap: 8px;
+    min-height: 54px;
+  }
+}
+@media (max-width: 700px) {
+  .kanban-toolbar {
+    padding: 5px 2vw 6px 2vw;
+    gap: 6px;
+    border-radius: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .kanban-board {
