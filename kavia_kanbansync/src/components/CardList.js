@@ -70,14 +70,15 @@ function CardList({ column, cards: colCardsProp }) {
         <form className="kanban-add-card-form" onSubmit={handleAddCard}>
           <input name="feature" placeholder="Feature/Title" required autoComplete="off"/>
           <div className="kanban-form-grid">
-            {/* Demo list of assignees for dropdown */}
-            <select name="assignee" defaultValue="" className="styled-select">
-              <option value="">Assignee</option>
-              <option value="Alice">Alice</option>
-              <option value="Bob">Bob</option>
-              <option value="Charlie">Charlie</option>
-              <option value="Unassigned">Unassigned</option>
-            </select>
+            {/* Refactored: Free text input for assignee field */}
+            <input
+              name="assignee"
+              placeholder="Assignee"
+              autoComplete="off"
+              spellCheck={false}
+              className="styled-input"
+              style={{ minWidth: 0 }}
+            />
             <select name="priority" defaultValue="" className="styled-select">
               <option value="">Priority</option>
               <option value="Low">Low</option>
