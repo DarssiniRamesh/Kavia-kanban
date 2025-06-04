@@ -23,8 +23,6 @@ function Pill({ value, type }) {
   return <span className={className}>{value}</span>;
 }
 
-import ReactDOM from 'react-dom';
-
 // Modal for card detail/expanded view+edit using React Portal
 function Modal({ children, onClose }) {
   if (typeof document === "undefined") return null;
