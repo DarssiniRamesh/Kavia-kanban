@@ -202,7 +202,7 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
         <span className="sr-only">{isDragging ? 'Dragging column' : ''}</span>
       </div>
       {/* Delete Confirm Modal */}
-import ReactDOM from 'react-dom';
+
 
       {modal.type === "delete" && (
         typeof document === "undefined"

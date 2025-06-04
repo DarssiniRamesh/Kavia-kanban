@@ -155,7 +155,7 @@ function Toolbar() {
         </label>
       </div>
       {/* Add Column Modal */}
-import ReactDOM from 'react-dom';
+
 
       {addColumnModal && (
         typeof document === "undefined"

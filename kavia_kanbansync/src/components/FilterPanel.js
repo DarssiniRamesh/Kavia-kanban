@@ -2,53 +2,33 @@ import React, { useMemo, useState, useRef } from "react";
 import { useKanban } from "../KanbanContext";
 import "./FilterPanel.css";
 
-// Basic utility to get unique values for a field among all cards.
+/**
+ * Helper: Get unique values for a field among all cards (case-insensitive, trimmed, deduped).
+ */
 function getUniqueFieldValues(cards, field) {
   return Array.from(
     new Set(cards.map((c) => (c[field] || "").trim()).filter(Boolean))
   ).sort((a, b) => a.localeCompare(b));
 }
 
-const FILTER_INFOS = [
-  {
-    key: "assignees",
-    label: "Assignee",
-    tooltip: "Filter cards by assigned team member. Type to add custom names.",
-    icon: "👤",
-  },
-  {
-    key: "priorities",
-    label: "Priority",
-    tooltip: "Filter by priority (Low/Medium/High/Critical). Multi-select supported.",
-    icon: "⚡",
-  },
-  {
-    key: "statuses",
-    label: "Status",
-    tooltip: "Filter cards by their workflow status (To Do, In Progress, etc).",
-    icon: "📊",
-  },
-  {
-    key: "columns",
-    label: "Column",
-    tooltip: "Show cards from only selected columns.",
-    icon: "📦",
-  },
-  {
-    key: "due_date",
-    label: "Due Date",
-    tooltip: "Filter by cards due on or after/before specific dates.",
-    icon: "🗓️",
-  },
-];
-
-function badge(n) {
-  return n ? <span className="filter-badge" aria-label={`${n} selected`}>{n}</span> : null;
+// Helper: badge, returns styled count
+function Badge({ n }) {
+  return n ? (
+    <span className="filter-badge" aria-label={`${n} selected`}>
+      {n}
+    </span>
+  ) : null;
 }
 
+/**
+ * PUBLIC_INTERFACE
+ * Modern, grouped, accessible FilterPanel for Kanban board. 
+ * Features: grouped controls, touch-optimized, accessible cues, modern visuals.
+ */
 export default function FilterPanel({ onFiltersChange }) {
   const { cards, columns } = useKanban();
 
+  // Main filter state
   const [filters, setFilters] = useState({
     assignees: [],
     priorities: [],
@@ -63,6 +43,7 @@ export default function FilterPanel({ onFiltersChange }) {
     // eslint-disable-next-line
   }, [filters]);
 
+  // Dynamically computed options
   const assigneeOptions = useMemo(
     () => getUniqueFieldValues(cards, "assignee"),
     [cards]
@@ -80,74 +61,92 @@ export default function FilterPanel({ onFiltersChange }) {
     [columns]
   );
 
-  // Typeahead state
+  // Typeahead input for assignee (mobile touch-friendliness)
   const [assigneeInput, setAssigneeInput] = useState("");
   const assigneeInputRef = useRef();
-
-  // For remembering last undone per filter (for undo)
   const undoStack = useRef({});
 
-  function handleSelectChange(field, value, type = "toggle") {
+  // Utility: determine visual active state
+  const isActive = (field) => {
+    if (["dueFrom", "dueTo"].includes(field)) return !!filters[field];
+    return Array.isArray(filters[field]) && filters[field].length > 0;
+  };
+
+  // Utility: can undo per field
+  const canUndo = (field) => !!undoStack.current[field];
+
+  // --- Generic handlers ---
+
+  // For chips & multi-toggle
+  function handleToggleFilter(field, value) {
     setFilters((prev) => {
       if (!Array.isArray(prev[field])) return prev;
-      let newArr;
-      if (type === "add") {
-        if (prev[field].includes(value)) return prev;
-        newArr = [...prev[field], value];
-      } else if (type === "remove") {
-        newArr = prev[field].filter((v) => v !== value);
-      } else {
-        newArr = prev[field].includes(value)
-          ? prev[field].filter((v) => v !== value)
-          : [...prev[field], value];
-      }
-      // Save for undo
+      let newArr = prev[field].includes(value)
+        ? prev[field].filter((v) => v !== value)
+        : [...prev[field], value];
       undoStack.current[field] = prev[field];
       return { ...prev, [field]: newArr };
     });
   }
 
+  // For select-multi fields
+  function handleMultiSelect(field, arr) {
+    undoStack.current[field] = filters[field];
+    setFilters((prev) => ({ ...prev, [field]: arr }));
+  }
+
+  // For adding new Assignee from typeahead
   function handleAssigneeInput(e) {
     setAssigneeInput(e.target.value);
   }
 
-  function handleAssigneeInputKey(e) {
+  function handleAssigneeKeyDown(e) {
     if (e.key === "Enter" && assigneeInput.trim()) {
-      handleSelectChange("assignees", assigneeInput.trim(), "add");
+      if (!filters.assignees.includes(assigneeInput.trim())) {
+        undoStack.current.assignees = filters.assignees;
+        setFilters((prev) => ({
+          ...prev,
+          assignees: [...prev.assignees, assigneeInput.trim()],
+        }));
+      }
       setAssigneeInput("");
       assigneeInputRef.current && assigneeInputRef.current.blur();
     }
   }
 
+  // DateRange
   function handleDateChange(type, val) {
-    setFilters((prev) => {
-      undoStack.current[type] = prev[type];
-      return { ...prev, [type]: val };
-    });
+    undoStack.current[type] = filters[type];
+    setFilters((prev) => ({ ...prev, [type]: val }));
   }
 
+  // Clear whole filter or single value from array
   function clearFilter(field, value = null) {
-    setFilters((prev) => {
-      undoStack.current[field] = prev[field];
-      if (value) {
+    if (value !== null) {
+      setFilters((prev) => {
+        undoStack.current[field] = prev[field];
         return { ...prev, [field]: prev[field].filter((v) => v !== value) };
-      }
-      // Clear all of the field
-      if (["dueFrom", "dueTo"].includes(field))
-        return { ...prev, [field]: "" };
-      return { ...prev, [field]: [] };
-    });
+      });
+    } else {
+      undoStack.current[field] = filters[field];
+      setFilters((prev) =>
+        ["dueFrom", "dueTo"].includes(field)
+          ? { ...prev, [field]: "" }
+          : { ...prev, [field]: [] }
+      );
+    }
   }
 
+  // Undo per field
   function undoFilter(field) {
     setFilters((prev) => ({
       ...prev,
-      [field]: undoStack.current[field] ?? prev[field]
+      [field]: undoStack.current[field] ?? prev[field],
     }));
   }
 
+  // Reset all
   function resetFilters() {
-    // Save full filter snapshot for undo/reset-all, omitted for simplicity
     setFilters({
       assignees: [],
       priorities: [],
@@ -159,47 +158,10 @@ export default function FilterPanel({ onFiltersChange }) {
     setAssigneeInput("");
   }
 
-  // Render badges for multi-filter select
-  function renderFilterBadges() {
-    return (
-      <div className="filter-badge-row" style={{ display: "flex", gap: 13, alignItems: "center", flexWrap: "wrap" }}>
-        <span className="filter-badge-label" title="Active filters">
-          <svg width="17" height="17" fill="none" aria-hidden="true"><path d="M3 6a4 4 0 018 0v1a4 4 0 118 0v1" stroke="#38B2AC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 13a3 3 0 016 0 3 3 0 016 0 3 3 0 016 0" stroke="#72e0d7" strokeWidth="2"/></svg>
-        </span>
-        {["assignees", "priorities", "statuses", "columns"].map(key =>
-          filters[key] && filters[key].length
-            ? <span key={key} className={"filter-badge-main" + (filters[key].length ? " active" : "")} title={`${filters[key].length} selected`}>
-                {FILTER_INFOS.find(f => f.key === key)?.icon} {badge(filters[key].length)}
-              </span>
-            : null
-        )}
-        {[["dueFrom", "dueTo"]].map(fieldArr => {
-          const n = Number(!!filters.dueFrom) + Number(!!filters.dueTo);
-          return n
-            ? <span key="date" className={"filter-badge-main" + (n ? " active" : "")} title="Date filter active">
-                🗓️ {badge(n)}
-              </span>
-            : null;
-        })}
-      </div>
-    );
-  }
-
-  // Get visual (active/inactive) for individual filter
-  function isActive(key) {
-    if (["dueFrom", "dueTo"].includes(key))
-      return !!filters[key];
-    return filters[key] && filters[key].length > 0;
-  }
-
-  // Compute helper for tooltip for undo
-  function canUndo(key) {
-    return !!undoStack.current[key];
-  }
-
-  // Helper to render chips for current filter values
-  function renderChips() {
+  // Modern filter chips summary
+  function renderActiveChips() {
     const chips = [];
+
     filters.assignees.forEach((a) =>
       chips.push({
         label: `Assignee: ${a}`,
@@ -233,246 +195,334 @@ export default function FilterPanel({ onFiltersChange }) {
       chips.push({
         label: `Due ≥ ${filters.dueFrom}`,
         field: "dueFrom",
-        value: null,
       });
     if (filters.dueTo)
       chips.push({
         label: `Due ≤ ${filters.dueTo}`,
         field: "dueTo",
-        value: null,
       });
     return chips;
   }
 
-  // Responsive layout: stack on mobile
+  // --- UI Layout, grouped and modern ---
+
   return (
-    <section className="kanban-filter-panel" aria-label="Kanban Filter Panel">
-      <div className="filter-row">
-        {/* Assignee */}
-        <div className={"filter-group" + (isActive("assignees") ? " filter-active" : "")}
-          title="Filter cards by assigned user"
-          tabIndex={0}
+    <section
+      className="kanban-filter-panel"
+      aria-label="Kanban Filter Panel"
+      role="region"
+    >
+      {/* Accessibility skip-link shortcut */}
+      <a
+        href="#kanban-board-main"
+        style={{
+          position: "absolute",
+          left: "-1000px",
+          top: "auto",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+        }}
+        tabIndex={0}
+        aria-label="Skip filters and go to board"
+      >
+        Skip Filter Panel
+      </a>
+      {/* Section: All filters in clear separate groups */}
+      <form
+        className="filter-row"
+        spellCheck={false}
+        autoComplete="off"
+        aria-label="Kanban Filters"
+        onSubmit={(e) => e.preventDefault()} // No submission
+        tabIndex={-1}
+      >
+        {/* Assignee Filter Group */}
+        <fieldset
+          className={"filter-group" + (isActive("assignees") ? " filter-active" : "")}
           aria-label="Filter by assignee"
         >
-          <label>
-            👤 Assignee
+          <legend>
+            <span role="img" aria-label="Person" style={{ fontSize: 17 }}>
+              👤
+            </span>{" "}
+            Assignee
+          </legend>
+          <label htmlFor="kanban-filter-assignee-typeahead" style={{ marginBottom: 3 }}>
+            <span style={{ fontSize: "0.97em" }}>Type or select a name</span>
             <span className="filter-tooltip" tabIndex={0} aria-label="tip" title="Filter cards by assigned team member. Type or pick name.">?</span>
-            {badge(filters.assignees.length)}
+            <Badge n={filters.assignees.length} />
           </label>
-          <div className="filter-assignee-typeahead" title="Type or pick assignee name to filter.">
-            <input
-              ref={assigneeInputRef}
-              value={assigneeInput}
-              onChange={handleAssigneeInput}
-              onKeyDown={handleAssigneeInputKey}
-              placeholder="Type or Pick..."
-              size={13}
-              aria-label="Filter by assignee"
-              list="kanban-filter-assignee-options"
-              className={"filter-typeahead-input" + (isActive("assignees") ? " active" : "")}
-            />
-            <datalist id="kanban-filter-assignee-options">
-              {assigneeOptions.map((a) => (
-                <option value={a} key={a} />
-              ))}
-            </datalist>
-            <div className="filter-chip-group">
-              {filters.assignees.map((a) => (
-                <span className="filter-chip" key={a}>
-                  {a}{" "}
-                  <button
-                    type="button"
-                    onClick={() => clearFilter("assignees", a)}
-                    aria-label={`Remove assignee ${a}`}
-                    title="Remove"
-                  >×</button>
-                </span>
-              ))}
-            </div>
-            <div className="filter-indiv-actions">
-              {isActive("assignees") && (
-                <>
-                  <button
-                    className="filter-clear-btn"
-                    type="button"
-                    onClick={() => clearFilter("assignees")}
-                    title="Clear all assignees"
-                    aria-label="Clear assignee filter"
-                  >Clear</button>
-                  {canUndo("assignees") && (
-                    <button
-                      className="filter-undo-btn"
-                      type="button"
-                      onClick={() => undoFilter("assignees")}
-                      title="Undo last assignee filter change"
-                      aria-label="Undo remove assignees"
-                    >Undo</button>
-                  )}
-                </>
-              )}
-            </div>
+          <input
+            ref={assigneeInputRef}
+            id="kanban-filter-assignee-typeahead"
+            value={assigneeInput}
+            onChange={handleAssigneeInput}
+            onKeyDown={handleAssigneeKeyDown}
+            placeholder="Add or filter..."
+            aria-label="Filter by assignee"
+            list="kanban-filter-assignee-options"
+            className={"filter-typeahead-input" + (isActive("assignees") ? " active" : "")}
+            autoComplete="off"
+            spellCheck={false}
+            inputMode="text"
+            style={{ minWidth: "110px" }}
+          />
+          <datalist id="kanban-filter-assignee-options">
+            {assigneeOptions.map((a) => (
+              <option value={a} key={a} />
+            ))}
+          </datalist>
+          {/* Chips row under input, each removable */}
+          <div className="filter-chip-group" style={{ marginTop: 5, minHeight: 24 }}>
+            {filters.assignees.map((a) => (
+              <span className="filter-chip" key={a}>
+                {a}
+                <button
+                  tabIndex={0}
+                  type="button"
+                  onClick={() => clearFilter("assignees", a)}
+                  aria-label={`Remove assignee ${a}`}
+                  title="Remove"
+                  style={{ marginLeft: 2 }}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
           </div>
-        </div>
-        {/* Priority */}
-        <div className={"filter-group" + (isActive("priorities") ? " filter-active" : "")}
-          tabIndex={0}
-          title="Filter by priority (multi-select allowed)">
-          <label>
-            ⚡ Priority
-            <span className="filter-tooltip" tabIndex={0} title="Filter by card priority, e.g., High/Medium/Low.">?</span>
-            {badge(filters.priorities.length)}
-          </label>
-          <div className="filter-multiselect-wrap">
-            <select
-              multiple
-              size={priorityOptions.length || 3}
-              value={filters.priorities}
-              onChange={(e) => {
-                const selected = Array.from(
-                  e.target.selectedOptions,
-                  (o) => o.value
-                );
-                undoStack.current["priorities"] = filters.priorities;
-                setFilters((prev) => ({ ...prev, priorities: selected }));
-              }}
-              className={"filter-multiselect" + (isActive("priorities") ? " active" : "")}
+          <div className="filter-indiv-actions">
+            {isActive("assignees") && (
+              <>
+                <button
+                  className="filter-clear-btn"
+                  type="button"
+                  onClick={() => clearFilter("assignees")}
+                  title="Clear all assignees"
+                  aria-label="Clear assignee filter"
+                >
+                  Clear
+                </button>
+                {canUndo("assignees") && (
+                  <button
+                    className="filter-undo-btn"
+                    type="button"
+                    onClick={() => undoFilter("assignees")}
+                    title="Undo last assignee filter change"
+                    aria-label="Undo remove assignees"
+                  >
+                    Undo
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        </fieldset>
+        {/* Priority Multi-select */}
+        <fieldset
+          className={"filter-group" + (isActive("priorities") ? " filter-active" : "")}
+          aria-label="Filter by priority"
+        >
+          <legend>
+            <span role="img" aria-label="Lightning" style={{ fontSize: 17 }}>
+              ⚡
+            </span>{" "}
+            Priority
+          </legend>
+          <label htmlFor="kanban-filter-priority-select">
+            <span style={{ fontSize: "0.97em" }}>Priorities</span>
+            <span
+              className="filter-tooltip"
+              tabIndex={0}
+              title="Filter by card priority, e.g., High/Medium/Low."
+              aria-label="Priority filter help"
             >
-              {priorityOptions.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-            <div className="filter-indiv-actions">
-              {isActive("priorities") && (
-                <>
-                  <button
-                    className="filter-clear-btn"
-                    type="button"
-                    onClick={() => clearFilter("priorities")}
-                    title="Clear all priorities"
-                  >Clear</button>
-                  {canUndo("priorities") && (
-                    <button
-                      className="filter-undo-btn"
-                      type="button"
-                      onClick={() => undoFilter("priorities")}
-                      title="Undo last priority change"
-                    >Undo</button>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-        {/* Status */}
-        <div className={"filter-group" + (isActive("statuses") ? " filter-active" : "")}
-          tabIndex={0}
-          title="Filter by status (multi-select)">
-          <label>
-            📊 Status
-            <span className="filter-tooltip" tabIndex={0} title="Filter by workflow status, e.g., To Do, In Progress, Done.">?</span>
-            {badge(filters.statuses.length)}
+              ?
+            </span>
+            <Badge n={filters.priorities.length} />
           </label>
-          <div className="filter-multiselect-wrap">
-            <select
-              multiple
-              size={statusOptions.length || 3}
-              value={filters.statuses}
-              onChange={(e) => {
-                const selected = Array.from(
-                  e.target.selectedOptions,
-                  (o) => o.value
-                );
-                undoStack.current["statuses"] = filters.statuses;
-                setFilters((prev) => ({ ...prev, statuses: selected }));
-              }}
-              className={"filter-multiselect" + (isActive("statuses") ? " active" : "")}
-            >
-              {statusOptions.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <div className="filter-indiv-actions">
-              {isActive("statuses") && (
-                <>
+          <select
+            id="kanban-filter-priority-select"
+            multiple
+            value={filters.priorities}
+            onChange={(e) =>
+              handleMultiSelect(
+                "priorities",
+                Array.from(e.target.selectedOptions, (o) => o.value)
+              )
+            }
+            className={"filter-multiselect" + (isActive("priorities") ? " active" : "")}
+            size={Math.min(priorityOptions.length, 3) || 3}
+            aria-label="Select priorities"
+            style={{ minWidth: 110 }}
+          >
+            {priorityOptions.map((p) => (
+              <option value={p} key={p}>{p}</option>
+            ))}
+          </select>
+          <div className="filter-indiv-actions">
+            {isActive("priorities") && (
+              <>
+                <button
+                  className="filter-clear-btn"
+                  type="button"
+                  onClick={() => clearFilter("priorities")}
+                  title="Clear all priorities"
+                >
+                  Clear
+                </button>
+                {canUndo("priorities") && (
                   <button
-                    className="filter-clear-btn"
+                    className="filter-undo-btn"
                     type="button"
-                    onClick={() => clearFilter("statuses")}
-                    title="Clear all statuses"
-                  >Clear</button>
-                  {canUndo("statuses") && (
-                    <button
-                      className="filter-undo-btn"
-                      type="button"
-                      onClick={() => undoFilter("statuses")}
-                      title="Undo last status filter change"
-                    >Undo</button>
-                  )}
-                </>
-              )}
-            </div>
+                    onClick={() => undoFilter("priorities")}
+                    title="Undo last priority change"
+                  >
+                    Undo
+                  </button>
+                )}
+              </>
+            )}
           </div>
-        </div>
-        {/* Column */}
-        <div className={"filter-group" + (isActive("columns") ? " filter-active" : "")}
-          tabIndex={0}
-          title="Filter by column (multi-select)">
-          <label>
-            📦 Column
-            <span className="filter-tooltip" tabIndex={0} title="Show cards only in selected columns.">?</span>
-            {badge(filters.columns.length)}
+        </fieldset>
+        {/* Status Multi-select */}
+        <fieldset
+          className={"filter-group" + (isActive("statuses") ? " filter-active" : "")}
+          aria-label="Filter by status"
+        >
+          <legend>
+            <span role="img" aria-label="Chart" style={{ fontSize: 17 }}>
+              📊
+            </span>{" "}
+            Status
+          </legend>
+          <label htmlFor="kanban-filter-status-select">
+            <span style={{ fontSize: "0.97em" }}>Statuses</span>
+            <span className="filter-tooltip" tabIndex={0} title="Filter by workflow status, e.g., To Do, In Progress, Done." aria-label="Status filter help">
+              ?
+            </span>
+            <Badge n={filters.statuses.length} />
           </label>
-          <div className="filter-multiselect-wrap">
-            <select
-              multiple
-              size={columnOptions.length || 2}
-              value={filters.columns}
-              onChange={(e) => {
-                const selected = Array.from(
-                  e.target.selectedOptions,
-                  (o) => o.value
-                );
-                undoStack.current["columns"] = filters.columns;
-                setFilters((prev) => ({ ...prev, columns: selected }));
-              }}
-              className={"filter-multiselect" + (isActive("columns") ? " active" : "")}
-            >
-              {columnOptions.map((col) => (
-                <option key={col.id} value={col.id}>{col.title}</option>
-              ))}
-            </select>
-            <div className="filter-indiv-actions">
-              {isActive("columns") && (
-                <>
+          <select
+            id="kanban-filter-status-select"
+            multiple
+            value={filters.statuses}
+            onChange={(e) =>
+              handleMultiSelect(
+                "statuses",
+                Array.from(e.target.selectedOptions, (o) => o.value)
+              )
+            }
+            className={"filter-multiselect" + (isActive("statuses") ? " active" : "")}
+            size={Math.min(statusOptions.length, 3) || 3}
+            aria-label="Select statuses"
+            style={{ minWidth: 110 }}
+          >
+            {statusOptions.map((s) => (
+              <option value={s} key={s}>{s}</option>
+            ))}
+          </select>
+          <div className="filter-indiv-actions">
+            {isActive("statuses") && (
+              <>
+                <button
+                  className="filter-clear-btn"
+                  type="button"
+                  onClick={() => clearFilter("statuses")}
+                  title="Clear all statuses"
+                >
+                  Clear
+                </button>
+                {canUndo("statuses") && (
                   <button
-                    className="filter-clear-btn"
+                    className="filter-undo-btn"
                     type="button"
-                    onClick={() => clearFilter("columns")}
-                    title="Clear all column filters"
-                  >Clear</button>
-                  {canUndo("columns") && (
-                    <button
-                      className="filter-undo-btn"
-                      type="button"
-                      onClick={() => undoFilter("columns")}
-                      title="Undo last column filter change"
-                    >Undo</button>
-                  )}
-                </>
-              )}
-            </div>
+                    onClick={() => undoFilter("statuses")}
+                    title="Undo last status filter change"
+                  >
+                    Undo
+                  </button>
+                )}
+              </>
+            )}
           </div>
-        </div>
-        {/* Due Date */}
-        <div className={"filter-group filter-dates" + ((filters.dueFrom || filters.dueTo) ? " filter-active" : "")}
-          tabIndex={0}
-          title="Filter by due date range">
-          <label>
-            🗓️ Due Date
-            <span className="filter-tooltip" tabIndex={0} title="Filter by cards due date range.">?</span>
-            {badge(Number(!!filters.dueFrom) + Number(!!filters.dueTo))}
+        </fieldset>
+        {/* Column Multi-select */}
+        <fieldset
+          className={"filter-group" + (isActive("columns") ? " filter-active" : "")}
+          aria-label="Filter by column"
+        >
+          <legend>
+            <span role="img" aria-label="Box" style={{ fontSize: 17 }}>
+              📦
+            </span>{" "}
+            Column
+          </legend>
+          <label htmlFor="kanban-filter-column-select">
+            <span style={{ fontSize: "0.97em" }}>Columns</span>
+            <span className="filter-tooltip" tabIndex={0} title="Show cards only in selected columns." aria-label="Column filter help">
+              ?
+            </span>
+            <Badge n={filters.columns.length} />
           </label>
-          <div className="filter-date-wrap" style={{ display: "flex", gap: 8 }}>
+          <select
+            id="kanban-filter-column-select"
+            multiple
+            value={filters.columns}
+            onChange={(e) =>
+              handleMultiSelect(
+                "columns",
+                Array.from(e.target.selectedOptions, (o) => o.value)
+              )
+            }
+            className={"filter-multiselect" + (isActive("columns") ? " active" : "")}
+            size={Math.min(columnOptions.length, 3) || 2}
+            aria-label="Select columns"
+            style={{ minWidth: 110 }}
+          >
+            {columnOptions.map((col) => (
+              <option key={col.id} value={col.id}>
+                {col.title}
+              </option>
+            ))}
+          </select>
+          <div className="filter-indiv-actions">
+            {isActive("columns") && (
+              <>
+                <button
+                  className="filter-clear-btn"
+                  type="button"
+                  onClick={() => clearFilter("columns")}
+                  title="Clear all column filters"
+                >
+                  Clear
+                </button>
+                {canUndo("columns") && (
+                  <button
+                    className="filter-undo-btn"
+                    type="button"
+                    onClick={() => undoFilter("columns")}
+                    title="Undo last column filter change"
+                  >
+                    Undo
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        </fieldset>
+        {/* Due Date Group */}
+        <fieldset
+          className={"filter-group filter-dates" + ((filters.dueFrom || filters.dueTo) ? " filter-active" : "")}
+          aria-label="Filter by Due Date range"
+        >
+          <legend>
+            <span role="img" aria-label="Calendar" style={{ fontSize: 17 }}>
+              🗓️
+            </span>{" "}
+            Due Date
+          </legend>
+          <div className="filter-date-wrap" style={{ display: "flex", gap: 7, alignItems: "center" }}>
             <input
               type="date"
               value={filters.dueFrom}
@@ -480,8 +530,9 @@ export default function FilterPanel({ onFiltersChange }) {
               className={"filter-date" + (filters.dueFrom ? " active" : "")}
               aria-label="Due date from"
               title="Due after or on"
+              style={{ minWidth: 95, flex: 1 }}
             />
-            <span style={{ color: "#888" }}>—</span>
+            <span aria-hidden style={{ color: "#888", fontWeight: 500 }}>—</span>
             <input
               type="date"
               value={filters.dueTo}
@@ -489,60 +540,94 @@ export default function FilterPanel({ onFiltersChange }) {
               className={"filter-date" + (filters.dueTo ? " active" : "")}
               aria-label="Due date to"
               title="Due before or on"
+              style={{ minWidth: 95, flex: 1 }}
             />
-            <div className="filter-indiv-actions">
-              {(filters.dueFrom || filters.dueTo) && (
-                <>
+          </div>
+          <div className="filter-indiv-actions" style={{ marginTop: 4 }}>
+            {(filters.dueFrom || filters.dueTo) && (
+              <>
+                <button
+                  className="filter-clear-btn"
+                  type="button"
+                  onClick={() => { clearFilter("dueFrom"); clearFilter("dueTo"); }}
+                  title="Clear due date filters"
+                >
+                  Clear
+                </button>
+                {(canUndo("dueFrom") || canUndo("dueTo")) && (
                   <button
-                    className="filter-clear-btn"
+                    className="filter-undo-btn"
                     type="button"
                     onClick={() => {
-                      clearFilter("dueFrom");
-                      clearFilter("dueTo");
+                      if (canUndo("dueFrom")) undoFilter("dueFrom");
+                      if (canUndo("dueTo")) undoFilter("dueTo");
                     }}
-                    title="Clear due date filters"
-                  >Clear</button>
-                  {(canUndo("dueFrom") || canUndo("dueTo")) && (
-                    <button
-                      className="filter-undo-btn"
-                      type="button"
-                      onClick={() => {
-                        if (canUndo("dueFrom")) undoFilter("dueFrom");
-                        if (canUndo("dueTo")) undoFilter("dueTo");
-                      }}
-                      title="Undo last due date filter change"
-                    >Undo</button>
-                  )}
-                </>
-              )}
-            </div>
+                    title="Undo last due date change"
+                  >
+                    Undo
+                  </button>
+                )}
+              </>
+            )}
           </div>
-        </div>
-
-        {/* Reset all filters */}
-        <div className="filter-group filter-actions">
+        </fieldset>
+        {/* Reset All */}
+        <div className="filter-group filter-actions" style={{ alignSelf: "flex-end" }}>
           <button
             type="button"
-            onClick={resetFilters}
             className="btn filter-reset-btn"
             aria-label="Reset all filters"
             title="Reset all filter fields to default"
+            style={{
+              background: "#142a46",
+              color: "#fa8686",
+              fontWeight: 700,
+              width: "100%",
+              letterSpacing: "0.03em"
+            }}
+            onClick={resetFilters}
           >
             Reset All
           </button>
         </div>
+      </form>
+      {/* Visual: summary badges for quick glance */}
+      <div className="filter-badge-row" style={{ marginTop: 3 }}>
+        <span className="filter-badge-label" title="Active filters">
+          <svg width="17" height="17" fill="none" aria-hidden="true"><path d="M3 6a4 4 0 018 0v1a4 4 0 118 0v1" stroke="#38B2AC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 13a3 3 0 016 0 3 3 0 016 0 3 3 0 016 0" stroke="#72e0d7" strokeWidth="2"/></svg>
+        </span>
+        {["assignees", "priorities", "statuses", "columns"].map((k) =>
+          filters[k] && filters[k].length
+            ? (
+              <span key={k} className={"filter-badge-main active"}>
+                {k === "assignees" && <>👤</>}
+                {k === "priorities" && <>⚡</>}
+                {k === "statuses" && <>📊</>}
+                {k === "columns" && <>📦</>}
+                <Badge n={filters[k].length} />
+              </span>
+            )
+            : null
+        )}
+        {(filters.dueFrom || filters.dueTo) && (
+          <span className="filter-badge-main active" title="Date filter active">
+            🗓️
+            <Badge n={Number(!!filters.dueFrom) + Number(!!filters.dueTo)} />
+          </span>
+        )}
       </div>
-      {/* Additional row: filter badges/visual cue, chips for all filters */}
-      {renderFilterBadges()}
-      <div className="filter-chipbar">
-        {renderChips().map((chip, i) => (
-          <span className="filter-chip" key={chip.label}>
-            {chip.label}{" "}
+      {/* Chip bar for currently active filters */}
+      <div className="filter-chipbar" role="list" aria-label="Active filter list">
+        {renderActiveChips().map((chip) => (
+          <span role="listitem" className="filter-chip" key={chip.label + chip.value}>
+            {chip.label}
             <button
+              tabIndex={0}
               type="button"
               title="Remove filter"
               aria-label={`Remove ${chip.label}`}
               onClick={() => clearFilter(chip.field, chip.value)}
+              style={{ marginLeft: 3 }}
             >
               ×
             </button>
