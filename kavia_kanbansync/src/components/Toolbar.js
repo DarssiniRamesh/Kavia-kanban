@@ -50,7 +50,6 @@ function Toolbar() {
 
       // Map rows to card objects:
       const cards = entries
-        .filter(row => row[0]) // skip empty
         .map(row => {
           const obj = {};
           header.forEach((k, i) => (obj[k] = row[i]));
@@ -59,8 +58,24 @@ function Toolbar() {
             obj.due_date = XLSX.SSF.format('yyyy-mm-dd', obj.due_date);
           }
           return obj;
-        });
-      await bulkInsertCards(col.id, cards);
+        })
+        .filter(card => card && typeof card.feature === 'string' && card.feature.trim().length > 0); // require feature
+
+      if (cards.length === 0) {
+        alert('No valid cards found in the file. Make sure "feature" column is filled.');
+        return;
+      }
+      try {
+        const error = await bulkInsertCards(col.id, cards);
+        if (error) {
+          // Show Supabase error if present
+          alert(`Bulk upload failed: ${error.message || error}`);
+          console.error('Supabase error bulk inserting cards:', error);
+        }
+      } catch (e) {
+        alert('Bulk upload encountered an error: ' + (e.message || e));
+        console.error('Exception uploading cards:', e);
+      }
       inputRef.current.value = '';
     };
     reader.readAsArrayBuffer(file);
