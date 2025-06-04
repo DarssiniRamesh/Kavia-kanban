@@ -74,11 +74,13 @@ function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDragg
   // Drag source
   const [{ isDragging }, drag, preview] = useDrag({
     type: COLUMN_TYPE,
-    item: { id: column.id, index },
+    item: () => {
+      setDraggedCol(index);
+      return { id: column.id, index };
+    },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
-    begin: () => setDraggedCol(index),
     end: () => setDraggedCol(null),
   });
 
