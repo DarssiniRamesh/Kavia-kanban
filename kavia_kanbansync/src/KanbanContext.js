@@ -1,0 +1,163 @@
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { getSupabaseClient } from './kanbanSupabase';
+
+// Supabase tables: kanban_columns, kanban_cards
+
+const KanbanContext = createContext();
+
+export function useKanban() {
+  return useContext(KanbanContext);
+}
+
+// PUBLIC_INTERFACE
+export function KanbanProvider({ children }) {
+  const supabase = getSupabaseClient();
+
+  const [columns, setColumns] = useState([]);
+  const [cards, setCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Real-time subscription effect
+  useEffect(() => {
+    fetchAll();
+
+    // Set up real-time subscriptions for both tables
+    const columnsSub = supabase
+      .channel('columns-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'kanban_columns' }, fetchAll)
+      .subscribe();
+
+    const cardsSub = supabase
+      .channel('cards-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'kanban_cards' }, fetchAll)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(columnsSub);
+      supabase.removeChannel(cardsSub);
+    };
+    // eslint-disable-next-line
+  }, []); // One subscription per mount
+
+  // Fetch all board data (columns + cards)
+  const fetchAll = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { data: columnData, error: colErr } = await supabase
+        .from('kanban_columns')
+        .select('*')
+        .order('position', { ascending: true });
+
+      if (colErr) throw colErr;
+
+      const { data: cardData, error: cardErr } = await supabase
+        .from('kanban_cards')
+        .select('*')
+        .order('position', { ascending: true });
+
+      if (cardErr) throw cardErr;
+
+      setColumns(columnData || []);
+      setCards(cardData || []);
+    } catch (e) {
+      setError(e.message || 'Supabase error');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [supabase]);
+
+  // Column CRUD
+  const addColumn = async (title) => {
+    const newPos = columns.length ? Math.max(...columns.map(c=>c.position)) + 1 : 1;
+    let { error } = await supabase.from('kanban_columns').insert({ title, position: newPos });
+    await fetchAll();
+    return error;
+  };
+  const updateColumn = async (id, updates) => {
+    let { error } = await supabase.from('kanban_columns').update(updates).eq('id', id);
+    await fetchAll();
+    return error;
+  };
+  const deleteColumn = async (id) => {
+    let { error } = await supabase.from('kanban_columns').delete().eq('id', id);
+    await fetchAll();
+    return error;
+  };
+  const reorderColumns = async (orderedList) => {
+    // Takes [{id, position}]
+    const updates = orderedList.map(({ id, position }) =>
+      supabase.from('kanban_columns').update({ position }).eq('id', id)
+    );
+    await Promise.all(updates);
+    await fetchAll();
+  };
+
+  // Card CRUD
+  const addCard = async (column_id, cardFields) => {
+    // cardFields: {feature, description...}
+    const filtered = { ...cardFields, column_id };
+    const maxPos = Math.max(0, ...cards.filter(c=>c.column_id === column_id).map(c=>c.position));
+    filtered.position = maxPos + 1;
+    let { error } = await supabase.from('kanban_cards').insert(filtered);
+    await fetchAll();
+    return error;
+  };
+  const updateCard = async (id, updates) => {
+    let { error } = await supabase.from('kanban_cards').update(updates).eq('id', id);
+    await fetchAll();
+    return error;
+  };
+  const deleteCard = async (id) => {
+    let { error } = await supabase.from('kanban_cards').delete().eq('id', id);
+    await fetchAll();
+    return error;
+  };
+  const reorderCardsInColumn = async (column_id, orderedList) => {
+    // orderedList: [{id, position}]
+    const updates = orderedList.map(({ id, position }) =>
+      supabase.from('kanban_cards').update({ position, column_id }).eq('id', id)
+    );
+    await Promise.all(updates);
+    await fetchAll();
+  };
+
+  // Bulk card insert
+  const bulkInsertCards = async (column_id, cardsArray) => {
+    // cardsArray: array of card objects
+    let { error } = await supabase.from('kanban_cards').insert(
+      cardsArray.map((card, idx) => ({
+        ...card,
+        column_id,
+        position: idx + 1,
+      }))
+    );
+    await fetchAll();
+    return error;
+  };
+
+  // PUBLIC_INTERFACE
+  return (
+    <KanbanContext.Provider
+      value={{
+        columns,
+        cards,
+        isLoading,
+        error,
+        fetchAll,
+        addColumn,
+        updateColumn,
+        deleteColumn,
+        reorderColumns,
+        addCard,
+        updateCard,
+        deleteCard,
+        reorderCardsInColumn,
+        bulkInsertCards,
+      }}
+    >
+      {children}
+    </KanbanContext.Provider>
+  );
+}
