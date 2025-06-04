@@ -141,7 +141,7 @@ function KanbanCard({ card }) {
   // Modal/Expanded/Editable Card
   const modalCard = (
     <>
-      <Modal onClose={() => { setModalOpen(false); setDeleteError(null); }}>
+      <Modal onClose={() => { setModalOpen(false); setDeleteError(null); setDeletionConfirm(false); }}>
         <div className="kanban-detail-modal">
           {!edit ? (
             <>
@@ -215,6 +215,23 @@ function KanbanCard({ card }) {
           )}
         </div>
       </Modal>
+      {/* Confirmation dialog for deletion */}
+      {deletionConfirm && (
+        <Modal onClose={() => setDeletionConfirm(false)}>
+          <div className="kanban-detail-modal">
+            <div style={{ color: '#ff9e9e', fontWeight: 700, fontSize: '1.20em', marginBottom: 9 }}>
+              Delete this card?
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              This action is <strong>permanent</strong> and cannot be undone.
+            </div>
+            <div className="kanban-modal-form-buttons">
+              <button className="btn" style={{ background: "#c13a2b" }} onClick={confirmDeleteCard}>Yes, Delete</button>
+              <button className="btn" style={{ marginLeft: 10 }} onClick={() => setDeletionConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </Modal>
+      )}
       {deleteError && (
         <Modal onClose={() => setDeleteError(null)}>
           <div className="kanban-detail-modal">
