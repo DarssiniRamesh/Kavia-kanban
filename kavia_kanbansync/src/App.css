@@ -262,6 +262,46 @@ body {
   flex-direction: column;
   gap: 0.7em;
 }
+/* Modal/Detail View: Prominent header for Title and Description */
+.kanban-detail-prominent-header {
+  margin-bottom: 13px;
+}
+.kanban-detail-modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 2px;
+}
+.kanban-detail-title-prominent {
+  flex: 1;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.01em;
+  line-height: 1.17;
+  text-shadow: 0 4px 14px rgba(20,33,61,0.11);
+  margin-bottom: 0;
+}
+.kanban-detail-desc-prominent {
+  margin: 2px 0 0 0;
+  font-size: 1.10rem;
+  color: #dbfdea;
+  font-weight: 500;
+  line-height: 1.55;
+  opacity: 0.97;
+  letter-spacing: 0.01em;
+  padding-bottom: 1px;
+}
+.kanban-detail-divider {
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  margin: 13px 0 6px 0;
+  background: linear-gradient(90deg, #38B2AC60, #233992cc 95%, #23399211 100%);
+  opacity: 0.75;
+}
+
+/* Existing header (for legacy/other usage) */
 .kanban-detail-header {
   display: flex;
   align-items: center;
