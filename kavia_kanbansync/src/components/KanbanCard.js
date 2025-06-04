@@ -35,7 +35,12 @@ function Modal({ children, onClose }) {
 
 const ASSIGNEES = ["Alice", "Bob", "Charlie", "Unassigned"]; // demo, could be prop/context
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * Card component representing a Kanban task card.
+ * Displays compact view and modal/expanded detail view.
+ * The Title (feature) and Description are visually prominent as the primary card fields.
+ */
 function KanbanCard({ card }) {
   const { updateCard, deleteCard } = useKanban();
   const [edit, setEdit] = useState(false);
