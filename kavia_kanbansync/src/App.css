@@ -1,35 +1,44 @@
 :root {
-  /* Primary palette update */
-  --base-light: #223269;             /* Navy blue for cards/buttons */
-  --base-dark: #14213d;              /* Dark blue background */
-  --card-bg-default: #223269;
-  --card-bg-high: #b22536;
-  --card-bg-medium: #ef943b;
-  --card-bg-low: #337067;
-  --card-bg-critical: #9e1b2c;
-  --card-bg-todo: #254db4;
-  --card-bg-inprogress: #397af3;
-  --card-bg-done: #29b168;
-  --card-bg-review: #f9e063;
-  --card-bg-hold: #deab3d;
-  --text-on-light: #192038;
-  --text-on-dark: #fff;
-  --text-on-warn: #2a2c19;
-  --text-on-done: #124c22;
-  --text-on-blue: #eaffff;
-  --input-bg: #272c48;
-  --input-border: #334266;
-  --input-focus: #38B2AC;
-  --modal-bg: #1e2040;
-  --modal-border: #334266;
-  --select-bg: #242d46;
-  --select-hover: #31426c;
-  --select-option-hover: #303a64;
-  --high-c-emph: #ffe5e5;
-  --high-c-warn: #fff7d0;
-  --border-color: rgba(255,255,255,0.13);
-  --text-color: #fff;
-  --text-secondary: rgba(255,255,255,0.85);
+  /* Modernized, harmonized color palette (WCAG AA Contrast, lively accent, cohesive cards) */
+  --base-light: #265DAB;             /* Vibrant blue for interactive elements, cards, buttons */
+  --base-dark: #111730;              /* Almost black navy for main backgrounds */
+  --base-bg: #181e37;                /* Slightly lighter gradient background */
+  --primary: #38b2ac;                /* Accent teal (main accent for KAVIA) */
+  --primary-bg: #183942;             /* Deep teal background */
+  --secondary-bg: #242c44;           /* For cards, panels, modal surfaces */
+  --overlay-bg: rgba(24, 30, 55, 0.85); /* For overlays/modals */
+  --card-bg-default: #212b46;
+  --card-bg-high: #D73B4A;
+  --card-bg-medium: #E29729;
+  --card-bg-low: #2BB86C;
+  --card-bg-critical: #B91C33;
+  --card-bg-todo: #2056C5;
+  --card-bg-inprogress: #0576C9;
+  --card-bg-done: #18B087;
+  --card-bg-review: #FFD84D;
+  --card-bg-hold: #D3A944;
+  --text-on-light: #151d2a;
+  --text-on-dark: #ffffff;
+  --text-on-warn: #36332F;
+  --text-on-done: #124C22;
+  --text-on-blue: #E2F4FF;
+  --input-bg: #232b43;
+  --input-border: #385cc3;
+  --input-focus: #41e3e0;
+  --modal-bg: #191e34;
+  --modal-border: #275167;
+  --select-bg: #222b41;
+  --select-hover: #25406f;
+  --select-option-hover: #235780;
+  --high-c-emph: #fff3f3;
+  --high-c-warn: #fff5c1;
+  --border-color: #364769aa;
+  --text-color: #f8fcfe;
+  --text-secondary: #b6c3e2;
+  --focus-outline: #41e3e0;
+  --chip-bg: linear-gradient(113deg, #1e2958 80%, #2ed5c6 100%);
+  --chip-bg-hover: linear-gradient(110deg, #17b9b6 82%, #224990 100%);
+  --chip-outline: #25e1c2dd;
 }
 
 body {
