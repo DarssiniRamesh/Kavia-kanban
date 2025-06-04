@@ -126,13 +126,18 @@ export function KanbanProvider({ children }) {
   // Bulk card insert
   const bulkInsertCards = async (column_id, cardsArray) => {
     // cardsArray: array of card objects
-    let { error } = await supabase.from('kanban_cards').insert(
+    let { error, data, status } = await supabase.from('kanban_cards').insert(
       cardsArray.map((card, idx) => ({
         ...card,
         column_id,
         position: idx + 1,
       }))
     );
+    if (error) {
+      // Log Supabase error for diagnostic purposes
+      // eslint-disable-next-line no-console
+      console.error('Supabase bulkInsertCards() error:', error, { column_id, cardsArray, data, status });
+    }
     await fetchAll();
     return error;
   };
