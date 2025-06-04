@@ -119,7 +119,7 @@ function CardList({ column, cards: colCardsProp }) {
 }
 
 // DnDKanbanCard wraps KanbanCard with drag/drop
-import { useDrag, useDrop } from 'react-dnd';
+import { useDrag } from 'react-dnd';
 
 // PUBLIC_INTERFACE
 function DnDKanbanCard({ card, index, column, colCards }) {
