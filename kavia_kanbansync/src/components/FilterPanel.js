@@ -54,9 +54,10 @@ export default function FilterPanel({ onFiltersChange }) {
   const [assigneeInput, setAssigneeInput] = useState("");
   const assigneeInputRef = useRef();
 
-  // Handler: Add/remove from filter
+  // Handler: Add/remove from filter (idempotent, only for list-type keys)
   function handleSelectChange(field, value, type = "toggle") {
     setFilters((prev) => {
+      if (!Array.isArray(prev[field])) return prev;
       if (type === "add") {
         if (prev[field].includes(value)) return prev;
         return { ...prev, [field]: [...prev[field], value] };
