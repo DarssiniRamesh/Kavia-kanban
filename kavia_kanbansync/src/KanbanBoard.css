@@ -1,0 +1,131 @@
+.kanban-app-container {
+  padding-top: 78px;
+  min-height: 100vh;
+  background: var(--base-dark);
+}
+
+.kanban-toolbar {
+  padding: 14px 0 10px 4px;
+  background: var(--base-dark);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: sticky;
+  top: 61px;
+  z-index: 50;
+}
+
+.kanban-board {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 12px 0 80px 0;
+  min-height: 70vh;
+  min-width: 100vw;
+  overflow-x: auto;
+  background: var(--base-dark);
+}
+
+.kanban-column {
+  flex: 0 0 320px;
+  background: #23233c;
+  border-radius: 7px;
+  padding: 12px 7px;
+  box-shadow: 0 2px 8px rgba(0,64,128,0.06);
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  min-height: 250px;
+}
+
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--kavia-orange, #38B2AC);
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.kanban-column-title {
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.kanban-column-delbtn {
+  background: none;
+  color: #e46;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.kanban-card-list {
+  margin-top: 8px;
+}
+
+.kanban-card {
+  background: #383870;
+  border-radius: 5px;
+  margin: 7px 0;
+  padding: 8px 8px 3px 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.kanban-card-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kanban-card-editbtn,
+.kanban-card-delbtn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1.05em;
+  cursor: pointer;
+  margin-left: 2px;
+}
+
+.kanban-card-editbtn:hover { color: #38B2AC; }
+.kanban-card-delbtn:hover { color: #f43; }
+.kanban-card-fields {
+  font-size: 0.98em;
+  margin-top: 3px;
+}
+
+.kanban-loading, .kanban-error {
+  color: var(--base-light, #38B2AC);
+  font-weight: 600;
+  text-align: center;
+  font-size: 1.3rem;
+  margin-top: 130px;
+}
+
+.kanban-add-card-form, .kanban-edit-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0 8px 0;
+  padding: 7px;
+  background: #22224b;
+  border-radius: 8px;
+}
+
+.kanban-add-card-form input, .kanban-add-card-form textarea,
+.kanban-edit-card-form input, .kanban-edit-card-form textarea {
+  margin-bottom: 3px;
+  padding: 3px;
+  border-radius: 3px;
+  border: 1px solid #555;
+  font-size: 0.99rem;
+  background: #334;
+  color: #fff;
+}
