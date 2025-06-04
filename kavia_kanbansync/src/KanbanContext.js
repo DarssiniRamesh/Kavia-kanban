@@ -111,10 +111,19 @@ export function KanbanProvider({ children }) {
   };
   // PUBLIC_INTERFACE
   const deleteCard = async (id) => {
+    // Optimistic UI: Remove card locally, resync after server call
     let errorMsg = null;
+    let prevCards = [...cards];
     try {
+      // Remove the card immediately from local state ("optimistic" update)
+      setCards(cs => cs.filter(card => card.id !== id));
+
+      // Execute Supabase delete
       const { error } = await supabase.from('kanban_cards').delete().eq('id', id);
+
       if (error) {
+        // Rollback: re-add card, set error
+        setCards(prevCards);
         // eslint-disable-next-line no-console
         console.error('[KanbanContext.deleteCard] Supabase delete error:', error);
         errorMsg = error.message || 'Failed to delete card from Supabase.';
@@ -122,21 +131,15 @@ export function KanbanProvider({ children }) {
         return errorMsg;
       }
 
+      // Local update was optimistic; now do a fetchAll for sync
       await fetchAll();
 
-      // After fetchAll, check that the card was actually removed from state
-      const stillThere = cards.some(c => c.id === id);
-      if (stillThere) {
-        errorMsg = 'Card delete did not properly update board state. Card is still present after delete.';
-        // eslint-disable-next-line no-console
-        console.error('[KanbanContext.deleteCard] Card still present after delete:', id);
-        setError(errorMsg);
-        return errorMsg;
-      }
-
+      // Only show an error message if the API delete call failed
       setError(null);
       return null;
     } catch (e) {
+      // Rollback local state on error
+      setCards(prevCards);
       errorMsg = e.message || 'Unexpected error occurred during card delete.';
       // eslint-disable-next-line no-console
       console.error('[KanbanContext.deleteCard] Exception thrown:', e);
