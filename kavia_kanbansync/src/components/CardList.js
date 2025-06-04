@@ -118,9 +118,9 @@ function CardList({ column, cards: colCardsProp }) {
 
 // DnDKanbanCard wraps KanbanCard with drag/drop capability
 
-// PUBLIC_INTERFACE
 function DnDKanbanCard({ card, index, column, colCards }) {
   const { updateCard } = useKanban();
+  const { showToast } = useFeedback();
 
   // Drag setup
   const [{ isDragging }, drag] = useDrag({
