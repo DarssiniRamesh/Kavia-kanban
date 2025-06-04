@@ -6,10 +6,14 @@ import { CARD_TYPE } from './dndTypes';
 /**
  * Column represents a Kanban column (no drag logic here; handled by board parent for DnD).
  * Props for drag visuals: isDragging, isOver (optional).
+ * If filteredCards prop is provided, use those cards for render.
  */
-function Column({ column, index, isDragging, isOver }) {
+function Column({ column, index, isDragging, isOver, filteredCards }) {
   const { updateColumn, deleteColumn, cards } = useKanban();
-  const colCards = cards.filter(c => c.column_id === column.id).sort((a, b) => a.position - b.position);
+  // Use filteredCards if provided, otherwise filter all cards for this column
+  const colCards = (filteredCards !== undefined)
+    ? filteredCards
+    : cards.filter(c => c.column_id === column.id).sort((a, b) => a.position - b.position);
 
   // Modal state: delete/rename
   const [modal, setModal] = React.useState({ type: null });
