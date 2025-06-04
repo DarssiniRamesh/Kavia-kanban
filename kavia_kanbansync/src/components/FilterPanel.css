@@ -307,18 +307,18 @@
 .filter-date.active {
   background: var(--input-bg);
   color: var(--text-color);
-  border: 1.1px solid var(--input-border);
-  border-radius: 4px;
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
   font-size: 1em;
-  padding: 4px 7px;
-  min-width: 108px;
+  padding: 4px 12px;
+  min-width: 115px;
   outline: none;
-  transition: border .14s, background .14s;
+  transition: border .13s, background .12s;
 }
 .filter-date:focus,
 .filter-date.active {
-  border: 1.4px solid #38B2AC;
-  background: #1b2240;
+  border: 2.5px solid var(--primary);
+  background: #113e52;
 }
 
 /* Add strong focus/active for filter groups */
