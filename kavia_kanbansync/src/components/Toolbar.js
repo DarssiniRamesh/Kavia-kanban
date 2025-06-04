@@ -154,56 +154,68 @@ function Toolbar() {
         </label>
       </div>
       {/* Add Column Modal */}
+import ReactDOM from 'react-dom';
+
       {addColumnModal && (
-        <div className="kanban-modal-overlay" onClick={() => setAddColumnModal(false)}>
-          <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
-            <button className="kanban-modal-close" onClick={() => setAddColumnModal(false)} title="Close">×</button>
-            <form onSubmit={handleAddColumnSubmit}>
-              <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 12 }}>Add New Column</div>
-              <input
-                type="text"
-                placeholder="Column Title"
-                value={newColTitle}
-                onChange={e => setNewColTitle(e.target.value)}
-                required
-                style={{ padding: 6, fontSize: '1.08em', width: '100%', marginBottom: 18, borderRadius: 4, border: '1px solid #334266' }}
-              />
-              <div style={{ display: "flex", gap: 8 }}>
-                <button className="btn" type="submit">Add Column</button>
-                <button className="btn" type="button" onClick={() => setAddColumnModal(false)}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        typeof document === "undefined"
+          ? null
+          : ReactDOM.createPortal(
+              <div className="kanban-modal-overlay" onClick={() => setAddColumnModal(false)}>
+                <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
+                  <button className="kanban-modal-close" onClick={() => setAddColumnModal(false)} title="Close">×</button>
+                  <form onSubmit={handleAddColumnSubmit}>
+                    <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 12 }}>Add New Column</div>
+                    <input
+                      type="text"
+                      placeholder="Column Title"
+                      value={newColTitle}
+                      onChange={e => setNewColTitle(e.target.value)}
+                      required
+                      style={{ padding: 6, fontSize: '1.08em', width: '100%', marginBottom: 18, borderRadius: 4, border: '1px solid #334266' }}
+                    />
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button className="btn" type="submit">Add Column</button>
+                      <button className="btn" type="button" onClick={() => setAddColumnModal(false)}>Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>,
+              document.body
+            )
       )}
       {/* Bulk Upload Select Column Modal */}
       {bulkUploadState.showModal && (
-        <div className="kanban-modal-overlay" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))}>
-          <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
-            <button className="kanban-modal-close" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))} title="Close">×</button>
-            <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 14 }}>
-              Bulk Upload: Pick a column for these cards
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <div>Select a column:</div>
-              <div style={{ margin: "9px 0"}}>
-                <select
-                  style={{ width: "100%", padding: 6, fontSize: "1em" }}
-                  onChange={e => handleConfirmBulkUpload(e.target.value)}
-                  defaultValue=""
-                >
-                  <option value="" disabled>Choose column...</option>
-                  {columns.map((c, i) => (
-                    <option value={i} key={c.id}>{c.title}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div style={{ color: "#acdffc", fontSize: "0.96em", margin: "7px 0 0 1px" }}>
-              Cards parsed from file: <strong>{bulkUploadState.entries.length}</strong>
-            </div>
-          </div>
-        </div>
+        typeof document === "undefined"
+          ? null
+          : ReactDOM.createPortal(
+              <div className="kanban-modal-overlay" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))}>
+                <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
+                  <button className="kanban-modal-close" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))} title="Close">×</button>
+                  <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 14 }}>
+                    Bulk Upload: Pick a column for these cards
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <div>Select a column:</div>
+                    <div style={{ margin: "9px 0"}}>
+                      <select
+                        style={{ width: "100%", padding: 6, fontSize: "1em" }}
+                        onChange={e => handleConfirmBulkUpload(e.target.value)}
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Choose column...</option>
+                        {columns.map((c, i) => (
+                          <option value={i} key={c.id}>{c.title}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{ color: "#acdffc", fontSize: "0.96em", margin: "7px 0 0 1px" }}>
+                    Cards parsed from file: <strong>{bulkUploadState.entries.length}</strong>
+                  </div>
+                </div>
+              </div>,
+              document.body
+            )
       )}
     </>
   );
