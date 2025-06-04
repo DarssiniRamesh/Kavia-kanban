@@ -42,9 +42,30 @@
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 132px;
+  gap: 6px;
+  min-width: 128px;
+  min-height: 79px;
   position: relative;
+  background: linear-gradient(115deg, #202657 70%, #2a385a 100%);
+  border-radius: 13px;
+  box-shadow: 0 2px 15px 0 #23496618;
+  padding: 13px 11px 11px 13px;
+  margin-bottom: 6px;
+  border: 1.3px solid #27316066;
+  transition: box-shadow .17s, background .18s, border .15s;
+}
+
+.filter-group legend {
+  color: #09e7cf;
+  font-size: 1.09em;
+  font-weight: 700;
+  letter-spacing: .016em;
+  margin-bottom: 0;
+  border-radius: 7px;
+  background: #242d4633;
+  padding: 2.5px 14px;
+  box-shadow: 0 1.5px 6px #38b2ac0a;
+  transition: background .15s;
 }
 /* Active filter state highlight */
 .filter-group.filter-active label,
