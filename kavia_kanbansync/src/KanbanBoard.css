@@ -13,7 +13,7 @@
   align-items: center;
   position: sticky;
   top: 61px;
-  z-index: 15; /* Lowered for guarantee below modals/toasts, above base board */
+  z-index: 10; /* Lowered, overlay modals/toasts always use >5000 */
   border-radius: 0 0 10px 10px;
   border-bottom: 1px solid var(--border-color);
 }
