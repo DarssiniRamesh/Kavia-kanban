@@ -3,7 +3,6 @@ import { useKanban } from '../KanbanContext';
 import KanbanCard from './KanbanCard';
 import { useDrop } from 'react-dnd';
 import { CARD_TYPE } from './Column';
-import { useDrag } from 'react-dnd';
 
 /**
  * CardList supports dropping cards for intra-column reordering (vertical movement),
