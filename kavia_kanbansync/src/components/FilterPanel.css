@@ -5,7 +5,7 @@
   box-shadow: 0 1.5px 7px rgba(20,33,61,0.14);
   position: sticky;
   top: 61px;
-  z-index: 40;
+  z-index: 20; /* Lowered to be under modal/toast overlays */
 }
 
 .filter-row {
