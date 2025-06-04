@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import KanbanCard from './KanbanCard';
 import { useKanban } from '../KanbanContext';
 import { useDrop, useDrag } from 'react-dnd';
-import { CARD_TYPE } from './Column';
+import { CARD_TYPE } from './dndTypes';
 import { useFeedback } from '../KanbanBoard';
 
 /**
