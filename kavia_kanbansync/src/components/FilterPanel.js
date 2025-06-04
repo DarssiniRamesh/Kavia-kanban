@@ -236,6 +236,7 @@ export default function FilterPanel({ onFiltersChange }) {
         aria-label="Kanban Filters"
         onSubmit={(e) => e.preventDefault()} // No submission
         tabIndex={-1}
+        style={{ gap: 16 }}
       >
         {/* Assignee Filter Group */}
         <fieldset
@@ -248,7 +249,7 @@ export default function FilterPanel({ onFiltersChange }) {
             </span>{" "}
             Assignee
           </legend>
-          <label htmlFor="kanban-filter-assignee-typeahead" style={{ marginBottom: 3 }}>
+          <label htmlFor="kanban-filter-assignee-typeahead" style={{ marginBottom: 2, fontWeight: 500 }}>
             <span style={{ fontSize: "0.97em" }}>Type or select a name</span>
             <span className="filter-tooltip" tabIndex={0} aria-label="tip" title="Filter cards by assigned team member. Type or pick name.">?</span>
             <Badge n={filters.assignees.length} />
@@ -274,7 +275,7 @@ export default function FilterPanel({ onFiltersChange }) {
             ))}
           </datalist>
           {/* Chips row under input, each removable */}
-          <div className="filter-chip-group" style={{ marginTop: 5, minHeight: 24 }}>
+          <div className="filter-chip-group" style={{ marginTop: 5, minHeight: 22 }}>
             {filters.assignees.map((a) => (
               <span className="filter-chip" key={a}>
                 {a}
@@ -522,7 +523,7 @@ export default function FilterPanel({ onFiltersChange }) {
             </span>{" "}
             Due Date
           </legend>
-          <div className="filter-date-wrap" style={{ display: "flex", gap: 7, alignItems: "center" }}>
+          <div className="filter-date-wrap">
             <input
               type="date"
               value={filters.dueFrom}
