@@ -13,7 +13,7 @@
   --radius-lg: 17px;
 
   --transition-elevate: box-shadow .19s cubic-bezier(.4,.13,.55,.83), background .18s, border .17s, transform .19s, color .15s;
-}
+
   --color-bg-main: #171C23;      /* Deep blue-gray app background */
   --color-bg-surface: #232833;   /* Panel/container/toolbar surfaces */
   --color-bg-panel: #222937;     /* Column/board panel */
@@ -516,4 +516,48 @@ body {
   opacity: 1;
   outline: none;
   box-shadow: var(--shadow-sm);
+}
+
+/* ---- Unified filter chip and form box depth/radius/transition ---- */
+.filter-chip {
+  background: var(--chip-bg);
+  color: #ebfdff;
+  border-radius: var(--radius-md);
+  padding: 4.2px 16px 4.2px 13px;
+  border: 1.5px solid var(--chip-outline);
+  display: inline-flex;
+  align-items: center;
+  min-height: 31px;
+  font-size: 1.01em;
+  font-weight: 600;
+  margin-right: 1px;
+  margin-bottom: 2.8px;
+  box-shadow: var(--shadow-xs);
+  opacity: 0.98;
+  cursor: pointer;
+  user-select: none;
+  gap: 8px;
+  transition: var(--transition-elevate);
+}
+.filter-chip:focus-within, .filter-chip:hover {
+  background: var(--chip-bg-hover);
+  color: #fff;
+  border: 2px solid var(--primary);
+  box-shadow: var(--shadow-md);
+  outline: 2.5px solid var(--focus-outline);
+  z-index: 2;
+}
+
+/* Modernization for add/edit card form containers */
+.kanban-add-card-form, .kanban-edit-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 10px 0 7px 0;
+  padding: 8px 10px;
+  background: #1a2554;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-xs);
+  transition: var(--transition-elevate);
 }
