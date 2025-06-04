@@ -126,17 +126,31 @@ export function KanbanProvider({ children }) {
   // Bulk card insert
   const bulkInsertCards = async (column_id, cardsArray) => {
     // cardsArray: array of card objects
-    let { error, data, status } = await supabase.from('kanban_cards').insert(
-      cardsArray.map((card, idx) => ({
-        ...card,
-        column_id,
-        position: idx + 1,
-      }))
-    );
+    // eslint-disable-next-line no-console
+    console.log("[KanbanContext.bulkInsertCards] Invoked with column_id", column_id, ", cardsArray (up to 3):", cardsArray.slice(0,3));
+    // Defensive: check structure before sending
+    if (!Array.isArray(cardsArray) || cardsArray.length === 0) {
+      // eslint-disable-next-line no-console
+      console.log("[KanbanContext.bulkInsertCards] No cards to insert (empty array).");
+      return { message: "No cards to insert" };
+    }
+    let payload = cardsArray.map((card, idx) => ({
+      ...card,
+      column_id,
+      position: idx + 1, // assign sequential
+    }));
+    // Print the full payload (if not huge)
+    // eslint-disable-next-line no-console
+    console.log("[KanbanContext.bulkInsertCards] Final payload (truncated):", payload.slice(0, 5), "(total:", payload.length, ")");
+    let result = await supabase.from('kanban_cards').insert(payload);
+    let { error, data, status } = result;
+    // Log all output for full diagnostics
+    // eslint-disable-next-line no-console
+    console.log("[KanbanContext.bulkInsertCards] Supabase insert result:", {error, data, status});
     if (error) {
       // Log Supabase error for diagnostic purposes
       // eslint-disable-next-line no-console
-      console.error('Supabase bulkInsertCards() error:', error, { column_id, cardsArray, data, status });
+      console.error('Supabase bulkInsertCards() error:', error, { column_id, cardsArray, payload, data, status });
     }
     await fetchAll();
     return error;
