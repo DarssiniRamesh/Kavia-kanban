@@ -111,19 +111,15 @@ export function KanbanProvider({ children }) {
   };
   // PUBLIC_INTERFACE
   const deleteCard = async (id) => {
-    // Optimistic UI: Remove card locally, resync after server call
+    // Immediate, accurate feedback: Remove from local state on API success, error only on Supabase API error.
     let errorMsg = null;
     let prevCards = [...cards];
     try {
-      // Remove the card immediately from local state ("optimistic" update)
-      setCards(cs => cs.filter(card => card.id !== id));
-
-      // Execute Supabase delete
+      // Execute Supabase delete first, only update UI if successful
       const { error } = await supabase.from('kanban_cards').delete().eq('id', id);
 
       if (error) {
-        // Rollback: re-add card, set error
-        setCards(prevCards);
+        // Do not modify state: show error only if API returns error
         // eslint-disable-next-line no-console
         console.error('[KanbanContext.deleteCard] Supabase delete error:', error);
         errorMsg = error.message || 'Failed to delete card from Supabase.';
@@ -131,10 +127,12 @@ export function KanbanProvider({ children }) {
         return errorMsg;
       }
 
-      // Local update was optimistic; now do a fetchAll for sync
-      await fetchAll();
+      // API success: now remove the card immediately from local UI/state
+      setCards(cs => cs.filter(card => card.id !== id));
 
-      // Only show an error message if the API delete call failed
+      // Optionally, keep fetchAll for later consistency (do not base error on fetchAll)
+      fetchAll();
+
       setError(null);
       return null;
     } catch (e) {
