@@ -108,6 +108,27 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  scroll-snap-align: start;
+  transition: border-radius .14s, padding .13s, min-width .15s;
+}
+@media (max-width: 900px) {
+  .kanban-column {
+    flex-basis: 270px;
+    border-radius: 10px;
+    min-width: 222px;
+    padding: 11px 7px 16px 7px;
+  }
+}
+@media (max-width: 700px) {
+  .kanban-column {
+    flex-basis: 90vw;
+    max-width: 98vw;
+    min-width: 180px;
+    border-radius: 9px;
+    padding: 8px 3vw 10px 3vw;
+    margin-bottom: 14px;
+    /* Allow vertical stacking if board is too narrow for side scroll */
+  }
 }
 
 .kanban-column-header {
