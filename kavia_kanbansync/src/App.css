@@ -91,8 +91,8 @@
 body {
   margin: 0;
   font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-  background: var(--base-dark);
-  color: var(--text-color);
+  background: var(--color-bg-main);
+  color: var(--color-text-main);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -269,26 +269,26 @@ body {
   border-radius: 16px;
   font-size: 0.99em;
   font-weight: 500;
-  background: #242a48;
-  color: #acdffc;
-  border: 1.1px solid var(--border-color);
+  background: var(--color-bg-chip);
+  color: var(--color-chip-text);
+  border: 1.1px solid var(--color-border);
   margin-right: 2px;
   margin-bottom: 2px;
   min-height: 21px;
-  transition: background .18s;
+  transition: background .18s, color .15s;
 }
-.kanban-pill-status { background: #233992; color: #c2c4fa;}
-.kanban-pill-priority { background: #283464; color: #ffd8b4;}
-.kanban-pill-assignee { background: #234743; color: #b5ffe7;}
-.kanban-pill-due { background: #243650; color: #ffe5e5; }
-.pill-high { background: #cb4e1f !important; color: #ffeacc !important; }
-.pill-medium { background: #ef943b !important; color: #fff7d0 !important; }
-.pill-low { background: #39866a !important; color: #d2ffee !important; }
-.pill-todo { background: #314fbc !important; color: #ffffff !important; }
-.pill-progress { background: #5d71f1 !important; color: #e5eafd !important; }
-.pill-done { background: #39bc86 !important; color: #f4fff1 !important; }
-.pill-review { background: #f7e25a !important; color: #2a2c19 !important; }
-.pill-hold { background: #eaaf46 !important; color: #fff7e4 !important; }
+.kanban-pill-status { background: var(--color-card-info); color: var(--color-pill-info);}
+.kanban-pill-priority { background: var(--color-card-medium); color: var(--color-pill-medium);}
+.kanban-pill-assignee { background: #21293F; color: #aff1e4;}
+.kanban-pill-due { background: #273953; color: #eaf2fc;}
+.pill-high { background: var(--card-bg-high) !important; color: var(--color-pill-high) !important; }
+.pill-medium { background: var(--card-bg-medium) !important; color: var(--color-pill-medium) !important; }
+.pill-low { background: var(--card-bg-low) !important; color: var(--color-pill-low) !important; }
+.pill-todo { background: var(--card-bg-todo) !important; color: var(--color-pill-info) !important; }
+.pill-progress { background: var(--card-bg-inprogress) !important; color: var(--color-pill-progress) !important; }
+.pill-done { background: var(--card-bg-done) !important; color: var(--color-pill-done) !important; }
+.pill-review { background: var(--card-bg-review) !important; color: var(--color-pill-review) !important; }
+.pill-hold { background: var(--card-bg-hold) !important; color: var(--color-pill-hold) !important; }
 
 /*==== MODAL ====*/
 /* Increase z-index to guarantee modals/pop-ups are above all panels, filter dropdowns, and board layers */
