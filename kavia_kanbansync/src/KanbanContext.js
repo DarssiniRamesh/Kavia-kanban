@@ -128,17 +128,28 @@ export function KanbanProvider({ children }) {
     // cardsArray: array of card objects
     // eslint-disable-next-line no-console
     console.log("[KanbanContext.bulkInsertCards] Invoked with column_id", column_id, ", cardsArray (up to 3):", cardsArray.slice(0,3));
+
     // Defensive: check structure before sending
     if (!Array.isArray(cardsArray) || cardsArray.length === 0) {
       // eslint-disable-next-line no-console
       console.log("[KanbanContext.bulkInsertCards] No cards to insert (empty array).");
+      setError("No cards to insert.");
       return { message: "No cards to insert" };
     }
+
+    // Find the current max position in this column
+    const existingCardsForColumn = cards.filter(c => c.column_id === column_id);
+    const maxExistingPos = existingCardsForColumn.length > 0
+        ? Math.max(...existingCardsForColumn.map(c => c.position || 0))
+        : 0;
+
+    // Assign positions sequentially after the last current card's position
     let payload = cardsArray.map((card, idx) => ({
       ...card,
       column_id,
-      position: idx + 1, // assign sequential
+      position: maxExistingPos + idx + 1,
     }));
+
     // Print the full payload (if not huge)
     // eslint-disable-next-line no-console
     console.log("[KanbanContext.bulkInsertCards] Final payload (truncated):", payload.slice(0, 5), "(total:", payload.length, ")");
@@ -151,6 +162,9 @@ export function KanbanProvider({ children }) {
       // Log Supabase error for diagnostic purposes
       // eslint-disable-next-line no-console
       console.error('Supabase bulkInsertCards() error:', error, { column_id, cardsArray, payload, data, status });
+      setError(error.message || "Bulk insert error: unable to add cards. Please check your field mapping (due_date format, required fields, etc).");
+    } else {
+      setError(null);
     }
     await fetchAll();
     return error;
