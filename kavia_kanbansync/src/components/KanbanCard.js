@@ -22,15 +22,19 @@ function Pill({ value, type }) {
   return <span className={className}>{value}</span>;
 }
 
-// Modal for card detail/expanded view+edit
+import ReactDOM from 'react-dom';
+
+// Modal for card detail/expanded view+edit using React Portal
 function Modal({ children, onClose }) {
-  return (
+  if (typeof document === "undefined") return null;
+  return ReactDOM.createPortal(
     <div className="kanban-modal-overlay" tabIndex={-1} onClick={onClose}>
       <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
         <button className="kanban-modal-close" onClick={onClose} title="Close">×</button>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
