@@ -173,31 +173,31 @@
 }
 
 .filter-chip {
-  background: linear-gradient(113deg, #232553 82%, #145876 100%);
-  color: #b4fee7;
-  border-radius: 18px;
-  padding: 4px 15px 4px 12px;
-  border: 1.5px solid #446ec022;
+  background: var(--chip-bg);
+  color: #ebfdff;
+  border-radius: 20px;
+  padding: 4.2px 16px 4.2px 13px;
+  border: 1.5px solid var(--chip-outline);
   display: inline-flex;
   align-items: center;
   min-height: 31px;
   font-size: 1.01em;
   font-weight: 600;
-  margin-right: 1.5px;
+  margin-right: 1px;
   margin-bottom: 2.8px;
-  box-shadow: 0 1.5px 8px #23399222;
+  box-shadow: 0 2px 8px #12e0c422, 0 1.5px 7px #0bb9fa19;
   opacity: 0.98;
   cursor: pointer;
   user-select: none;
-  gap: 6px;
-  transition: background .17s, color .13s, box-shadow .17s, border .12s;
+  gap: 8px;
+  transition: background .16s, color .13s, box-shadow .15s, border .13s;
 }
 .filter-chip:focus-within, .filter-chip:hover {
-  background: linear-gradient(110deg, #14588f 76%, #38b2ac 100%);
+  background: var(--chip-bg-hover);
   color: #fff;
-  border: 1.6px solid #38B2AC;
-  box-shadow: 0 2.5px 16px #42fae953,0 1.8px 7px #06304a23;
-  outline: none;
+  border: 2px solid var(--primary);
+  box-shadow: 0 2.5px 18px #41e3e077, 0 1.8px 9px #12e0c423;
+  outline: 2.5px solid var(--focus-outline);
   z-index: 2;
 }
 
