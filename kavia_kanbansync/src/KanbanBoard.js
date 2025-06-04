@@ -18,42 +18,47 @@ export function useFeedback() {
   return useContext(FeedbackContext);
 }
 
-// Utility for filtering cards
-function filterCardsUtil(cards, filters, columns) {
-  // Returns filtered cards based on filters object (same as FilterPanel logic)
-  // Accepts: { assignees, priorities, statuses, columns, dueFrom, dueTo }
-  return cards.filter((c) => {
+/**
+ * Filters the provided cards array by combining all filters with AND logic.
+ * For each selected filter (any of assignees, priorities, statuses, columns, due date range), a card must match all applied filters.
+ * Accepts:
+ *   cards: Array of card objects
+ *   filters: { assignees:[], priorities:[], statuses:[], columns:[], dueFrom:"", dueTo:"" }
+ *   columns: Array of columns (for mapping)
+ * Returns:
+ *   Filtered array of cards.
+ */
+function filterCardsAND(cards, filters, columns) {
+  return cards.filter(c => {
+    // Assignee multi-filter (intersection)
     if (
-      filters.assignees && filters.assignees.length > 0 &&
+      filters.assignees &&
+      filters.assignees.length > 0 &&
       (!c.assignee || !filters.assignees.includes(c.assignee))
-    )
-      return false;
+    ) return false;
+    // Priority
     if (
-      filters.priorities && filters.priorities.length > 0 &&
+      filters.priorities &&
+      filters.priorities.length > 0 &&
       (!c.priority || !filters.priorities.includes(c.priority))
-    )
-      return false;
+    ) return false;
+    // Status
     if (
-      filters.statuses && filters.statuses.length > 0 &&
+      filters.statuses &&
+      filters.statuses.length > 0 &&
       (!c.status || !filters.statuses.includes(c.status))
-    )
-      return false;
+    ) return false;
+    // Column (by id)
     if (
-      filters.columns && filters.columns.length > 0 &&
+      filters.columns &&
+      filters.columns.length > 0 &&
       (!c.column_id || !filters.columns.includes(c.column_id))
-    )
-      return false;
+    ) return false;
+    // Due Date Range
     if (filters.dueFrom || filters.dueTo) {
-      if (c.due_date) {
-        const date = c.due_date;
-        if (
-          (filters.dueFrom && date < filters.dueFrom) ||
-          (filters.dueTo && date > filters.dueTo)
-        )
-          return false;
-      } else {
-        return false;
-      }
+      if (!c.due_date) return false;
+      if (filters.dueFrom && c.due_date < filters.dueFrom) return false;
+      if (filters.dueTo && c.due_date > filters.dueTo) return false;
     }
     return true;
   });
@@ -76,7 +81,7 @@ function KanbanBoardInner() {
 
   // Filtered cards, memoized for perf (updates when filters/cards/columns change)
   const filteredCards = React.useMemo(
-    () => filterCardsUtil(cards || [], filters, columns),
+    () => filterCardsAND(cards || [], filters, columns),
     [cards, filters, columns]
   );
 

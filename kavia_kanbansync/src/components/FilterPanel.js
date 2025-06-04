@@ -9,50 +9,9 @@ function getUniqueFieldValues(cards, field) {
   ).sort((a, b) => a.localeCompare(b));
 }
 
-function filterCards(cards, filters, columns) {
-  // Returns filtered cards based on filters object:
-  // { assignees: [], priorities: [], statuses: [], columns: [], dueRange: [from, to] }
-  return cards.filter((c) => {
-    if (
-      filters.assignees.length > 0 &&
-      (!c.assignee || !filters.assignees.includes(c.assignee))
-    )
-      return false;
-
-    if (
-      filters.priorities.length > 0 &&
-      (!c.priority || !filters.priorities.includes(c.priority))
-    )
-      return false;
-
-    if (
-      filters.statuses.length > 0 &&
-      (!c.status || !filters.statuses.includes(c.status))
-    )
-      return false;
-
-    if (
-      filters.columns.length > 0 &&
-      (!c.column_id || !filters.columns.includes(c.column_id))
-    )
-      return false;
-
-    if (filters.dueFrom || filters.dueTo) {
-      if (c.due_date) {
-        const date = c.due_date;
-        if (
-          (filters.dueFrom && date < filters.dueFrom) ||
-          (filters.dueTo && date > filters.dueTo)
-        )
-          return false;
-      } else {
-        return false;
-      }
-    }
-
-    return true;
-  });
-}
+/* The per-field filterCards function is now handled at KanbanBoard level,
+   so this is unnecessary here.
+*/
 
 export default function FilterPanel({ onFiltersChange }) {
   const { cards, columns } = useKanban();
