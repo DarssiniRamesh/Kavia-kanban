@@ -132,80 +132,93 @@ function KanbanCard({ card }) {
 
   // Modal/Expanded/Editable Card
   const modalCard = (
-    <Modal onClose={() => setModalOpen(false)}>
-      <div className="kanban-detail-modal">
-        {!edit ? (
-          <>
-            <div className="kanban-detail-prominent-header">
-              <div className="kanban-detail-modal-title-row">
-                <span className="kanban-detail-title-prominent">{card.feature}</span>
-                <button className="kanban-card-editbtn" onClick={() => setEdit(true)} title="Edit">✎</button>
-                <button className="kanban-card-delbtn" onClick={handleDelete}>×</button>
-              </div>
-              {card.description && (
-                <div className="kanban-detail-desc-prominent">
-                  {card.description}
+    <>
+      <Modal onClose={() => { setModalOpen(false); setDeleteError(null); }}>
+        <div className="kanban-detail-modal">
+          {!edit ? (
+            <>
+              <div className="kanban-detail-prominent-header">
+                <div className="kanban-detail-modal-title-row">
+                  <span className="kanban-detail-title-prominent">{card.feature}</span>
+                  <button className="kanban-card-editbtn" onClick={() => setEdit(true)} title="Edit">✎</button>
+                  <button className="kanban-card-delbtn" onClick={handleDelete}>×</button>
                 </div>
-              )}
-              <div className="kanban-detail-divider"/>
+                {card.description && (
+                  <div className="kanban-detail-desc-prominent">
+                    {card.description}
+                  </div>
+                )}
+                <div className="kanban-detail-divider"/>
+              </div>
+              <div className="kanban-detail-row">
+                <span>Status:</span> <Pill value={card.status} type="status"/>
+                <span>Priority:</span> <Pill value={card.priority} type="priority"/>
+              </div>
+              <div className="kanban-detail-row">
+                <span>Assignee:</span> <Pill value={card.assignee} type="assignee"/>
+                {card.due_date && (
+                  <>
+                    <span>Due:</span>
+                    <span className="kanban-pill kanban-pill-due">
+                      <span role="img" aria-label="due">🗓️</span> {card.due_date}
+                    </span>
+                  </>
+                )}
+              </div>
+              <div className="kanban-detail-section">
+                <div className="kanban-detail-label">Notes</div>
+                <div className="kanban-detail-content">{card.notes || <span className="missing-info">None</span>}</div>
+              </div>
+              <button className="btn" style={{marginTop:18, width:"100%"}} onClick={() => setEdit(true)}>Edit Card</button>
+            </>
+          ) : (
+            <form className="kanban-edit-card-form" onSubmit={handleSubmit}>
+              <div className="kanban-form-grid">
+                <input name="feature" value={fields.feature} onChange={handleChange} required placeholder="Feature/Title"/>
+                <select name="assignee" value={fields.assignee||""} onChange={handleChange}>
+                  <option value="">Assignee</option>
+                  {ASSIGNEES.map(a => (<option value={a} key={a}>{a}</option>))}
+                </select>
+                <select name="priority" value={fields.priority||""} onChange={handleChange}>
+                  <option value="">Priority</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                  <option value="Critical">Critical</option>
+                </select>
+                <select name="status" value={fields.status||""} onChange={handleChange}>
+                  <option value="">Status</option>
+                  <option value="To Do">To Do</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Review">Review</option>
+                  <option value="Done">Done</option>
+                  <option value="On Hold">On Hold</option>
+                </select>
+                <input name="due_date" type="date" value={fields.due_date||""} onChange={handleChange}/>
+              </div>
+              <textarea name="description" value={fields.description||""} onChange={handleChange} placeholder="Description"/>
+              <textarea name="notes" value={fields.notes||""} onChange={handleChange} placeholder="Notes"/>
+              <div className="kanban-modal-form-buttons">
+                <button className="btn" type="submit">Save</button>
+                <button className="btn" type="button" onClick={()=>setEdit(false)}>Cancel</button>
+                <button className="btn" type="button" onClick={handleDelete} style={{marginLeft:"auto"}}>Delete</button>
+              </div>
+            </form>
+          )}
+        </div>
+      </Modal>
+      {deleteError && (
+        <Modal onClose={() => setDeleteError(null)}>
+          <div className="kanban-detail-modal">
+            <div style={{ color: '#ff9e9e', fontWeight: 600, fontSize: '1.20em', marginBottom: 12 }}>
+              Error deleting card
             </div>
-            <div className="kanban-detail-row">
-              <span>Status:</span> <Pill value={card.status} type="status"/>
-              <span>Priority:</span> <Pill value={card.priority} type="priority"/>
-            </div>
-            <div className="kanban-detail-row">
-              <span>Assignee:</span> <Pill value={card.assignee} type="assignee"/>
-              {card.due_date && (
-                <>
-                  <span>Due:</span>
-                  <span className="kanban-pill kanban-pill-due">
-                    <span role="img" aria-label="due">🗓️</span> {card.due_date}
-                  </span>
-                </>
-              )}
-            </div>
-            <div className="kanban-detail-section">
-              <div className="kanban-detail-label">Notes</div>
-              <div className="kanban-detail-content">{card.notes || <span className="missing-info">None</span>}</div>
-            </div>
-            <button className="btn" style={{marginTop:18, width:"100%"}} onClick={() => setEdit(true)}>Edit Card</button>
-          </>
-        ) : (
-          <form className="kanban-edit-card-form" onSubmit={handleSubmit}>
-            <div className="kanban-form-grid">
-              <input name="feature" value={fields.feature} onChange={handleChange} required placeholder="Feature/Title"/>
-              <select name="assignee" value={fields.assignee||""} onChange={handleChange}>
-                <option value="">Assignee</option>
-                {ASSIGNEES.map(a => (<option value={a} key={a}>{a}</option>))}
-              </select>
-              <select name="priority" value={fields.priority||""} onChange={handleChange}>
-                <option value="">Priority</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Critical">Critical</option>
-              </select>
-              <select name="status" value={fields.status||""} onChange={handleChange}>
-                <option value="">Status</option>
-                <option value="To Do">To Do</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Review">Review</option>
-                <option value="Done">Done</option>
-                <option value="On Hold">On Hold</option>
-              </select>
-              <input name="due_date" type="date" value={fields.due_date||""} onChange={handleChange}/>
-            </div>
-            <textarea name="description" value={fields.description||""} onChange={handleChange} placeholder="Description"/>
-            <textarea name="notes" value={fields.notes||""} onChange={handleChange} placeholder="Notes"/>
-            <div className="kanban-modal-form-buttons">
-              <button className="btn" type="submit">Save</button>
-              <button className="btn" type="button" onClick={()=>setEdit(false)}>Cancel</button>
-              <button className="btn" type="button" onClick={handleDelete} style={{marginLeft:"auto"}}>Delete</button>
-            </div>
-          </form>
-        )}
-      </div>
-    </Modal>
+            <div style={{ marginBottom: 18 }}>{deleteError}</div>
+            <button className="btn" style={{ width: '100%' }} onClick={() => setDeleteError(null)}>Close</button>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 
   return (
