@@ -264,43 +264,62 @@
 .filter-chipbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
-  padding: 6px 0 2px 2px;
+  gap: 12px;
+  padding: 7px 0 3px 2px;
   align-items: center;
-  margin-bottom: 2px;
+  margin-bottom: 2.5px;
+  min-height: 30px;
+  background: none;
 }
-
-/* Active/inactive cues for chips */
 .filter-chip {
-  background: #21214e;
-  color: #b5ffe7;
-  border-radius: 16px;
-  padding: 0 10px;
-  border: 1px solid var(--input-border);
+  background: linear-gradient(113deg, #232553 80%, #145876 100%);
+  color: #b4fee7;
+  border-radius: 17px;
+  padding: 4px 14px 4px 12px;
+  border: 1.5px solid #3762ab22;
   display: inline-flex;
   align-items: center;
-  font-size: 0.97em;
+  height: 31px;
+  font-size: 1.01em;
+  font-weight: 600;
   margin-right: 2px;
+  margin-bottom: 3px;
+  box-shadow: 0 1.5px 8px #2339921a;
   opacity: 0.97;
-  transition: background .16s, color .13s;
+  cursor: pointer;
+  user-select: none;
+  transition: background .18s, color .14s, box-shadow .18s, border .13s;
 }
+.filter-chip:focus-within, .filter-chip:hover {
+  background: linear-gradient(113deg, #15588f 80%, #39b2ac 100%);
+  color: #fff;
+  border: 1.6px solid #38B2AC;
+  box-shadow: 0 2.5px 17px #42fae94a,0 1.8px 7px #06304a2a;
+  outline: none;
+  z-index: 2;
+}
+
 .filter-chip button {
   background: none;
   border: none;
-  color: #df7d7d;
+  color: #ef8585;
   font-weight: bold;
-  font-size: 1.07em;
+  font-size: 1.14em;
   cursor: pointer;
-  margin-left: 2px;
-  padding: 0 1px;
-  border-radius: 6px;
-  opacity: 0.84;
-  transition: background .13s, color .18s;
+  margin-left: 8px;
+  padding: 1.5px 4px;
+  border-radius: 7px;
+  opacity: 0.81;
+  transition: background .15s, color .17s;
+  outline: none;
+  min-width: 23px;
+  min-height: 22px;
 }
-.filter-chip button:hover {
-  background: #434475cc;
-  color: #ffdadc;
+.filter-chip button:focus, .filter-chip button:hover {
+  background: #434475dc;
+  color: #fff5f5;
   opacity: 1;
+  outline: 1.5px solid #38B2AC;
 }
 
 .filter-chip-group {
@@ -334,11 +353,13 @@
 /* Add strong focus effect for active/inactive filter groups */
 .filter-group:focus-within,
 .filter-group.filter-active {
-  box-shadow: 0 0 0 2.4px #38b2ac5c, 0 1px 8px #38B2AC26;
+  box-shadow: 0 0 0 4px #38b2acd9, 0 2px 13px #131f4780, 0 1px 7px #38b2ac29;
   outline: none !important;
-  border-radius: 8px;
-  background: #353a7133;
-  z-index: 1;
+  border-radius: 14px;
+  background: linear-gradient(105deg, #162c34 60%, #16326a33 100%);
+  z-index: 2;
+  border: 1.95px solid #38b2acdd;
+  transition: box-shadow .17s, background .18s, border .16s;
 }
 
 /* Improve stacked appearance on mobile/small screens */
