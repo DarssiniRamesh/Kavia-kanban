@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext } from 'react';
-import { KanbanProvider, useKanban } from './KanbanContext';
+import { KanbanProvider } from './KanbanContext';
 import Toolbar from './components/Toolbar';
 import Column from './components/Column';
 import { DndProvider } from 'react-dnd';
