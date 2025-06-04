@@ -68,24 +68,24 @@ function CardList({ column, cards: colCardsProp }) {
 
       {adding && (
         <form className="kanban-add-card-form" onSubmit={handleAddCard}>
-          <input name="feature" placeholder="Feature/Title" required />
+          <input name="feature" placeholder="Feature/Title" required autoComplete="off"/>
           <div className="kanban-form-grid">
             {/* Demo list of assignees for dropdown */}
-            <select name="assignee" defaultValue="">
+            <select name="assignee" defaultValue="" className="styled-select">
               <option value="">Assignee</option>
               <option value="Alice">Alice</option>
               <option value="Bob">Bob</option>
               <option value="Charlie">Charlie</option>
               <option value="Unassigned">Unassigned</option>
             </select>
-            <select name="priority" defaultValue="">
+            <select name="priority" defaultValue="" className="styled-select">
               <option value="">Priority</option>
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
               <option value="Critical">Critical</option>
             </select>
-            <select name="status" defaultValue="">
+            <select name="status" defaultValue="" className="styled-select">
               <option value="">Status</option>
               <option value="To Do">To Do</option>
               <option value="In Progress">In Progress</option>
@@ -93,10 +93,10 @@ function CardList({ column, cards: colCardsProp }) {
               <option value="Done">Done</option>
               <option value="On Hold">On Hold</option>
             </select>
-            <input name="due_date" type="date" />
+            <input name="due_date" type="date" className="styled-input"/>
           </div>
-          <textarea name="description" placeholder="Description" />
-          <textarea name="notes" placeholder="Notes" />
+          <textarea name="description" placeholder="Description" className="styled-input"/>
+          <textarea name="notes" placeholder="Notes" className="styled-input"/>
           <div style={{ display: "flex", gap: 8 }}>
             <button className="btn" type="submit">Add</button>
             <button className="btn" type="button" onClick={() => setAdding(false)}>Cancel</button>
