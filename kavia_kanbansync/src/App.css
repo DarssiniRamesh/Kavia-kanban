@@ -366,12 +366,14 @@ body {
   opacity: 0.77;
   z-index: 20;
   padding: 0 2px;
-  border-radius: 6px;
-  transition: background .14s, color .13s;
+  border-radius: var(--radius-xs);
+  transition: var(--transition-elevate);
+  box-shadow: var(--shadow-xs);
 }
-.kanban-modal-close:hover {
+.kanban-modal-close:hover, .kanban-modal-close:focus {
   background: #22326930;
   color: #39bc86;
+  box-shadow: var(--shadow-sm);
 }
 
 /* Expanded Card Modal (Details) */
@@ -501,9 +503,9 @@ body {
   cursor: pointer;
   padding: 1px 8px 1px 8px;
   margin-left: 9px;
-  border-radius: 99px;
-  transition: background .15s, color .12s, opacity .16s;
-  box-shadow: none;
+  border-radius: 50px;
+  box-shadow: var(--shadow-xs);
+  transition: var(--transition-elevate);
   pointer-events: all;
 }
 .kanban-toast-close:hover, .kanban-toast-close:focus {
@@ -511,4 +513,5 @@ body {
   color: #92fee8;
   opacity: 1;
   outline: none;
+  box-shadow: var(--shadow-sm);
 }
