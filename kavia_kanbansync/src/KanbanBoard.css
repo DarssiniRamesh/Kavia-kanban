@@ -85,15 +85,146 @@
 }
 
 .kanban-card {
-  background: #223269;
+  background: var(--card-bg-default);
   border-radius: 7px;
   margin: 12px 0;
   padding: 13px 11px 8px 13px;
   box-shadow: 0 1px 8px 0 rgba(26,33,61,0.19);
   border: 1.1px solid var(--border-color);
-  color: #fff;
-  transition: box-shadow .18s;
+  color: var(--text-on-dark);
+  transition: box-shadow .18s, background .19s, color .19s;
   cursor: grab;
+}
+.kanban-card.card-high,
+.kanban-card.card-critical {
+  background: var(--card-bg-high) !important;
+  color: var(--text-on-light) !important;
+}
+.kanban-card.card-medium {
+  background: var(--card-bg-medium) !important;
+  color: var(--text-on-warn) !important;
+}
+.kanban-card.card-low {
+  background: var(--card-bg-low) !important;
+  color: var(--text-on-done) !important;
+}
+.kanban-card.card-todo {
+  background: var(--card-bg-todo) !important;
+  color: var(--text-on-blue) !important;
+}
+.kanban-card.card-inprogress {
+  background: var(--card-bg-inprogress) !important;
+  color: var(--text-on-dark) !important;
+}
+.kanban-card.card-done {
+  background: var(--card-bg-done) !important;
+  color: var(--text-on-done) !important;
+}
+.kanban-card.card-review {
+  background: var(--card-bg-review) !important;
+  color: var(--text-on-warn) !important;
+}
+.kanban-card.card-hold {
+  background: var(--card-bg-hold) !important;
+  color: var(--text-on-dark) !important;
+}
+/* Ensure readable text on colored backgrounds */
+.kanban-card .kanban-card-title-prominent,
+.kanban-card .kanban-card-desc-prominent {
+  color: inherit;
+}
+
+/*==== Enhanced Dropdown/Select Style ====*/
+.kanban-add-card-form select,
+.kanban-edit-card-form select,
+.kanban-add-card-form input[type="date"],
+.kanban-edit-card-form input[type="date"] {
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--select-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+  border: 1.5px solid var(--input-border);
+  appearance: none;
+  transition: border 0.17s, background 0.15s;
+  box-shadow: none;
+  margin-bottom: 3px;
+}
+
+.kanban-add-card-form select:focus,
+.kanban-edit-card-form select:focus,
+.kanban-add-card-form input[type="date"]:focus,
+.kanban-edit-card-form input[type="date"]:focus {
+  border: 1.5px solid var(--input-focus);
+  background: var(--select-hover);
+  outline: none;
+}
+
+.kanban-add-card-form select option,
+.kanban-edit-card-form select option {
+  background: var(--select-bg);
+  color: var(--text-on-dark);
+}
+
+.kanban-add-card-form select option:checked,
+.kanban-edit-card-form select option:checked {
+  background: var(--select-hover);
+}
+
+.kanban-add-card-form select option:hover,
+.kanban-edit-card-form select option:hover {
+  background: var(--select-option-hover);
+}
+
+/* Enhanced input/textarea style for edit fields */
+.kanban-add-card-form input,
+.kanban-add-card-form textarea,
+.kanban-edit-card-form input,
+.kanban-edit-card-form textarea {
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1.5px solid var(--input-border);
+  font-size: 1.01rem;
+  border-radius: 4px;
+  padding: 6px;
+  transition: border 0.17s, background 0.13s;
+}
+.kanban-add-card-form input:focus,
+.kanban-add-card-form textarea:focus,
+.kanban-edit-card-form input:focus,
+.kanban-edit-card-form textarea:focus {
+  border: 1.6px solid var(--input-focus);
+  background: #1b2240;
+  outline: none;
+}
+
+/* Modern form grid for modal layout */
+.kanban-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px,1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Edit modal: improve clarity and background */
+.kanban-modal-dialog {
+  background: var(--modal-bg);
+  border-radius: 17px;
+  padding: 34px 34px 22px 34px;
+  border: 1.5px solid var(--modal-border);
+  box-shadow: 0 8px 38px 0 rgba(0,0,0,0.22),
+    0 1.5px 10px 0 #38B2AC1a;
+  position: relative;
+}
+
+/* Dropdown caret icon for select */
+.kanban-add-card-form select,
+.kanban-edit-card-form select {
+  background-image: url("data:image/svg+xml,%3Csvg fill='none' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%2338B2AC' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position-x: 98%;
+  background-position-y: 10px;
+  padding-right: 2em;
 }
 .kanban-card:active {
   box-shadow: 0 3px 18px 0 rgba(34,50,105,.18);
