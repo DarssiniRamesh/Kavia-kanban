@@ -402,6 +402,15 @@ html {
   overflow-y: auto;
   transition: var(--transition-elevate);
 }
+@media (max-width: 700px) {
+  .kanban-modal-dialog {
+    min-width: 0;
+    width: 98vw;
+    max-width: 98vw;
+    padding: 17px 2vw 12px 3vw;
+    border-radius: 12px;
+  }
+}
 .kanban-modal-close {
   position: absolute;
   top: 15px;
