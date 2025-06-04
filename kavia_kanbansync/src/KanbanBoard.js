@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext } from 'react';
 import { KanbanProvider } from './KanbanContext';
 import Toolbar from './components/Toolbar';
 import Column from './components/Column';
+import FilterPanel from './components/FilterPanel';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ToastModal from './components/ToastModal';
@@ -17,8 +18,7 @@ export function useFeedback() {
   return useContext(FeedbackContext);
 }
 
-import FilterPanel from "./components/FilterPanel";
-
+// Utility for filtering cards
 function filterCardsUtil(cards, filters, columns) {
   // Returns filtered cards based on filters object (same as FilterPanel logic)
   // Accepts: { assignees, priorities, statuses, columns, dueFrom, dueTo }
@@ -193,74 +193,6 @@ function KanbanBoardInner() {
           )
         )}
       </div>
-    </div>
-  );
-}
-
-// Draggable+Droppable column wrapper
-function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDraggedCol, totalColumns }) {
-  // Drag source
-  const [{ isDragging }, drag, preview] = useDrag({
-    type: COLUMN_TYPE,
-    item: () => {
-      setDraggedCol(index);
-      return { id: column.id, index };
-    },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
-    end: () => setDraggedCol(null),
-  });
-
-  // Drop target
-  const [{ isOver, canDrop }, drop] = useDrop({
-    accept: COLUMN_TYPE,
-    canDrop: (item) => item.id !== column.id,
-    hover: (item, monitor) => {
-      if (item.index === index) return;
-      // Monitor - do visual move only if not already moved in-place
-      // moveColumn is not directly called here to prevent multiple rapid state updates.
-    },
-    drop: (item, monitor) => {
-      if (item.index !== index) {
-        moveColumn(item.index, index);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver({ shallow: true }),
-      canDrop: monitor.canDrop(),
-    }),
-  });
-
-  // Accessible markup/ARIA
-  const draggableProps = {
-    ref: node => drag(drop(node)),
-    'role': 'listitem',
-    'aria-grabbed': isDragging,
-    'aria-label': `Column: ${column.title}`,
-    tabIndex: 0,
-    style: {
-      opacity: isDragging ? 0.3 : 1,
-      zIndex: isDragging ? 90 : 1,
-      boxShadow: isDragging ? '0 2px 18px #38B2AC66' : undefined,
-      border: (isOver && canDrop) ? '3.5px solid #38B2AC' : undefined,
-      outline: (isOver && canDrop) ? '2.5px dashed #42fae9' : undefined,
-      transition: 'box-shadow .17s, outline .13s, opacity .19s, border .18s'
-    }
-  };
-
-  // Keyboard reordering (accessibility): move left/right via arrow
-  const handleKeyDown = e => {
-    if (e.key === 'ArrowLeft' && index > 0) {
-      moveColumn(index, index - 1);
-    } else if (e.key === 'ArrowRight' && index < totalColumns - 1) {
-      moveColumn(index, index + 1);
-    }
-  };
-
-  return (
-    <div {...draggableProps} onKeyDown={handleKeyDown}>
-      <Column column={column} index={index} isDragging={isDragging} isOver={isOver && canDrop} />
     </div>
   );
 }
