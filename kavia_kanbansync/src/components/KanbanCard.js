@@ -121,10 +121,18 @@ function KanbanCard({ card }) {
       <div className="kanban-detail-modal">
         {!edit ? (
           <>
-            <div className="kanban-detail-header">
-              <span className="kanban-detail-title">{card.feature}</span>
-              <button className="kanban-card-editbtn" onClick={() => setEdit(true)} title="Edit">✎</button>
-              <button className="kanban-card-delbtn" onClick={handleDelete}>×</button>
+            <div className="kanban-detail-prominent-header">
+              <div className="kanban-detail-modal-title-row">
+                <span className="kanban-detail-title-prominent">{card.feature}</span>
+                <button className="kanban-card-editbtn" onClick={() => setEdit(true)} title="Edit">✎</button>
+                <button className="kanban-card-delbtn" onClick={handleDelete}>×</button>
+              </div>
+              {card.description && (
+                <div className="kanban-detail-desc-prominent">
+                  {card.description}
+                </div>
+              )}
+              <div className="kanban-detail-divider"/>
             </div>
             <div className="kanban-detail-row">
               <span>Status:</span> <Pill value={card.status} type="status"/>
@@ -140,10 +148,6 @@ function KanbanCard({ card }) {
                   </span>
                 </>
               )}
-            </div>
-            <div className="kanban-detail-section">
-              <div className="kanban-detail-label">Description</div>
-              <div className="kanban-detail-content">{card.description || <span className="missing-info">None</span>}</div>
             </div>
             <div className="kanban-detail-section">
               <div className="kanban-detail-label">Notes</div>
