@@ -1,49 +1,23 @@
 import React from 'react';
 import { useKanban } from '../KanbanContext';
 import CardList from './CardList';
-import { useDrop } from 'react-dnd';
+import { CARD_TYPE } from './dndTypes';
 
-// Drop types
-export const CARD_TYPE = 'KANBAN_CARD';
-
-function Column({ column, index }) {
-  const { updateColumn, deleteColumn, cards, updateCard, reorderCardsInColumn } = useKanban();
-
+/**
+ * Column represents a Kanban column (no drag logic here; handled by board parent for DnD).
+ * Props for drag visuals: isDragging, isOver (optional).
+ */
+function Column({ column, index, isDragging, isOver }) {
+  const { updateColumn, deleteColumn, cards } = useKanban();
   const colCards = cards.filter(c => c.column_id === column.id).sort((a, b) => a.position - b.position);
-
-  // Accepts drops of cards for moving into this column
-  const [{ canDrop, isOver }, drop] = useDrop({
-    accept: CARD_TYPE,
-    canDrop: (item) => !!item, // Accept all cards for move
-    drop: async (item, monitor) => {
-      if (!item) return;
-      if (item.column_id !== column.id) {
-        // Move card into this column at end
-        // Set new column_id and position
-        const newPos = colCards.length ? Math.max(...colCards.map(c=>c.position)) + 1 : 1;
-        await updateCard(item.id, { column_id: column.id, position: newPos });
-        // Local optimistic update is via realtime sync
-      }
-      // else handled inside CardList for intra-column
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-      canDrop: monitor.canDrop()
-    }),
-  });
 
   // Modal state: delete/rename
   const [modal, setModal] = React.useState({ type: null });
 
   const { showToast } = require("../KanbanBoard"); // Import here to avoid circular deps for Feedback
 
-  const handleRename = () => {
-    setModal({ type: "rename", value: column.title });
-  };
-
-  const handleDelete = () => {
-    setModal({ type: "delete" });
-  };
+  const handleRename = () => setModal({ type: "rename", value: column.title });
+  const handleDelete = () => setModal({ type: "delete" });
 
   const doRename = async () => {
     if (
@@ -67,12 +41,16 @@ function Column({ column, index }) {
     <>
       <div
         className="kanban-column"
-        ref={drop}
+        aria-label={`Kanban Column: ${column.title}`}
+        aria-roledescription="Column"
         style={{
-          outline: (isOver && canDrop) ? '3px solid #38B2AC' : undefined,
-          transition: 'outline .18s'
+          outline: isOver ? '3.5px solid #38B2AC' : undefined,
+          transition: 'outline .18s',
+          boxShadow: isDragging ? "0 4px 32px #38B2AC55" : undefined,
+          cursor: 'grab'
         }}
         data-column-id={column.id}
+        tabIndex={-1}
       >
         <div className="kanban-column-header">
           <span className="kanban-column-title" onDoubleClick={handleRename}>
@@ -83,6 +61,7 @@ function Column({ column, index }) {
           </button>
         </div>
         <CardList column={column} cards={colCards} />
+        <span className="sr-only">{isDragging ? 'Dragging column' : ''}</span>
       </div>
       {/* Rename Modal */}
       {modal.type === "rename" && (

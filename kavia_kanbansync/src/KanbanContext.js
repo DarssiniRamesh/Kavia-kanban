@@ -87,7 +87,16 @@ export function KanbanProvider({ children }) {
   };
   const reorderColumns = async (orderedList) => {
     // Takes [{id, position}]
-    const updates = orderedList.map(({ id, position }) =>
+    // Guarantee unique/contiguous positions: 1-based index in order of orderedList
+    const deduped = [];
+    const seen = {};
+    orderedList.forEach((item, i) => {
+      if (item.id && !seen[item.id]) {
+        deduped.push({ id: item.id, position: i + 1 });
+        seen[item.id] = true;
+      }
+    });
+    const updates = deduped.map(({ id, position }) =>
       supabase.from('kanban_columns').update({ position }).eq('id', id)
     );
     await Promise.all(updates);
