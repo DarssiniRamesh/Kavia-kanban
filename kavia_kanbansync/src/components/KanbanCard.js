@@ -83,10 +83,24 @@ function KanbanCard({ card }) {
     setEdit(false);
   };
 
+  // PUBLIC_INTERFACE
   const handleDelete = async () => {
     if (window.confirm('Delete card?')) {
-      await deleteCard(card.id);
-      setModalOpen(false);
+      try {
+        const error = await deleteCard(card.id);
+        if (error) {
+          // Log and show error to user; use window.alert for now for surfacing
+          // eslint-disable-next-line no-console
+          console.error('[KanbanCard.handleDelete] Error deleting card:', error);
+          window.alert('Error deleting card: ' + error);
+        } else {
+          setModalOpen(false);
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('[KanbanCard.handleDelete] Exception during card delete:', err);
+        window.alert('Unexpected error while deleting card: ' + (err.message || err));
+      }
     }
   };
 

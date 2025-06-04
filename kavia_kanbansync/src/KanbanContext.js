@@ -109,10 +109,40 @@ export function KanbanProvider({ children }) {
     await fetchAll();
     return error;
   };
+  // PUBLIC_INTERFACE
   const deleteCard = async (id) => {
-    let { error } = await supabase.from('kanban_cards').delete().eq('id', id);
-    await fetchAll();
-    return error;
+    let errorMsg = null;
+    try {
+      const { error } = await supabase.from('kanban_cards').delete().eq('id', id);
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.error('[KanbanContext.deleteCard] Supabase delete error:', error);
+        errorMsg = error.message || 'Failed to delete card from Supabase.';
+        setError(errorMsg);
+        return errorMsg;
+      }
+
+      await fetchAll();
+
+      // After fetchAll, check that the card was actually removed from state
+      const stillThere = cards.some(c => c.id === id);
+      if (stillThere) {
+        errorMsg = 'Card delete did not properly update board state. Card is still present after delete.';
+        // eslint-disable-next-line no-console
+        console.error('[KanbanContext.deleteCard] Card still present after delete:', id);
+        setError(errorMsg);
+        return errorMsg;
+      }
+
+      setError(null);
+      return null;
+    } catch (e) {
+      errorMsg = e.message || 'Unexpected error occurred during card delete.';
+      // eslint-disable-next-line no-console
+      console.error('[KanbanContext.deleteCard] Exception thrown:', e);
+      setError(errorMsg);
+      return errorMsg;
+    }
   };
   const reorderCardsInColumn = async (column_id, orderedList) => {
     // orderedList: [{id, position}]
