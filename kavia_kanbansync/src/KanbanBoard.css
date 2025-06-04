@@ -1,7 +1,7 @@
 .kanban-app-container {
   padding-top: 82px;
   min-height: 100vh;
-  background: var(--base-dark);
+  background: var(--color-bg-main);
 }
 
 .kanban-toolbar {

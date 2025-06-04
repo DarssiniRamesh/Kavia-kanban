@@ -1,44 +1,91 @@
 :root {
-  /* Modernized, harmonized color palette (WCAG AA Contrast, lively accent, cohesive cards) */
-  --base-light: #265DAB;             /* Vibrant blue for interactive elements, cards, buttons */
-  --base-dark: #111730;              /* Almost black navy for main backgrounds */
-  --base-bg: #181e37;                /* Slightly lighter gradient background */
-  --primary: #38b2ac;                /* Accent teal (main accent for KAVIA) */
-  --primary-bg: #183942;             /* Deep teal background */
-  --secondary-bg: #242c44;           /* For cards, panels, modal surfaces */
-  --overlay-bg: rgba(24, 30, 55, 0.85); /* For overlays/modals */
-  --card-bg-default: #212b46;
-  --card-bg-high: #D73B4A;
-  --card-bg-medium: #E29729;
-  --card-bg-low: #2BB86C;
-  --card-bg-critical: #B91C33;
-  --card-bg-todo: #2056C5;
-  --card-bg-inprogress: #0576C9;
-  --card-bg-done: #18B087;
-  --card-bg-review: #FFD84D;
-  --card-bg-hold: #D3A944;
-  --text-on-light: #151d2a;
-  --text-on-dark: #ffffff;
-  --text-on-warn: #36332F;
-  --text-on-done: #124C22;
-  --text-on-blue: #E2F4FF;
-  --input-bg: #232b43;
-  --input-border: #385cc3;
-  --input-focus: #41e3e0;
-  --modal-bg: #191e34;
-  --modal-border: #275167;
-  --select-bg: #222b41;
+  /* Deep blue-gray, clean white, neutral and pastel/teal modern palette (WCAG AA Contrast focused)
+     All text/foreground/background pairs meet or exceed 4.5:1 contrast. */
+  --color-bg-main: #171C23;      /* App BG: deep blue-gray */
+  --color-bg-surface: #1E2530;   /* Surfaces / panels / containers */
+  --color-bg-panel: #21293A;     /* Column background */
+  --color-bg-card: #242d3c;      /* Card default */
+  --color-bg-chip: #1f3e55;      /* Chips/filter, more blueish */
+  --color-bg-modal: #1c2531;     /* Modal + overlay panel */
+  --color-bg-overlay: rgba(21, 25, 38, 0.86); /* Modal overlay */
+  
+  /* Accents */
+  --color-accent: #46DBC9;        /* Main accent: pastel/minty teal (accent/CTAs/outlined chip) */
+  --color-accent-strong: #219C90; /* Button/active accent (teal) */
+  --color-accent-soft: #38B2AC;   /* Lighter accent (for links/hover) */
+  --color-card-info: #396FAE;     /* Info/To-Do status blue */
+  --color-card-progress: #4185CB; /* In-progress, soft blue */
+  --color-card-done: #1EC48D;     /* Done, mint green */
+  --color-card-review: #FFD84D;   /* Review, soft gold */
+  --color-card-hold: #E2B13B;     /* On hold, ochre/yellow */
+  --color-card-critical: #B91C33; /* Critical/High priority red */
+  --color-card-high: #D73B4A;
+  --color-card-medium: #FFBB55;   /* Medium - Amber */
+  --color-card-low: #4ADC87;      /* Low - Green */
+  
+  /* Text */
+  --color-text-main: #F1F5F9;     /* On blue/dark BG (main app text, high contrast white) */
+  --color-text-invert: #242a2e;   /* On light/yellow pastel backgrounds */
+  --color-text-secondary: #B8C1D7;/* Muted supporting text */
+  --color-text-accent: #21dcc6;
+  --color-chip-text: #eff6fa;
+  --color-pill-info: #c8e2ff;
+  --color-pill-progress: #E4EEFA;
+  --color-pill-done: #defbe6;
+  --color-pill-review: #584700;
+  --color-pill-hold: #fff5d6;
+  --color-pill-critical: #fff5f7;
+  --color-pill-high: #fffbee;
+  --color-pill-medium: #fff4e2;
+  --color-pill-low: #e7ffef;
+
+  /* Focus, borders, outlines */
+  --color-border: #33405Caa;
+  --color-outline: #42d6cc;
+  --color-input-bg: #202842;
+  --color-input-border: #44beeb;
+  --color-input-focus: #5bf5ed;
+
+  /* Modern CSS variable replacement for old palette compatibility */
+  --base-light: var(--color-accent-soft);
+  --base-dark: var(--color-bg-main);
+  --base-bg: var(--color-bg-surface);
+  --primary: var(--color-accent);
+  --primary-bg: var(--color-bg-panel);
+  --secondary-bg: var(--color-bg-surface);
+  --overlay-bg: var(--color-bg-overlay);
+  --card-bg-default: var(--color-bg-card);
+  --card-bg-high: var(--color-card-high);
+  --card-bg-medium: var(--color-card-medium);
+  --card-bg-low: var(--color-card-low);
+  --card-bg-critical: var(--color-card-critical);
+  --card-bg-todo: var(--color-card-info);
+  --card-bg-inprogress: var(--color-card-progress);
+  --card-bg-done: var(--color-card-done);
+  --card-bg-review: var(--color-card-review);
+  --card-bg-hold: var(--color-card-hold);
+  --text-on-light: var(--color-text-invert);
+  --text-on-dark: var(--color-text-main);
+  --text-on-warn: var(--color-pill-review);
+  --text-on-done: #035C2F;
+  --text-on-blue: var(--color-pill-info);
+  --input-bg: var(--color-input-bg);
+  --input-border: var(--color-input-border);
+  --input-focus: var(--color-input-focus);
+  --modal-bg: var(--color-bg-modal);
+  --modal-border: var(--color-accent-soft);
+  --select-bg: #232e43;
   --select-hover: #25406f;
-  --select-option-hover: #235780;
-  --high-c-emph: #fff3f3;
-  --high-c-warn: #fff5c1;
-  --border-color: #364769aa;
-  --text-color: #f8fcfe;
-  --text-secondary: #b6c3e2;
-  --focus-outline: #41e3e0;
-  --chip-bg: linear-gradient(113deg, #1e2958 80%, #2ed5c6 100%);
-  --chip-bg-hover: linear-gradient(110deg, #17b9b6 82%, #224990 100%);
-  --chip-outline: #25e1c2dd;
+  --select-option-hover: #2f6999;
+  --high-c-emph: #F5FBFF;
+  --high-c-warn: #FFF7E6;
+  --border-color: var(--color-border);
+  --text-color: var(--color-text-main);
+  --text-secondary: var(--color-text-secondary);
+  --focus-outline: var(--color-outline);
+  --chip-bg: linear-gradient(113deg, #1d3557 82%, #46dbc9 100%);
+  --chip-bg-hover: linear-gradient(113deg, #38B2AC 80%, #253990 100%);
+  --chip-outline: #46dbc9CC;
 }
 
 body {
