@@ -32,13 +32,35 @@ function CardList({ column }) {
       {adding && (
         <form className="kanban-add-card-form" onSubmit={handleAddCard}>
           <input name="feature" placeholder="Feature/Title" required />
-          <input name="assignee" placeholder="Assignee" />
-          <input name="priority" placeholder="Priority" />
-          <input name="status" placeholder="Status" />
-          <input name="due_date" placeholder="Due Date (YYYY-MM-DD)" />
+          <div className="kanban-form-grid">
+            {/* Demo list of assignees for dropdown */}
+            <select name="assignee" defaultValue="">
+              <option value="">Assignee</option>
+              <option value="Alice">Alice</option>
+              <option value="Bob">Bob</option>
+              <option value="Charlie">Charlie</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+            <select name="priority" defaultValue="">
+              <option value="">Priority</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+            <select name="status" defaultValue="">
+              <option value="">Status</option>
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Review">Review</option>
+              <option value="Done">Done</option>
+              <option value="On Hold">On Hold</option>
+            </select>
+            <input name="due_date" type="date" />
+          </div>
           <textarea name="description" placeholder="Description" />
           <textarea name="notes" placeholder="Notes" />
-          <div>
+          <div style={{display: "flex", gap: 8}}>
             <button className="btn" type="submit">Add</button>
             <button className="btn" type="button" onClick={() => setAdding(false)}>Cancel</button>
           </div>
