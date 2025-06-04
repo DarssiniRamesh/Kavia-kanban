@@ -36,7 +36,11 @@ function Toolbar() {
 
       // Expecting [header, ...rows]
       const [header, ...entries] = rows;
-      if (!header) return;
+      if (!header) {
+        // eslint-disable-next-line no-console
+        console.log("[Excel Bulk Upload] No header row found in excel file.");
+        return;
+      }
 
       // Prompt for which column to add to:
       const colTitle = prompt('Paste cards into which column?\n' +
@@ -45,36 +49,68 @@ function Toolbar() {
       const col = columns[idx];
       if (!col) {
         alert('Invalid column selection.');
+        // eslint-disable-next-line no-console
+        console.log("[Excel Bulk Upload] Invalid column selection input:", colTitle, "Selected idx:", idx, "Columns:", columns);
         return;
       }
 
-      // Map rows to card objects:
+      // Show header/preview for debugging
+      // eslint-disable-next-line no-console
+      console.log("[Excel Bulk Upload] Header parsed:", header);
+      // eslint-disable-next-line no-console
+      console.log("[Excel Bulk Upload] First 3 raw row arrays:", entries.slice(0,3));
+
+      // Fields required in DB (as per Supabase schema)
+      const allowedFields = ['feature', 'description', 'assignee', 'notes', 'priority', 'status', 'due_date'];
       const cards = entries
         .map(row => {
           const obj = {};
-          header.forEach((k, i) => (obj[k] = row[i]));
-          // Parse due_date to yyyy-mm-dd format if present
+          header.forEach((k, i) => {
+            if (allowedFields.includes(k)) {
+              obj[k] = row[i];
+            }
+          });
+          // Parse due_date to yyyy-mm-dd format if present and is numeric (Excel)
           if (obj.due_date && typeof obj.due_date === 'number') {
             obj.due_date = XLSX.SSF.format('yyyy-mm-dd', obj.due_date);
           }
+          // Stringify/trim all values except due_date (to catch "feature": "  foo  ")
+          Object.keys(obj).forEach(k => {
+            if (typeof obj[k] === 'string') obj[k] = obj[k].trim();
+          });
           return obj;
         })
-        .filter(card => card && typeof card.feature === 'string' && card.feature.trim().length > 0); // require feature
+        // Require 'feature' field to be non-empty 
+        .filter(card => card && typeof card.feature === 'string' && card.feature.trim().length > 0);
+
+      // Debug print mapped cards preview
+      // eslint-disable-next-line no-console
+      console.log("[Excel Bulk Upload] Mapped card objects (preview, up to 3):", cards.slice(0,3));
 
       if (cards.length === 0) {
         alert('No valid cards found in the file. Make sure "feature" column is filled.');
+        // eslint-disable-next-line no-console
+        console.log("[Excel Bulk Upload] 0 valid cards mapped; check your Excel file content.");
         return;
       }
       try {
+        // Extra: validate that all required fields for DB row exist in at least one card (warn if common mistake)
+        // (feature is always required, column_id and position added server-side, others optional for bulk insert)
+        // eslint-disable-next-line no-console
+        if (!cards.every(c => c.feature)) {
+          console.log("[Excel Bulk Upload] One or more mapped cards missing 'feature'");
+        }
+        // Call actual bulk insertion
         const error = await bulkInsertCards(col.id, cards);
         if (error) {
-          // Show Supabase error if present
           alert(`Bulk upload failed: ${error.message || error}`);
-          console.error('Supabase error bulk inserting cards:', error);
+          // eslint-disable-next-line no-console
+          console.error('Supabase error bulk inserting cards:', error, "Payload:", {col_id: col.id, cards});
         }
       } catch (e) {
         alert('Bulk upload encountered an error: ' + (e.message || e));
-        console.error('Exception uploading cards:', e);
+        // eslint-disable-next-line no-console
+        console.error('Exception uploading cards:', e, "Payload:", rows);
       }
       inputRef.current.value = '';
     };
