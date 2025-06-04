@@ -296,7 +296,7 @@ body {
   position: fixed;
   z-index: 9999; /* Unified modal overlay: highest in app for all modal/dialogs */
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(20,33,61,0.78);
+  background: var(--color-bg-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -307,8 +307,8 @@ body {
   to { opacity: 1;}
 }
 .kanban-modal-dialog {
-  background: #1e2040;
-  border-radius: 16px;
+  background: var(--modal-bg);
+  border-radius: 17px;
   padding: 32px 32px 22px 32px;
   min-width: 350px;
   min-height: 150px;
@@ -316,6 +316,7 @@ body {
   max-height: 85vh;
   box-shadow: 0 8px 36px 0 rgba(0,0,0,0.22),
     0 1.5px 10px 0 #38B2AC1a;
+  border: 1.5px solid var(--modal-border);
   position: relative;
   overflow-y: auto;
 }
