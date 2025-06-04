@@ -85,23 +85,31 @@ function KanbanCard({ card }) {
 
   // PUBLIC_INTERFACE
   const [deleteError, setDeleteError] = useState(null);
+  const [deletionConfirm, setDeletionConfirm] = useState(false);
+  const { showToast } = require('../KanbanBoard');
 
   const handleDelete = async () => {
-    if (window.confirm('Delete card?')) {
-      try {
-        // Call deleteCard which already does optimistic update and sets error
-        const error = await deleteCard(card.id);
-        if (error) {
-          setDeleteError(error);
-        } else {
-          setModalOpen(false);
-          setDeleteError(null);
-        }
-      } catch (err) {
-        setDeleteError(err.message || "Unexpected error occurred while deleting card.");
-        // eslint-disable-next-line no-console
-        console.error('[KanbanCard.handleDelete] Exception during card delete:', err);
+    setDeletionConfirm(true);
+  };
+
+  const confirmDeleteCard = async () => {
+    setDeletionConfirm(false);
+    try {
+      // Call deleteCard which already does optimistic update and sets error
+      const error = await deleteCard(card.id);
+      if (error) {
+        setDeleteError(error);
+        showToast && showToast(error, "error");
+      } else {
+        setModalOpen(false);
+        setDeleteError(null);
+        showToast && showToast("Card deleted.", "success");
       }
+    } catch (err) {
+      setDeleteError(err.message || "Unexpected error occurred while deleting card.");
+      showToast && showToast(err.message || "Delete error", "error");
+      // eslint-disable-next-line no-console
+      console.error('[KanbanCard.handleDelete] Exception during card delete:', err);
     }
   };
 
