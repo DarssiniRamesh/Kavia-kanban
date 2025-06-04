@@ -1,12 +1,12 @@
 .kanban-filter-panel {
-  background: linear-gradient(110deg, #222c4d 48%, #363e61 100%);
+  background: linear-gradient(112deg, #161e36 55%, #22475b 100%);
   border-bottom: 1.5px solid var(--border-color);
   box-shadow: 0 2px 16px 0 #10153517, 0 1.5px 10px 0 #38B2AC12;
   position: sticky;
   top: 61px;
   z-index: 4;
   border-radius: 0 0 18px 18px;
-  padding: 18px 18px 0 18px;
+  padding: 18px 10px 0 10px;
   margin-bottom: 1px;
   min-width: 0;
   transition: box-shadow 0.21s, background 0.21s;
