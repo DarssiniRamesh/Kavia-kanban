@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useKanban } from '../KanbanContext';
+import { useFeedback } from '../KanbanBoard';
 
 // Field badge/pill helpers
 function Pill({ value, type }) {
@@ -86,8 +87,6 @@ function KanbanCard({ card }) {
   // PUBLIC_INTERFACE
   const [deleteError, setDeleteError] = useState(null);
   const [deletionConfirm, setDeletionConfirm] = useState(false);
-  // Use the feedback context (toast) from KanbanBoard.js
-  import { useFeedback } from '../KanbanBoard';
   const { showToast } = useFeedback();
 
   const handleDelete = async () => {
