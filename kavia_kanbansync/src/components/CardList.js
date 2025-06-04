@@ -3,6 +3,7 @@ import KanbanCard from './KanbanCard';
 import { useKanban } from '../KanbanContext';
 import { useDrop, useDrag } from 'react-dnd';
 import { CARD_TYPE } from './Column';
+import { useFeedback } from '../KanbanBoard';
 
 /**
  * CardList supports dropping cards for intra-column reordering (vertical movement)
@@ -170,7 +171,9 @@ function DnDKanbanCard({ card, index, column, colCards }) {
               updateCard(c.id, { position: c.position })
             ));
           } catch (err) {
-            window.alert('Failed to reorder cards: ' + (err.message || err));
+            if (typeof window !== "undefined" && window?.showToast) {
+              window.showToast('Failed to reorder cards: ' + (err.message || err), "error");
+            }
           }
         }
       } else {
@@ -190,7 +193,9 @@ function DnDKanbanCard({ card, index, column, colCards }) {
           // Update card being moved
           await updateCard(item.id, { column_id: column.id, position: insertIdx + 1 });
         } catch (err) {
-          window.alert('Failed to move card across columns: ' + (err.message || err));
+          if (typeof window !== "undefined" && window?.showToast) {
+            window.showToast('Failed to move card across columns: ' + (err.message || err), "error");
+          }
         }
       }
     },
