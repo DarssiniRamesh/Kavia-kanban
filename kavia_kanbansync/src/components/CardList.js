@@ -125,13 +125,13 @@ function DnDKanbanCard({ card, index, column, colCards }) {
   // Drag setup
   const [{ isDragging }, drag] = useDrag({
     type: CARD_TYPE,
-    item: {
+    item: () => ({
       type: CARD_TYPE,
       id: card.id,
       column_id: card.column_id,
       origIndex: index,
       card,
-    },
+    }),
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
