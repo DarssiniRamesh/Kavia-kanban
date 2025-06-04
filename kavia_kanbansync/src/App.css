@@ -446,8 +446,10 @@ body {
   margin: 8px 0 3px 0;
   padding: 8px 9px;
   background: #1a2554;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-xs);
   font-size: 1.05em;
+  transition: var(--transition-elevate);
 }
 .kanban-detail-label {
   font-weight: 600;
