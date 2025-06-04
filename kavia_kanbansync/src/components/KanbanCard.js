@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import { useKanban } from '../KanbanContext';
 import { useFeedback } from '../KanbanBoard';
 
