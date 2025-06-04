@@ -211,11 +211,24 @@ function KanbanCard({ card }) {
           ) : (
             <form className="kanban-edit-card-form" onSubmit={handleSubmit}>
               <div className="kanban-form-grid">
-                <input name="feature" value={fields.feature} onChange={handleChange} required placeholder="Feature/Title"/>
-                <select name="assignee" value={fields.assignee||""} onChange={handleChange}>
-                  <option value="">Assignee</option>
-                  {ASSIGNEES.map(a => (<option value={a} key={a}>{a}</option>))}
-                </select>
+                <input
+                  name="feature"
+                  value={fields.feature}
+                  onChange={handleChange}
+                  required
+                  placeholder="Feature/Title"
+                />
+                {/* Refactored: Assignee as free-text input */}
+                <input
+                  name="assignee"
+                  value={fields.assignee || ""}
+                  onChange={handleChange}
+                  placeholder="Assignee"
+                  autoComplete="off"
+                  spellCheck={false}
+                  className="styled-input"
+                  style={{ minWidth: 0 }}
+                />
                 <select name="priority" value={fields.priority||""} onChange={handleChange}>
                   <option value="">Priority</option>
                   <option value="Low">Low</option>
