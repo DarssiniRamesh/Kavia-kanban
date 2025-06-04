@@ -128,12 +128,43 @@ body {
   flex-direction: column;
   gap: 6px;
 }
+/* Compact Card: prominent header area for Title & Description */
+.kanban-card-prominent-header {
+  margin-bottom: 11px;
+  /* Clear separation from other content */
+  padding-bottom: 0.5em;
+  border-bottom: 1.5px solid var(--border-color);
+}
+.kanban-card-title-prominent {
+  font-size: 1.24rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 3px;
+  line-height: 1.17;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 8px rgba(20,33,61,0.05);
+  /* For extra contrast, background glow, if desired:
+  text-shadow: 0 2px 8px #1A1A1A22;
+  */
+}
+.kanban-card-desc-prominent {
+  font-size: 1.05rem;
+  color: #f6e7ee;
+  font-weight: 400;
+  margin: 2px 0 0 1px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  opacity: 0.92;
+  /* Subtle background for extra clarity: */
+  /* background: #1a2554a0; border-radius: 5px; padding: 2px 5px; */
+}
+
 .kanban-card-header {
   display: flex;
   align-items: center;
   justify-content: start;
   gap: 7px;
-  margin-bottom: 4px;
+  margin-bottom: 0px;
 }
 .kanban-card-title {
   font-size: 1.09rem;
