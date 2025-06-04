@@ -6,6 +6,9 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ToastModal from './components/ToastModal';
 
+import { COLUMN_TYPE } from './components/dndTypes';
+import { useKanban } from './KanbanContext';
+
 import './KanbanBoard.css';
 
 // Feedback/toast context for global error/success UI
