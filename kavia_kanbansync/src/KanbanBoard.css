@@ -60,6 +60,28 @@
   min-width: 100vw;
   overflow-x: auto;
   background: var(--base-dark);
+  scroll-snap-type: x proximity;
+}
+@media (max-width: 1100px) {
+  .kanban-board {
+    gap: 18px;
+    padding: 19px 3vw 60px 3vw;
+    min-width: 94vw;
+  }
+}
+@media (max-width: 850px) {
+  .kanban-board {
+    gap: 11px;
+    min-width: 96vw;
+    padding: 7px 1vw 30px 1vw;
+  }
+}
+@media (max-width: 700px) {
+  .kanban-board {
+    padding: 2vw 1vw 14vw 1vw;
+    min-width: 99vw;
+    gap: 7px;
+  }
 }
 
 /* Drag cues for draggable columns */
