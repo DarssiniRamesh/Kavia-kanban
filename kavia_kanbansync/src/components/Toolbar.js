@@ -20,11 +20,37 @@ function Toolbar() {
   const inputRef = useRef();
   const { showToast } = useFeedback();
 
-  const handleAddColumn = async () => {
-    const title = prompt('Column Title:');
-    if (title) await addColumn(title);
+  // Modal state for Add Column
+  const [addColumnModal, setAddColumnModal] = React.useState(false);
+  const [newColTitle, setNewColTitle] = React.useState("");
+
+  // Modal state for Bulk Upload: which column?
+  const [bulkUploadState, setBulkUploadState] = React.useState({
+    showModal: false,
+    file: null,
+    excelRows: [],
+    header: [],
+    entries: [],
+  });
+
+  // Show ToastModal for Add Column
+  const handleAddColumn = () => {
+    setAddColumnModal(true);
+    setNewColTitle("");
   };
 
+  const handleAddColumnSubmit = async (e) => {
+    e.preventDefault();
+    if (!newColTitle.trim()) {
+      showToast("Column title cannot be empty.", "error");
+      return;
+    }
+    await addColumn(newColTitle.trim());
+    setAddColumnModal(false);
+    showToast("Column added!", "success");
+  };
+
+  // Modified upload handler pattern: Read, then show modal for column select.
   const handleExcelUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -42,15 +68,29 @@ function Toolbar() {
         return;
       }
 
-      // Prompt for which column to add to:
-      const colTitle = prompt('Paste cards into which column?\n' +
-        columns.map((c, i) => `${i+1}) ${c.title}`).join('\n'));
-      const idx = Number(colTitle) - 1;
-      const col = columns[idx];
-      if (!col) {
-        showToast('Invalid column selection.', "error");
-        return;
-      }
+      // Show modal for column selection, let user pick (use number select for now for minimal UI)
+      setBulkUploadState({
+        showModal: true,
+        file,
+        excelRows: rows,
+        header,
+        entries,
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  // Bulk upload confirmation
+  const handleConfirmBulkUpload = async (colIdx) => {
+    setBulkUploadState(b => ({ ...b, showModal: false }));
+    inputRef.current.value = '';
+    const { header, entries } = bulkUploadState;
+    const idx = Number(colIdx);
+    const col = columns[idx];
+    if (!col) {
+      showToast("Invalid column selection.", "error");
+      return;
+    }
 
       // Fields required in DB (as per Supabase schema)
       const allowedFields = ['feature', 'description', 'assignee', 'notes', 'priority', 'status', 'due_date'];
