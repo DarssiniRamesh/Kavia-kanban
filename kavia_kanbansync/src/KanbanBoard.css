@@ -13,7 +13,7 @@
   align-items: center;
   position: sticky;
   top: 61px;
-  z-index: 50;
+  z-index: 15; /* Lowered for guarantee below modals/toasts, above base board */
   border-radius: 0 0 10px 10px;
   border-bottom: 1px solid var(--border-color);
 }
