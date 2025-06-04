@@ -347,3 +347,12 @@ body {
   gap: 10px;
   margin-top: 10px;
 }
+
+/*==== TOAST MODAL ====*/
+.kanban-toast-modal-overlay {
+  pointer-events: none;
+}
+.kanban-toast-modal {
+  pointer-events: auto;
+  transition: background 0.22s;
+}
