@@ -46,7 +46,7 @@ export default function ToastModal({ message, type = "success", onClose, duratio
           left: "50%",
           bottom: 42,
           transform: "translateX(-50%)",
-          zIndex: 5200, // Highest in app for always above
+          zIndex: 10000, // Highest; always above modal overlays
           pointerEvents: "none",
           minWidth: 280,
           maxWidth: 420,

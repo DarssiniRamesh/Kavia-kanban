@@ -237,7 +237,7 @@ body {
 /* Increase z-index to guarantee modals/pop-ups are above all panels, filter dropdowns, and board layers */
 .kanban-modal-overlay {
   position: fixed;
-  z-index: 5000; /* Previously 3001 – now very high for absolute safety */
+  z-index: 9999; /* Unified modal overlay: highest in app for all modal/dialogs */
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(20,33,61,0.78);
   display: flex;
