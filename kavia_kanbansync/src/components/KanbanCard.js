@@ -93,8 +93,14 @@ function KanbanCard({ card }) {
   // Compact Card View
   const compactCard = (
     <div className="kanban-card-inner" onClick={openModal} style={{ cursor: "pointer" }}>
-      <div className="kanban-card-header">
-        <strong className="kanban-card-title">{card.feature}</strong>
+      {/* Visually distinct card header for title and description */}
+      <div className="kanban-card-prominent-header">
+        <div className="kanban-card-title-prominent">{card.feature}</div>
+        {card.description && (
+          <div className="kanban-card-desc-prominent">
+            {card.description}
+          </div>
+        )}
       </div>
       <div className="kanban-card-pillrow">
         <Pill value={card.status} type="status"/>
