@@ -115,3 +115,164 @@ body {
   padding: 13px 26px;
   font-size: 1.13rem;
 }
+
+/*==== KANBAN CARD POLISH ====*/
+.kanban-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.kanban-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.kanban-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 7px;
+  margin-bottom: 4px;
+}
+.kanban-card-title {
+  font-size: 1.09rem;
+  font-weight: 600;
+  color: var(--base-light);
+  letter-spacing: 0.02em;
+}
+.kanban-card-pillrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 3px;
+}
+
+/* Pills (badges) */
+.kanban-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 9px;
+  border-radius: 16px;
+  font-size: 0.99em;
+  font-weight: 500;
+  background: #242a48;
+  color: #acdffc;
+  border: 1.1px solid var(--border-color);
+  margin-right: 2px;
+  margin-bottom: 2px;
+  min-height: 21px;
+  transition: background .18s;
+}
+.kanban-pill-status { background: #233992; color: #c2c4fa;}
+.kanban-pill-priority { background: #283464; color: #ffd8b4;}
+.kanban-pill-assignee { background: #234743; color: #b5ffe7;}
+.kanban-pill-due { background: #243650; color: #ffe5e5; }
+.pill-high { background: #cb4e1f !important; color: #ffeacc !important; }
+.pill-medium { background: #ef943b !important; color: #fff7d0 !important; }
+.pill-low { background: #39866a !important; color: #d2ffee !important; }
+.pill-todo { background: #314fbc !important; color: #ffffff !important; }
+.pill-progress { background: #5d71f1 !important; color: #e5eafd !important; }
+.pill-done { background: #39bc86 !important; color: #f4fff1 !important; }
+.pill-review { background: #f7e25a !important; color: #2a2c19 !important; }
+.pill-hold { background: #eaaf46 !important; color: #fff7e4 !important; }
+
+/*==== MODAL ====*/
+.kanban-modal-overlay {
+  position: fixed;
+  z-index: 3001;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(20,33,61,0.78);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadein .18s;
+}
+@keyframes fadein {
+  from { opacity: 0;}
+  to { opacity: 1;}
+}
+.kanban-modal-dialog {
+  background: #1e2040;
+  border-radius: 16px;
+  padding: 32px 32px 22px 32px;
+  min-width: 350px;
+  min-height: 150px;
+  max-width: 420px;
+  max-height: 85vh;
+  box-shadow: 0 8px 36px 0 rgba(0,0,0,0.22),
+    0 1.5px 10px 0 #38B2AC1a;
+  position: relative;
+  overflow-y: auto;
+}
+.kanban-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 13px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.45em;
+  cursor: pointer;
+  opacity: 0.77;
+  z-index: 20;
+  padding: 0 2px;
+  border-radius: 6px;
+  transition: background .14s, color .13s;
+}
+.kanban-modal-close:hover {
+  background: #22326930;
+  color: #39bc86;
+}
+
+/* Expanded Card Modal (Details) */
+.kanban-detail-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+.kanban-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.23rem;
+  font-weight: 600;
+  color: #acdffc;
+  margin-bottom: 7px;
+  letter-spacing: 0.015em;
+}
+.kanban-detail-title {
+  flex: 1;
+}
+.kanban-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.98em;
+  margin-bottom: 4px;
+}
+.kanban-detail-section {
+  margin: 8px 0 3px 0;
+  padding: 8px 9px;
+  background: #1a2554;
+  border-radius: 9px;
+  font-size: 1.05em;
+}
+.kanban-detail-label {
+  font-weight: 600;
+  color: #6efbdf;
+  margin-bottom: 2px;
+  font-size: 0.99em;
+}
+.kanban-detail-content {
+  color: #fff;
+  font-size: 0.99em;
+  margin-top: 1px;
+  white-space: pre-line;
+}
+.missing-info { color: #b4cef3; font-style: italic;}
+.kanban-modal-form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
