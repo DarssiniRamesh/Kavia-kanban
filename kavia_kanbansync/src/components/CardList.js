@@ -1,24 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { useKanban } from '../KanbanContext';
 import KanbanCard from './KanbanCard';
-import { useDrop } from 'react-dnd';
+import { useKanban } from '../KanbanContext';
+import { useDrop, useDrag } from 'react-dnd';
 import { CARD_TYPE } from './Column';
 
 /**
- * CardList supports dropping cards for intra-column reordering (vertical movement),
+ * CardList supports dropping cards for intra-column reordering (vertical movement)
  * and renders cards with drag/hover context.
  */
 function CardList({ column, cards: colCardsProp }) {
   // colCards: sorted - passed in or computed
-  const { cards, addCard, updateCard, reorderCardsInColumn } = useKanban();
+  const { cards, addCard, updateCard } = useKanban();
   const [adding, setAdding] = useState(false);
 
   // Prefer passed colCards (sorted), but fallback for tests:
   const colCards = colCardsProp ||
     cards.filter(c => c.column_id === column.id).sort((a, b) => a.position - b.position);
-
-  // Used to bring focus to the drop zone for empty columns
-  const emptyDropRef = useRef(null);
 
   // For dropping a card into an empty column (or below/above all)
   const [{ isOver, canDrop }, drop] = useDrop({
@@ -64,7 +61,7 @@ function CardList({ column, cards: colCardsProp }) {
         transition: 'background 0.16s, border 0.16s'
       }}
     >
-      <button className="btn" style={{ width: '100%', margin: '4px 0' }} onClick={() => setAdding(a=>!a)}>
+      <button className="btn" style={{ width: '100%', margin: '4px 0' }} onClick={() => setAdding(a => !a)}>
         + Add Card
       </button>
 
@@ -99,7 +96,7 @@ function CardList({ column, cards: colCardsProp }) {
           </div>
           <textarea name="description" placeholder="Description" />
           <textarea name="notes" placeholder="Notes" />
-          <div style={{display: "flex", gap: 8}}>
+          <div style={{ display: "flex", gap: 8 }}>
             <button className="btn" type="submit">Add</button>
             <button className="btn" type="button" onClick={() => setAdding(false)}>Cancel</button>
           </div>
@@ -118,8 +115,7 @@ function CardList({ column, cards: colCardsProp }) {
   );
 }
 
-// DnDKanbanCard wraps KanbanCard with drag/drop
-import { useDrag } from 'react-dnd';
+// DnDKanbanCard wraps KanbanCard with drag/drop capability
 
 // PUBLIC_INTERFACE
 function DnDKanbanCard({ card, index, column, colCards }) {
@@ -144,9 +140,6 @@ function DnDKanbanCard({ card, index, column, colCards }) {
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: CARD_TYPE,
     canDrop: (item) => item.id !== card.id,
-    hover: (item, monitor) => {
-      // Visual cue handled below
-    },
     drop: async (item, monitor) => {
       if (item.id === card.id) return;
       if (item.column_id === column.id) {
@@ -182,7 +175,6 @@ function DnDKanbanCard({ card, index, column, colCards }) {
         }
       } else {
         // Move to new column at drop index (or append if not on a card)
-        // This will move card to new column and position
         try {
           // Place above dropped card
           const toColCards = colCards.filter(c => c.id !== item.id);
@@ -197,7 +189,6 @@ function DnDKanbanCard({ card, index, column, colCards }) {
           }
           // Update card being moved
           await updateCard(item.id, { column_id: column.id, position: insertIdx + 1 });
-          // (realtime sync handles the rest)
         } catch (err) {
           window.alert('Failed to move card across columns: ' + (err.message || err));
         }
