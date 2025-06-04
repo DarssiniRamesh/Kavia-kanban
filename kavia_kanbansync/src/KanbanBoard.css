@@ -44,12 +44,12 @@
 
 .kanban-column {
   flex: 0 0 330px;
-  background: var(--base-light);
+  background: var(--color-bg-panel);
   border-radius: 13px;
   padding: 15px 10px 23px 10px;
-  box-shadow: 0 4px 16px 0 rgba(6,7,40,0.13);
+  box-shadow: 0 4px 16px 0 rgba(6, 7, 40, 0.13);
   margin-bottom: 20px;
-  border: 1.2px solid var(--border-color);
+  border: 1.2px solid var(--color-border);
   min-height: 258px;
   display: flex;
   flex-direction: column;
