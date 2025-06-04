@@ -201,22 +201,29 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
         <span className="sr-only">{isDragging ? 'Dragging column' : ''}</span>
       </div>
       {/* Delete Confirm Modal */}
+import ReactDOM from 'react-dom';
+
       {modal.type === "delete" && (
-        <div className="kanban-modal-overlay" onClick={() => setModal({ type: null })}>
-          <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
-            <button className="kanban-modal-close" onClick={() => setModal({ type: null })} title="Close">×</button>
-            <div style={{ color: '#ff9e9e', fontWeight: 700, fontSize: '1.15em', marginBottom: 15 }}>
-              Delete this column?
-            </div>
-            <div style={{ marginBottom: 17 }}>
-              This will permanently delete <strong>all cards in this column</strong>.<br />Are you sure?
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn" style={{ background: "#c13a2b" }} onClick={doDelete}>Yes, Delete</button>
-              <button className="btn" style={{ marginLeft: 10 }} onClick={() => setModal({ type: null })}>Cancel</button>
-            </div>
-          </div>
-        </div>
+        typeof document === "undefined"
+          ? null
+          : ReactDOM.createPortal(
+              <div className="kanban-modal-overlay" onClick={() => setModal({ type: null })}>
+                <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
+                  <button className="kanban-modal-close" onClick={() => setModal({ type: null })} title="Close">×</button>
+                  <div style={{ color: '#ff9e9e', fontWeight: 700, fontSize: '1.15em', marginBottom: 15 }}>
+                    Delete this column?
+                  </div>
+                  <div style={{ marginBottom: 17 }}>
+                    This will permanently delete <strong>all cards in this column</strong>.<br />Are you sure?
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button className="btn" style={{ background: "#c13a2b" }} onClick={doDelete}>Yes, Delete</button>
+                    <button className="btn" style={{ marginLeft: 10 }} onClick={() => setModal({ type: null })}>Cancel</button>
+                  </div>
+                </div>
+              </div>,
+              document.body
+            )
       )}
     </>
   );
