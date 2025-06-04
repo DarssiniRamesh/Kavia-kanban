@@ -101,6 +101,74 @@ function KanbanBoardInner() {
       .catch(e => showToast && showToast("Failed to reorder columns: " + (e.message || e), "error"));
   };
 
+  // Only define DraggableKanbanColumn once!
+  function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDraggedCol, totalColumns, filteredCards }) {
+    // Drag source
+    const [{ isDragging }, drag, preview] = useDrag({
+      type: COLUMN_TYPE,
+      item: () => {
+        setDraggedCol(index);
+        return { id: column.id, index };
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: () => setDraggedCol(null),
+    });
+
+    // Drop target
+    const [{ isOver, canDrop }, drop] = useDrop({
+      accept: COLUMN_TYPE,
+      canDrop: (item) => item.id !== column.id,
+      hover: (item, monitor) => {
+        if (item.index === index) return;
+        // No op to prevent multiple updates
+      },
+      drop: (item, monitor) => {
+        if (item.index !== index) {
+          moveColumn(item.index, index);
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver({ shallow: true }),
+        canDrop: monitor.canDrop(),
+      }),
+    });
+
+    // Accessible markup/ARIA
+    const draggableProps = {
+      ref: node => drag(drop(node)),
+      'role': 'listitem',
+      'aria-grabbed': isDragging,
+      'aria-label': `Column: ${column.title}`,
+      tabIndex: 0,
+      style: {
+        opacity: isDragging ? 0.3 : 1,
+        zIndex: isDragging ? 90 : 1,
+        boxShadow: isDragging ? '0 2px 18px #38B2AC66' : undefined,
+        border: (isOver && canDrop) ? '3.5px solid #38B2AC' : undefined,
+        outline: (isOver && canDrop) ? '2.5px dashed #42fae9' : undefined,
+        transition: 'box-shadow .17s, outline .13s, opacity .19s, border .18s'
+      }
+    };
+
+    // Keyboard reordering for accessibility
+    const handleKeyDown = e => {
+      if (e.key === 'ArrowLeft' && index > 0) {
+        moveColumn(index, index - 1);
+      } else if (e.key === 'ArrowRight' && index < totalColumns - 1) {
+        moveColumn(index, index + 1);
+      }
+    };
+
+    // Pass filteredCards to Column if present
+    return (
+      <div {...draggableProps} onKeyDown={handleKeyDown}>
+        <Column column={column} index={index} isDragging={isDragging} isOver={isOver && canDrop} filteredCards={filteredCards} />
+      </div>
+    );
+  }
+
   return (
     <div className="kanban-app-container">
       <Toolbar />
@@ -120,7 +188,6 @@ function KanbanBoardInner() {
               draggedCol={draggedCol}
               setDraggedCol={setDraggedCol}
               totalColumns={columns.length}
-              // Filtered cards provided for column only (so CardList and below will only show filtered)
               filteredCards={filteredCards.filter(c => c.column_id === col.id)}
             />
           )
@@ -129,76 +196,6 @@ function KanbanBoardInner() {
     </div>
   );
 }
-
-// Update DraggableKanbanColumn to forward filteredCards if present (for CardList)
-function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDraggedCol, totalColumns, filteredCards }) {
-  // Drag source
-  const [{ isDragging }, drag, preview] = useDrag({
-    type: COLUMN_TYPE,
-    item: () => {
-      setDraggedCol(index);
-      return { id: column.id, index };
-    },
-    collect: monitor => ({
-      isDragging: monitor.isDragging(),
-    }),
-    end: () => setDraggedCol(null),
-  });
-
-  // Drop target
-  const [{ isOver, canDrop }, drop] = useDrop({
-    accept: COLUMN_TYPE,
-    canDrop: (item) => item.id !== column.id,
-    hover: (item, monitor) => {
-      if (item.index === index) return;
-      // Monitor - do visual move only if not already moved in-place
-      // moveColumn is not directly called here to prevent multiple rapid state updates.
-    },
-    drop: (item, monitor) => {
-      if (item.index !== index) {
-        moveColumn(item.index, index);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver({ shallow: true }),
-      canDrop: monitor.canDrop(),
-    }),
-  });
-
-  // Accessible markup/ARIA
-  const draggableProps = {
-    ref: node => drag(drop(node)),
-    'role': 'listitem',
-    'aria-grabbed': isDragging,
-    'aria-label': `Column: ${column.title}`,
-    tabIndex: 0,
-    style: {
-      opacity: isDragging ? 0.3 : 1,
-      zIndex: isDragging ? 90 : 1,
-      boxShadow: isDragging ? '0 2px 18px #38B2AC66' : undefined,
-      border: (isOver && canDrop) ? '3.5px solid #38B2AC' : undefined,
-      outline: (isOver && canDrop) ? '2.5px dashed #42fae9' : undefined,
-      transition: 'box-shadow .17s, outline .13s, opacity .19s, border .18s'
-    }
-  };
-
-  // Keyboard reordering (accessibility): move left/right via arrow
-  const handleKeyDown = e => {
-    if (e.key === 'ArrowLeft' && index > 0) {
-      moveColumn(index, index - 1);
-    } else if (e.key === 'ArrowRight' && index < totalColumns - 1) {
-      moveColumn(index, index + 1);
-    }
-  };
-
-  // Pass filteredCards to Column if present (otherwise all cards are used inside)
-  return (
-    <div {...draggableProps} onKeyDown={handleKeyDown}>
-      <Column column={column} index={index} isDragging={isDragging} isOver={isOver && canDrop} filteredCards={filteredCards} />
-    </div>
-  );
-}
-
 
 // Draggable+Droppable column wrapper
 function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDraggedCol, totalColumns }) {
