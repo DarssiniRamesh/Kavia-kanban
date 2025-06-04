@@ -2,9 +2,34 @@
   /* Primary palette update */
   --base-light: #223269;             /* Navy blue for cards/buttons */
   --base-dark: #14213d;              /* Dark blue background */
-  --text-color: #fff;                /* White text */
-  --text-secondary: rgba(255,255,255,0.85);
+  --card-bg-default: #223269;
+  --card-bg-high: #b22536;
+  --card-bg-medium: #ef943b;
+  --card-bg-low: #337067;
+  --card-bg-critical: #9e1b2c;
+  --card-bg-todo: #254db4;
+  --card-bg-inprogress: #397af3;
+  --card-bg-done: #29b168;
+  --card-bg-review: #f9e063;
+  --card-bg-hold: #deab3d;
+  --text-on-light: #192038;
+  --text-on-dark: #fff;
+  --text-on-warn: #2a2c19;
+  --text-on-done: #124c22;
+  --text-on-blue: #eaffff;
+  --input-bg: #272c48;
+  --input-border: #334266;
+  --input-focus: #38B2AC;
+  --modal-bg: #1e2040;
+  --modal-border: #334266;
+  --select-bg: #242d46;
+  --select-hover: #31426c;
+  --select-option-hover: #303a64;
+  --high-c-emph: #ffe5e5;
+  --high-c-warn: #fff7d0;
   --border-color: rgba(255,255,255,0.13);
+  --text-color: #fff;
+  --text-secondary: rgba(255,255,255,0.85);
 }
 
 body {
