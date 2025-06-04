@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useKanban } from '../KanbanContext';
-import XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 
 function downloadExcelTemplate() {
   // Columns per Supabase schema
