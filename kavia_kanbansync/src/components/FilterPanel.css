@@ -1,0 +1,146 @@
+.kanban-filter-panel {
+  background: var(--base-dark);
+  padding: 12px 16px 0 16px;
+  border-bottom: 1.5px solid var(--border-color);
+  box-shadow: 0 1.5px 7px rgba(20,33,61,0.14);
+  position: sticky;
+  top: 61px;
+  z-index: 40;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 23px;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 132px;
+}
+
+.filter-group label {
+  font-size: 0.99em;
+  font-weight: 600;
+  color: #24ffd4;
+  margin-bottom: 1px;
+}
+
+.filter-chipbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 3px 0 2px 2px;
+  align-items: center;
+}
+
+.filter-chip {
+  background: #21214e;
+  color: #b5ffe7;
+  border-radius: 16px;
+  padding: 0 10px;
+  border: 1px solid var(--input-border);
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.97em;
+  margin-right: 2px;
+}
+.filter-chip button {
+  background: none;
+  border: none;
+  color: #df7d7d;
+  font-weight: bold;
+  font-size: 1.07em;
+  cursor: pointer;
+  margin-left: 2px;
+  padding: 0 1px;
+  border-radius: 6px;
+  opacity: 0.84;
+  transition: background .13s, color .18s;
+}
+.filter-chip button:hover {
+  background: #434475cc;
+  color: #ffdadc;
+  opacity: 1;
+}
+
+.filter-chip-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.filter-assignee-typeahead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.filter-typeahead-input {
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1.3px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 1em;
+  padding: 6px 7px;
+  outline: none;
+  transition: border .14s;
+}
+.filter-typeahead-input:focus {
+  border: 1.4px solid var(--input-focus);
+}
+.filter-multiselect {
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1.1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 1em;
+  min-width: 98px;
+  min-height: 36px;
+  padding: 2px 5px;
+  outline: none;
+  transition: border .14s;
+}
+.filter-multiselect:focus {
+  border: 1.4px solid var(--input-focus);
+}
+.filter-dates {
+  min-width: 195px;
+}
+.filter-date {
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1.1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 1em;
+  padding: 3px 6px;
+  min-width: 110px;
+  outline: none;
+  transition: border .14s;
+}
+.filter-date:focus {
+  border: 1.4px solid var(--input-focus);
+}
+.filter-actions {
+  align-self: flex-end;
+  margin-bottom: 2px;
+}
+.filter-reset-btn {
+  background: #142a46 !important;
+  color: #fa8686 !important;
+  font-weight: 700;
+  font-size: 1em;
+  border: 1.55px solid #404497;
+  padding: 6px 19px;
+  border-radius: 7px;
+  box-shadow: 0 1.5px 7px #244a5222;
+  transition: background .19s, color .14s;
+}
+.filter-reset-btn:hover {
+  background: #442020 !important;
+  color: #fff2f8 !important;
+  border: 1.7px solid #932d25;
+}
