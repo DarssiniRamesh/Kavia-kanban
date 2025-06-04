@@ -1,6 +1,19 @@
 :root {
   /* MODERN, WCAG AA-compliant palette: deep blue-grey, clean surface whites, pastel teal, neutrals, and warm/cool accents (harmonized and accessible) */
   /* ALL text/foreground/background pairs guaranteed 4.5:1 contrast or better. */
+
+  /* Unified modern shadow and radius system */
+  --shadow-xs: 0 1px 3px 0 rgba(27, 35, 56, 0.10);
+  --shadow-sm: 0 2px 8px 0 rgba(35, 60, 95, 0.09), 0 1.5px 8px 0 #38B2AC1a;
+  --shadow-md: 0 4px 18px 0 rgba(24, 32, 52, 0.16), 0 2.5px 12px 0 #0ee4cc20;
+  --shadow-lg: 0 8px 36px 0 rgba(0,0,0,0.19), 0 3.5px 16px 0 #38B2AC12;
+  --radius-xs: 5px;
+  --radius-sm: 7px;
+  --radius-md: 13px;
+  --radius-lg: 17px;
+
+  --transition-elevate: box-shadow .19s cubic-bezier(.4,.13,.55,.83), background .18s, border .17s, transform .19s, color .15s;
+}
   --color-bg-main: #171C23;      /* Deep blue-gray app background */
   --color-bg-surface: #232833;   /* Panel/container/toolbar surfaces */
   --color-bg-panel: #222937;     /* Column/board panel */
