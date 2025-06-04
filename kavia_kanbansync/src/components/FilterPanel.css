@@ -323,13 +323,36 @@
 /* Add strong focus/active for filter groups */
 .filter-group:focus-within,
 .filter-group.filter-active {
-  box-shadow: 0 0 0 4px #38b2acb2, 0 2px 11px #131f4730, 0 1px 7px #38b2ac1a;
-  outline: none !important;
-  border-radius: 14px;
-  background: linear-gradient(105deg, #162c34 60%, #16326a33 100%);
+  box-shadow: 0 0 0 4px #22ffeeb9, 0 2px 15px #132e4739, 0 1.2px 6px #12e0c448;
+  outline: 2.5px solid var(--focus-outline);
+  border-radius: 18px;
+  background: linear-gradient(103deg, #181d38 62%, #16b9c433 100%);
   z-index: 2;
-  border: 1.85px solid #38b2acee;
-  transition: box-shadow .17s, background .18s, border .15s;
+  border: 2.4px solid var(--primary);
+  transition: box-shadow .15s, background .17s, border .14s;
+}
+
+.filter-badge, .filter-badge-main {
+  display: inline-block;
+  border-radius: 12px;
+  background: #213f55;
+  color: #8ffeeb;
+  padding: 0 9px;
+  font-size: 1em;
+  font-weight: 700;
+  min-width: 22px;
+  min-height: 18px;
+  text-align: center;
+  vertical-align: middle;
+  margin-left: 2px;
+  margin-right: 2px;
+  box-shadow: 0 1.2px 5px #25e1c222;
+}
+
+.filter-badge-main.active {
+  background: #21c7b1;
+  color: #fff;
+  box-shadow: 0 1.8px 7px #38B2AC4c;
 }
 
 /* Visually segment date filters for clarity */
