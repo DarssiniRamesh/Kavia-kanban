@@ -56,6 +56,26 @@ function KanbanCard({ card }) {
     due_date: card.due_date,
   });
 
+  // Determine card color class (status primary, then priority)
+  function getCardColorClass() {
+    if (card.status) {
+      const st = card.status.toLowerCase();
+      if (st.includes("todo")) return "card-todo";
+      if (st.includes("progress")) return "card-inprogress";
+      if (st.includes("done")) return "card-done";
+      if (st.includes("review")) return "card-review";
+      if (st.includes("hold")) return "card-hold";
+    }
+    if (card.priority) {
+      const pr = card.priority.toLowerCase();
+      if (pr.includes("critical")) return "card-critical";
+      if (pr.includes("high")) return "card-high";
+      if (pr.includes("medium")) return "card-medium";
+      if (pr.includes("low")) return "card-low";
+    }
+    return "";
+  }
+
   // For modal, reset fields on open to always latest value
   const openModal = () => {
     setFields({
@@ -117,7 +137,11 @@ function KanbanCard({ card }) {
 
   // Compact Card View
   const compactCard = (
-    <div className="kanban-card-inner" onClick={openModal} style={{ cursor: "pointer" }}>
+    <div
+      className="kanban-card-inner"
+      onClick={openModal}
+      style={{ cursor: "pointer" }}
+    >
       {/* Visually distinct card header for title and description */}
       <div className="kanban-card-prominent-header">
         <div className="kanban-card-title-prominent">{card.feature}</div>
@@ -128,9 +152,9 @@ function KanbanCard({ card }) {
         )}
       </div>
       <div className="kanban-card-pillrow">
-        <Pill value={card.status} type="status"/>
-        <Pill value={card.priority} type="priority"/>
-        <Pill value={card.assignee} type="assignee"/>
+        <Pill value={card.status} type="status" />
+        <Pill value={card.priority} type="priority" />
+        <Pill value={card.assignee} type="assignee" />
         {card.due_date && (
           <span className="kanban-pill kanban-pill-due" title="Due">
             <span role="img" aria-label="due">🗓️</span> {card.due_date}
@@ -249,7 +273,7 @@ function KanbanCard({ card }) {
   );
 
   return (
-    <div className="kanban-card">
+    <div className={`kanban-card ${getCardColorClass()}`}>
       {/* Show compact or modal card */}
       {modalOpen ? modalCard : compactCard}
     </div>
