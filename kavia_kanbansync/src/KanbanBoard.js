@@ -7,6 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import ToastModal from './components/ToastModal';
 import { COLUMN_TYPE } from './components/dndTypes';
 import { useKanban } from './KanbanContext';
+import { useDrop, useDrag } from 'react-dnd';
 
 import './KanbanBoard.css';
 
