@@ -86,7 +86,9 @@ function KanbanCard({ card }) {
   // PUBLIC_INTERFACE
   const [deleteError, setDeleteError] = useState(null);
   const [deletionConfirm, setDeletionConfirm] = useState(false);
-  const { showToast } = require('../KanbanBoard');
+  // Use the feedback context (toast) from KanbanBoard.js
+  import { useFeedback } from '../KanbanBoard';
+  const { showToast } = useFeedback();
 
   const handleDelete = async () => {
     setDeletionConfirm(true);
@@ -103,7 +105,8 @@ function KanbanCard({ card }) {
       } else {
         setModalOpen(false);
         setDeleteError(null);
-        showToast && showToast("Card deleted.", "success");
+        // Show a toast slightly after closing modal for better UI
+        setTimeout(() => { showToast && showToast("Card deleted.", "success"); }, 300);
       }
     } catch (err) {
       setDeleteError(err.message || "Unexpected error occurred while deleting card.");
