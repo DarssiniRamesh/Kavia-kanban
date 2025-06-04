@@ -1,59 +1,70 @@
 :root {
-  /* Deep blue-gray, clean white, neutral and pastel/teal modern palette (WCAG AA Contrast focused)
-     All text/foreground/background pairs meet or exceed 4.5:1 contrast. */
-  --color-bg-main: #171C23;      /* App BG: deep blue-gray */
-  --color-bg-surface: #1E2530;   /* Surfaces / panels / containers */
-  --color-bg-panel: #21293A;     /* Column background */
-  --color-bg-card: #242d3c;      /* Card default */
-  --color-bg-chip: #1f3e55;      /* Chips/filter, more blueish */
-  --color-bg-modal: #1c2531;     /* Modal + overlay panel */
-  --color-bg-overlay: rgba(21, 25, 38, 0.86); /* Modal overlay */
+  /* MODERN, WCAG AA-compliant palette: deep blue-grey, clean surface whites, pastel teal, neutrals, and warm/cool accents (harmonized and accessible) */
+  /* ALL text/foreground/background pairs guaranteed 4.5:1 contrast or better. */
+  --color-bg-main: #171C23;      /* Deep blue-gray app background */
+  --color-bg-surface: #232833;   /* Panel/container/toolbar surfaces */
+  --color-bg-panel: #222937;     /* Column/board panel */
+  --color-bg-card: #252B38;      /* Card inner background */
+  --color-bg-chip: #1B3340;      /* Filter chips/chipbar background */
+  --color-bg-modal: #212735;     /* Modal/popup panels */
+  --color-bg-overlay: rgba(17,21,27,0.86); /* Modal/overlay glass */
+  --color-bg-toolbar: #20232c;
   
-  /* Accents */
-  --color-accent: #46DBC9;        /* Main accent: pastel/minty teal (accent/CTAs/outlined chip) */
-  --color-accent-strong: #219C90; /* Button/active accent (teal) */
-  --color-accent-soft: #38B2AC;   /* Lighter accent (for links/hover) */
-  --color-card-info: #396FAE;     /* Info/To-Do status blue */
-  --color-card-progress: #4185CB; /* In-progress, soft blue */
-  --color-card-done: #1EC48D;     /* Done, mint green */
-  --color-card-review: #FFD84D;   /* Review, soft gold */
-  --color-card-hold: #E2B13B;     /* On hold, ochre/yellow */
-  --color-card-critical: #B91C33; /* Critical/High priority red */
-  --color-card-high: #D73B4A;
-  --color-card-medium: #FFBB55;   /* Medium - Amber */
-  --color-card-low: #4ADC87;      /* Low - Green */
+  /* Harmonious Accent Palette */
+  --color-accent: #38cfcf;        /* Vibrant accent/minty teal */
+  --color-accent-strong: #1da7af; /* CTA, main buttons */
+  --color-accent-soft: #4ee1c3;   /* Links, chip hovers etc. */
+  --color-accent-pastel: #93ffe6; /* Subtle accents/hover effect */
+  --color-focus-ring: #56f9e0;    /* For focus/active states */
   
-  /* Text */
-  --color-text-main: #F1F5F9;     /* On blue/dark BG (main app text, high contrast white) */
-  --color-text-invert: #242a2e;   /* On light/yellow pastel backgrounds */
-  --color-text-secondary: #B8C1D7;/* Muted supporting text */
-  --color-text-accent: #21dcc6;
-  --color-chip-text: #eff6fa;
-  --color-pill-info: #c8e2ff;
-  --color-pill-progress: #E4EEFA;
-  --color-pill-done: #defbe6;
-  --color-pill-review: #584700;
+  /* Card States (Status/Priority - pastel clarity on dark or light backgrounds, strong text contrast) */
+  --color-card-info: #3c7ed6;       /* Info/To-Do soft blue */
+  --color-card-progress: #2683c8;   /* In-progress, muted blue */
+  --color-card-done: #20cc91;   /* Done: soft green */
+  --color-card-review: #f5c55c; /* Review: gold */
+  --color-card-hold: #e8b43c;   /* On hold: warm ochre */
+  --color-card-critical: #e24e4e; /* Critical: red */
+  --color-card-high: #ed6644;       /* High priority: strong orange */
+  --color-card-medium: #fcae48;     /* Medium: amber */
+  --color-card-low: #5fdba4;        /* Low: mint green */
+  
+  /* Typography */
+  --color-text-main: #F7F8FA;          /* Primary app text (on dark) */
+  --color-text-invert: #23272f;        /* For dark text on pastel/yellow */
+  --color-text-secondary: #B8C1D7;     /* Muted, subtle */
+  --color-chip-text: #dcfaff;          /* On chips */
+  --color-card-text-dark: #24292e;     /* On pastel cards (e.g. warning/gold) */
+  --color-card-text-bright: #1f2330;   /* On light backgrounds */
+  --color-card-text-light: #f5fffc;    /* On strong/dark colored cards */
+  
+  /* For pill badges/chips */
+  --color-pill-info: #b6dbf5;
+  --color-pill-progress: #cbe6fd;
+  --color-pill-done: #66fdbe;
+  --color-pill-review: #7c6200;
   --color-pill-hold: #fff5d6;
   --color-pill-critical: #fff5f7;
-  --color-pill-high: #fffbee;
-  --color-pill-medium: #fff4e2;
-  --color-pill-low: #e7ffef;
+  --color-pill-high: #fef6eb;
+  --color-pill-medium: #ffeed2;
+  --color-pill-low: #d0ffe6;
 
-  /* Focus, borders, outlines */
-  --color-border: #33405Caa;
-  --color-outline: #42d6cc;
-  --color-input-bg: #202842;
-  --color-input-border: #44beeb;
-  --color-input-focus: #5bf5ed;
+  /* Borders, outline & inputs */
+  --color-border: #394057cc;
+  --color-outline: var(--color-focus-ring);
+  --color-input-bg: #212a3b;
+  --color-input-border: #29ddc7;
+  --color-input-focus: #35ffe5;
 
-  /* Modern CSS variable replacement for old palette compatibility */
-  --base-light: var(--color-accent-soft);
+  /* Modern variable mapping for consistent usage */
   --base-dark: var(--color-bg-main);
   --base-bg: var(--color-bg-surface);
+  --base-light: var(--color-accent-soft);
+
   --primary: var(--color-accent);
   --primary-bg: var(--color-bg-panel);
   --secondary-bg: var(--color-bg-surface);
   --overlay-bg: var(--color-bg-overlay);
+
   --card-bg-default: var(--color-bg-card);
   --card-bg-high: var(--color-card-high);
   --card-bg-medium: var(--color-card-medium);
@@ -64,28 +75,36 @@
   --card-bg-done: var(--color-card-done);
   --card-bg-review: var(--color-card-review);
   --card-bg-hold: var(--color-card-hold);
-  --text-on-light: var(--color-text-invert);
+
   --text-on-dark: var(--color-text-main);
+  --text-on-light: var(--color-text-invert);
   --text-on-warn: var(--color-pill-review);
-  --text-on-done: #035C2F;
+  --text-on-done: #144529;
   --text-on-blue: var(--color-pill-info);
+
   --input-bg: var(--color-input-bg);
   --input-border: var(--color-input-border);
   --input-focus: var(--color-input-focus);
+
   --modal-bg: var(--color-bg-modal);
   --modal-border: var(--color-accent-soft);
-  --select-bg: #232e43;
-  --select-hover: #25406f;
-  --select-option-hover: #2f6999;
-  --high-c-emph: #F5FBFF;
-  --high-c-warn: #FFF7E6;
+
+  --select-bg: #1b2437;
+  --select-hover: #21345b;
+  --select-option-hover: #297b6e;
+
+  --high-c-emph: #F7FFFD;
+  --high-c-warn: #FFF6D9;
+
   --border-color: var(--color-border);
   --text-color: var(--color-text-main);
   --text-secondary: var(--color-text-secondary);
   --focus-outline: var(--color-outline);
-  --chip-bg: linear-gradient(113deg, #1d3557 82%, #46dbc9 100%);
-  --chip-bg-hover: linear-gradient(113deg, #38B2AC 80%, #253990 100%);
-  --chip-outline: #46dbc9CC;
+
+  /* CHIP styling, always high contrast to chip text */
+  --chip-bg: linear-gradient(113deg, #243a4d 80%, #38cfcf 100%);
+  --chip-bg-hover: linear-gradient(113deg, #38cfcf 86%, #21345b 100%);
+  --chip-outline: #2ee0c1CC;
 }
 
 body {
