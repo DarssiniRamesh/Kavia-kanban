@@ -17,8 +17,6 @@ export function useFeedback() {
   return useContext(FeedbackContext);
 }
 
-import { useDrop, useDrag } from 'react-dnd';
-
 function KanbanBoardInner() {
   const { columns, isLoading, error, reorderColumns } = useKanban();
   const { showToast } = useFeedback();
