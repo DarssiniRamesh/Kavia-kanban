@@ -2,6 +2,19 @@
   padding-top: 82px;
   min-height: 100vh;
   background: var(--color-bg-main);
+  transition: padding .19s;
+}
+@media (max-width: 900px) {
+  .kanban-app-container {
+    padding-top: 67px;
+  }
+}
+@media (max-width: 700px) {
+  .kanban-app-container {
+    padding-top: 56px;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 .kanban-toolbar {
