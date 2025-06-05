@@ -12,6 +12,22 @@ import { useDrop, useDrag } from 'react-dnd';
 
 import './KanbanBoard.css';
 
+/**
+ * Extract unique assignee names (trimmed, non-empty, case-insensitive deduped) from cards
+ */
+function getUniqueAssignees(cards) {
+  const seen = new Set();
+  return cards
+    .map(c => (c.assignee || "").trim())
+    .filter(Boolean)
+    .filter(a => {
+      if (seen.has(a.toLowerCase())) return false;
+      seen.add(a.toLowerCase());
+      return true;
+    })
+    .sort((a, b) => a.localeCompare(b));
+}
+
 // Feedback/toast context for global error/success UI
 const FeedbackContext = createContext();
 export function useFeedback() {
