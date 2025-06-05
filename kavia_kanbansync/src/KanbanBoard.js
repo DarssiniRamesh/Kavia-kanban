@@ -248,6 +248,14 @@ function KanbanBoardInner() {
   return (
     <div className="kanban-app-container">
       <Toolbar />
+      {/* --- Assignee Filter Dropdown inserted at top toolbar position --- */}
+      <div style={{ padding: "14px 16px 2px 12px", background: "var(--base-dark)", display: "flex", alignItems: "center" }}>
+        <AssigneeFilterDropdown
+          assignees={assigneeOptions}
+          value={assigneeFilter}
+          onChange={setAssigneeFilter}
+        />
+      </div>
       <FilterPanel onFiltersChange={setFilters} />
       <div className="kanban-board" role="list" aria-label="Kanban Columns">
         {isLoading ? (
