@@ -79,13 +79,45 @@ function filterCardsAND(cards, filters, columns) {
     return true;
   });
 }
+/** Dropdown filter for Assignee, placed at top toolbar of the board */
+function AssigneeFilterDropdown({ assignees, value, onChange }) {
+  if (!assignees || assignees.length === 0) return null;
+  return (
+    <div style={{ marginRight: 18, minWidth: 130, display: "inline-flex", alignItems: "center" }}>
+      <label htmlFor="assignee-filter-select" style={{ color: "#38B2AC", fontWeight: 600, marginRight: 7, letterSpacing: ".02em" }}>
+        Assignee:
+      </label>
+      <select
+        id="assignee-filter-select"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{
+          padding: "5px 15px 5px 9px",
+          borderRadius: 6,
+          border: "1.4px solid #38B2AC",
+          background: "#1b2437",
+          color: "#ebfdff",
+          fontSize: "1.05em"
+        }}
+      >
+        <option value="__ALL__">All</option>
+        {assignees.map(a => (
+          <option value={a} key={a}>{a}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
 
 function KanbanBoardInner() {
   const { columns, isLoading, error, reorderColumns, cards } = useKanban();
   const { showToast } = useFeedback();
   const [draggedCol, setDraggedCol] = React.useState(null);
 
-  // Filter state local to board
+  // State: for assignee filter (dropdown); "__ALL__" = no filtering, else string
+  const [assigneeFilter, setAssigneeFilter] = React.useState("__ALL__");
+
+  // Filter state for full filter panel (reset if dropdown used for assignee)
   const [filters, setFilters] = React.useState({
     assignees: [],
     priorities: [],
@@ -95,7 +127,30 @@ function KanbanBoardInner() {
     dueTo: ""
   });
 
-  // Filtered cards, memoized for perf (updates when filters/cards/columns change)
+  // Get unique assignees for dropdown
+  const assigneeOptions = React.useMemo(() => getUniqueAssignees(cards), [cards]);
+
+  // If the user selects via dropdown: update filters.assignees accordingly (single value)
+  React.useEffect(() => {
+    if (assigneeFilter === "__ALL__") {
+      // Turn off assignee filter in filters
+      setFilters(f => ({ ...f, assignees: [] }));
+    } else {
+      setFilters(f => ({ ...f, assignees: [assigneeFilter] }));
+    }
+    // eslint-disable-next-line
+  }, [assigneeFilter]);
+
+  // Update dropdown selection if filter panel updates assignees filter (sync for multi/clear)
+  React.useEffect(() => {
+    // If multi-assignees selected, set dropdown to __ALL__
+    if (filters.assignees.length > 1) setAssigneeFilter("__ALL__");
+    else if (filters.assignees.length === 1) setAssigneeFilter(filters.assignees[0]);
+    else setAssigneeFilter("__ALL__");
+    // eslint-disable-next-line
+  }, [filters.assignees]);
+
+  // Filtered cards, memoized for perf (updates when filters/cards/columns/assigneeFilter change)
   const filteredCards = React.useMemo(
     () => filterCardsAND(cards || [], filters, columns),
     [cards, filters, columns]
