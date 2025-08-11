@@ -453,18 +453,20 @@ html {
   flex: 1;
   font-size: 1.55rem;
   font-weight: 800;
-  color: #fff;
+  color: #172B4D; /* Jira high contrast text */
   letter-spacing: 0.01em;
   line-height: 1.14;
-  text-shadow: 0 4px 18px rgba(14,34,89,0.18);
+  /* Remove white-based text-shadow for better contrast on light bg or blue modal */
+  text-shadow: none;
   margin-bottom: 0;
   border-radius: 5px;
   padding-left: 0;
+  /* Ensure text is above blue modal, but dark for contrast */
 }
 .kanban-detail-desc-prominent {
   margin: 2px 0 0 0;
   font-size: 1.11rem;
-  color: #b9d7ff;
+  color: #1976d2; /* Primary Jira blue for description, strong contrast, readable */
   font-weight: 400;
   line-height: 1.55;
   opacity: 0.99;
