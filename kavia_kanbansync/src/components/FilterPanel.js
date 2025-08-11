@@ -13,13 +13,13 @@ function getUniqueFieldValues(cards, field) {
 
 /**
  * PUBLIC_INTERFACE
- * Redesign: Dropdown-based multi-select filter panel for Kanban board.
- * Selected filters appear as minimal, compact badges/chips for clarity.
+ * Minimal, dropdown-list, multi-select filter panel for Kanban board.
+ * Filters: assignee, status, priority, and column—all use dropdown multi-selects with compact chips for selected options.
  */
 export default function FilterPanel({ onFiltersChange }) {
   const { cards, columns } = useKanban();
 
-  // Filter state
+  // Filter state: keys based on field names
   const [filters, setFilters] = useState({
     assignees: [],
     priorities: [],
@@ -34,7 +34,7 @@ export default function FilterPanel({ onFiltersChange }) {
     // eslint-disable-next-line
   }, [filters]);
 
-  // Unique value options per field
+  // Build unique option lists for dropdowns (from cards or columns)
   const assigneeOptions = useMemo(
     () => getUniqueFieldValues(cards, "assignee"),
     [cards]
@@ -52,33 +52,16 @@ export default function FilterPanel({ onFiltersChange }) {
     [columns]
   );
 
-  // Handlers for classic dropdown multi-select
+  // Handler for dropdown multi-selects (all fields apply same logic)
   const handleMultiSelect = (field) => (event) => {
-    const values = Array.from(event.target.selectedOptions).map(o => o.value);
+    const values = Array.from(event.target.selectedOptions).map((o) => o.value);
     setFilters((prev) => ({
       ...prev,
       [field]: values
     }));
   };
 
-  // Handler for assignee manual input
-  const [assigneeInput, setAssigneeInput] = useState("");
-  const assigneeInputRef = useRef();
-  const handleAssigneeInput = (e) => setAssigneeInput(e.target.value);
-  const handleAssigneeKeyDown = (e) => {
-    if (e.key === "Enter" && assigneeInput.trim()) {
-      const trimmed = assigneeInput.trim();
-      if (!filters.assignees.includes(trimmed)) {
-        setFilters((prev) => ({
-          ...prev,
-          assignees: [...prev.assignees, trimmed],
-        }));
-      }
-      setAssigneeInput("");
-      assigneeInputRef.current && assigneeInputRef.current.blur();
-    }
-  };
-
+  // Handler to clear a filter field, or a single value if provided
   const clearFilter = (field, value = null) => {
     if (value !== null) {
       setFilters((prev) => ({
@@ -94,12 +77,7 @@ export default function FilterPanel({ onFiltersChange }) {
     }
   };
 
-  // Date change
-  const handleDateChange = (type, val) => {
-    setFilters((prev) => ({ ...prev, [type]: val }));
-  };
-
-  // Reset all
+  // Reset all fields
   const resetFilters = () => {
     setFilters({
       assignees: [],
@@ -109,63 +87,43 @@ export default function FilterPanel({ onFiltersChange }) {
       dueFrom: "",
       dueTo: ""
     });
-    setAssigneeInput("");
   };
 
-  // Chips summary
+  // Date filter change
+  const handleDateChange = (type, val) => {
+    setFilters((prev) => ({ ...prev, [type]: val }));
+  };
+
+  // Render all selected filter badges
   function renderActiveChips() {
     const chips = [];
     filters.assignees.forEach((a) =>
-      chips.push({
-        label: a,
-        field: "assignees",
-        value: a,
-      })
+      chips.push({ label: a, field: "assignees", value: a })
     );
     filters.priorities.forEach((p) =>
-      chips.push({
-        label: p,
-        field: "priorities",
-        value: p,
-      })
+      chips.push({ label: p, field: "priorities", value: p })
     );
     filters.statuses.forEach((s) =>
-      chips.push({
-        label: s,
-        field: "statuses",
-        value: s,
-      })
+      chips.push({ label: s, field: "statuses", value: s })
     );
     filters.columns.forEach((colId) => {
       const col = columnOptions.find((c) => c.id === colId);
-      chips.push({
-        label: col ? col.title : colId,
-        field: "columns",
-        value: colId,
-      });
+      chips.push({ label: col ? col.title : colId, field: "columns", value: colId });
     });
     if (filters.dueFrom)
-      chips.push({
-        label: `Due ≥ ${filters.dueFrom}`,
-        field: "dueFrom",
-        value: undefined,
-      });
+      chips.push({ label: `Due ≥ ${filters.dueFrom}`, field: "dueFrom" });
     if (filters.dueTo)
-      chips.push({
-        label: `Due ≤ ${filters.dueTo}`,
-        field: "dueTo",
-        value: undefined,
-      });
+      chips.push({ label: `Due ≤ ${filters.dueTo}`, field: "dueTo" });
     return chips;
   }
 
-  // Helper: is field active?
+  // Helper: mark an input as active if it has selections or values
   const isActive = (field) => {
     if (["dueFrom", "dueTo"].includes(field)) return !!filters[field];
     return Array.isArray(filters[field]) && filters[field].length > 0;
   };
 
-  // Compact modern UI layout
+  // Minimal, visually unified form layout (all dropdowns = multi-select with dropdown UI)
   return (
     <section
       className="kanban-filter-panel"
@@ -187,7 +145,7 @@ export default function FilterPanel({ onFiltersChange }) {
           minWidth: 0
         }}
       >
-        {/* Assignees (dropdown + add via input) */}
+        {/* ASSIGNEE multi-select */}
         <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <span title="Assignee" aria-label="Assignees" style={{ color: "#38B2AC" }}>👤</span>
           <select
@@ -199,8 +157,8 @@ export default function FilterPanel({ onFiltersChange }) {
             aria-label="Select assignee(s)"
             style={{
               minWidth: 85,
-              maxWidth: 117,
-              fontSize: ".99em",
+              maxWidth: 120,
+              fontSize: ".98em",
               borderRadius: 8,
               padding: "6px 8px"
             }}
@@ -209,24 +167,9 @@ export default function FilterPanel({ onFiltersChange }) {
               <option value={a} key={a}>{a}</option>
             ))}
           </select>
-          {/* Add new option by typing */}
-          <input
-            ref={assigneeInputRef}
-            value={assigneeInput}
-            onChange={handleAssigneeInput}
-            onKeyDown={handleAssigneeKeyDown}
-            placeholder="+assignee"
-            aria-label="Add new assignee filter"
-            className="filter-typeahead-input"
-            style={{
-              width: 72,
-              maxWidth: 108,
-              fontSize: ".97em",
-              borderRadius: "8px"
-            }}
-          />
         </div>
-        {/* Priority */}
+
+        {/* PRIORITY multi-select */}
         <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <span title="Priority" aria-label="Priority" style={{ color: "#ed6644" }}>⚡</span>
           <select
@@ -236,14 +179,15 @@ export default function FilterPanel({ onFiltersChange }) {
             className={"filter-multiselect" + (isActive("priorities") ? " active" : "")}
             size={1}
             aria-label="Select priorities"
-            style={{ minWidth: 74, maxWidth: 97, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
+            style={{ minWidth: 75, maxWidth: 105, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
           >
             {priorityOptions.map((p) => (
               <option value={p} key={p}>{p}</option>
             ))}
           </select>
         </div>
-        {/* Status */}
+
+        {/* STATUS multi-select */}
         <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <span title="Status" aria-label="Status" style={{ color: "#72e0d7" }}>📊</span>
           <select
@@ -253,14 +197,15 @@ export default function FilterPanel({ onFiltersChange }) {
             className={"filter-multiselect" + (isActive("statuses") ? " active" : "")}
             size={1}
             aria-label="Select statuses"
-            style={{ minWidth: 72, maxWidth: 87, fontSize: ".97em", borderRadius: 8, padding: "6px 8px" }}
+            style={{ minWidth: 77, maxWidth: 110, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
           >
             {statusOptions.map((s) => (
               <option value={s} key={s}>{s}</option>
             ))}
           </select>
         </div>
-        {/* Columns */}
+
+        {/* COLUMN multi-select */}
         <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <span title="Column" aria-label="Column" style={{ color: "#38B2AC" }}>📦</span>
           <select
@@ -270,7 +215,7 @@ export default function FilterPanel({ onFiltersChange }) {
             className={"filter-multiselect" + (isActive("columns") ? " active" : "")}
             size={1}
             aria-label="Select columns"
-            style={{ minWidth: 70, maxWidth: 90, fontSize: ".97em", borderRadius: 8, padding: "6px 8px" }}
+            style={{ minWidth: 74, maxWidth: 105, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
           >
             {columnOptions.map((col) => (
               <option key={col.id} value={col.id}>
@@ -279,6 +224,7 @@ export default function FilterPanel({ onFiltersChange }) {
             ))}
           </select>
         </div>
+
         {/* Due Date Range */}
         <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
           <span title="Due Date" aria-label="Due Date" style={{ color: "#c6fa94" }}>🗓️</span>
@@ -300,6 +246,7 @@ export default function FilterPanel({ onFiltersChange }) {
             style={{ minWidth: 69, fontSize: ".93em", borderRadius: 8, height: 32, marginLeft: 1 }}
           />
         </div>
+
         {/* Reset Button */}
         <button
           type="button"
