@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/kavia-kanbansync-106823-fd4e91f2/MainContainerforKaviaKanbanSync"
+}
