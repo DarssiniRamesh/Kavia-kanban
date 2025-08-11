@@ -188,14 +188,14 @@ function KanbanCard({ card }) {
                 <div className="kanban-detail-divider"/>
               </div>
               <div className="kanban-detail-row">
-                <span>Status:</span> <Pill value={card.status} type="status"/>
-                <span>Priority:</span> <Pill value={card.priority} type="priority"/>
+                <span className="kanban-detail-field-label">Status:</span> <Pill value={card.status} type="status"/>
+                <span className="kanban-detail-field-label">Priority:</span> <Pill value={card.priority} type="priority"/>
               </div>
               <div className="kanban-detail-row">
-                <span>Assignee:</span> <Pill value={card.assignee} type="assignee"/>
+                <span className="kanban-detail-field-label">Assignee:</span> <Pill value={card.assignee} type="assignee"/>
                 {card.due_date && (
                   <>
-                    <span>Due:</span>
+                    <span className="kanban-detail-field-label">Due:</span>
                     <span className="kanban-pill kanban-pill-due">
                       <span role="img" aria-label="due">🗓️</span> {card.due_date}
                     </span>

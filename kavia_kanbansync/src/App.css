@@ -503,6 +503,13 @@ html {
   font-size: 0.98em;
   margin-bottom: 4px;
 }
+.kanban-detail-field-label {
+  color: #172B4D;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-right: 2px;
+  text-shadow: none;
+}
 .kanban-detail-section {
   margin: 8px 0 3px 0;
   padding: 8px 9px;
