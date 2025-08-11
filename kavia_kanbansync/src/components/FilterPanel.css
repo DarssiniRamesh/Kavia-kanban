@@ -16,8 +16,8 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 8px;
-  align-items: flex-start;
+  gap: 13px;
+  align-items: flex-end;
   margin-bottom: 4px;
   padding-bottom: 0;
   border-radius: 0;
@@ -63,13 +63,13 @@ fieldset.filter-group.filter-active {
 .filter-compact-group {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: 4px;
+  align-items: flex-end;
+  gap: 6px;
   min-width: 0;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
-  padding: 0;
+  padding: 0 1px 0 1px;
   margin: 0;
   transition: none;
 }
@@ -82,16 +82,16 @@ fieldset.filter-group.filter-active {
 .filter-date.active {
   background: var(--input-bg);
   color: var(--text-color);
-  border: 1.2px solid var(--input-border);
-  border-radius: 6px;
-  font-size: 0.97em;
-  min-width: 60px;
-  min-height: 29px;
-  max-width: 102px;
-  padding: 3.5px 7px;
+  border: 1.7px solid var(--input-border);
+  border-radius: 8px;
+  font-size: .98em;
+  min-width: 68px;
+  min-height: 33px;
+  max-width: 112px;
+  padding: 6px 10px;
   outline: none;
   box-shadow: none;
-  transition: border .15s, background .14s;
+  transition: border .14s, background .13s;
 }
 .filter-typeahead-input:focus,
 .filter-typeahead-input.active,
@@ -112,21 +112,22 @@ select.filter-multiselect {
   background: var(--chip-bg);
   color: #ebfdff;
   border-radius: 13px;
-  padding: 3px 10px 3px 7px;
-  border: 1px solid var(--chip-outline);
+  padding: 4px 10px 4px 10px;
+  border: 1.5px solid var(--chip-outline);
   display: inline-flex;
   align-items: center;
-  min-height: 23px;
-  font-size: 0.97em;
-  font-weight: 500;
-  margin-right: 0;
-  margin-bottom: 0;
-  box-shadow: none;
-  opacity: 0.98;
+  min-height: 28px;
+  min-width: 40px;
+  font-size: 1em;
+  font-weight: 600;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  box-shadow: 0 2px 7px #0bb9fa18;
+  opacity: 1;
   cursor: pointer;
   user-select: none;
-  gap: 4px;
-  transition: background .15s, color .12s;
+  gap: 7px;
+  transition: background .14s, color .12s, box-shadow .14s, border .13s;
 }
 .filter-chip:focus-within,
 .filter-chip:hover {
@@ -155,13 +156,13 @@ select.filter-multiselect {
 .filter-chipbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 2px 0 0 0;
-  align-items: center;
+  gap: 9px;
+  padding: 7px 0 3px 0;
+  align-items: flex-end;
   margin-bottom: 0;
-  min-height: 15px;
+  min-height: 24px;
   background: none;
-  row-gap: 3px;
+  row-gap: 6px;
 }
 
 @media (max-width: 700px) {
@@ -394,11 +395,11 @@ select.filter-multiselect {
   background: var(--input-bg);
   color: var(--text-color);
   border: 2px solid var(--input-border);
-  border-radius: 7px;
+  border-radius: 9px;
   font-size: 1em;
-  min-width: 102px;
-  min-height: 36px;
-  padding: 4px 9px;
+  min-width: 80px;
+  min-height: 33px;
+  padding: 6px 10px;
   outline: none;
   transition: border .14s, background .13s;
 }

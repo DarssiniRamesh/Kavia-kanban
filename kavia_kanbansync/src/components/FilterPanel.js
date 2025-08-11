@@ -223,7 +223,7 @@ export default function FilterPanel({ onFiltersChange }) {
         onSubmit={(e) => e.preventDefault()}
         tabIndex={-1}
         style={{
-          gap: "7px",
+          gap: "13px",
           flexWrap: "wrap",
           marginBottom: "3px",
           alignItems: "center"
@@ -235,12 +235,13 @@ export default function FilterPanel({ onFiltersChange }) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 5,
+            gap: 6,
             minWidth: 0,
-            flex: "1 1 160px"
+            flex: "1 0 168px",
+            padding: "0 3px"
           }}
         >
-          <span title="Assignee" style={{ color: "#38B2AC", fontSize: "1.06em" }}>👤</span>
+          <span title="Assignee" style={{ color: "#38B2AC", fontSize: "1.14em", paddingBottom: 1, display: "flex", alignItems: "center" }}>👤</span>
           <input
             ref={assigneeInputRef}
             value={assigneeInput}
@@ -253,16 +254,16 @@ export default function FilterPanel({ onFiltersChange }) {
             autoComplete="off"
             spellCheck={false}
             inputMode="text"
-            style={{ minWidth: 60, fontSize: ".99em", maxWidth: 96 }}
+            style={{ minWidth: 68, fontSize: ".99em", maxWidth: 110, borderRadius: 8, height: 33, marginRight: 4 }}
           />
           <datalist id="kanban-filter-assignee-options">
             {assigneeOptions.map((a) => (
               <option value={a} key={a} />
             ))}
           </datalist>
-          <div style={{ display: "flex", gap: 3 }}>
+          <div style={{ display: "flex", gap: 2 }}>
             {filters.assignees.map((a) => (
-              <span className="filter-chip" style={{ fontSize: ".98em", padding: "3px 8px" }} key={a}>
+              <span className="filter-chip" style={{ fontSize: ".99em", padding: "3px 10px", minHeight: "28px" }} key={a}>
                 {a}
                 <button
                   type="button"
@@ -281,12 +282,13 @@ export default function FilterPanel({ onFiltersChange }) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 5,
+            gap: 6,
             minWidth: 0,
-            flex: "1 1 118px"
+            flex: "1 0 124px",
+            padding: "0 3px"
           }}
         >
-          <span title="Priority" style={{ color: "#ed6644", fontSize: "1em" }}>⚡</span>
+          <span title="Priority" style={{ color: "#ed6644", fontSize: "1.07em", display: "flex", alignItems: "center" }}>⚡</span>
           <select
             multiple
             value={filters.priorities}
@@ -300,21 +302,23 @@ export default function FilterPanel({ onFiltersChange }) {
             size={1}
             aria-label="Select priorities"
             style={{
-              minWidth: 64,
-              maxWidth: 95,
+              minWidth: 78,
+              maxWidth: 104,
               background: "var(--input-bg)",
-              fontSize: ".97em",
+              fontSize: ".98em",
               color: "var(--base-light)",
-              padding: "5px 8px"
+              padding: "7px 9px",
+              borderRadius: 8,
+              height: 33
             }}
           >
             {priorityOptions.map((p) => (
               <option value={p} key={p}>{p}</option>
             ))}
           </select>
-          <div style={{ display: "flex", gap: 3 }}>
+          <div style={{ display: "flex", gap: 1 }}>
             {filters.priorities.map((p) => (
-              <span className="filter-chip" style={{ fontSize: ".98em" }} key={p}>
+              <span className="filter-chip" style={{ fontSize: ".98em", minHeight: 28 }} key={p}>
                 {p}
                 <button
                   type="button"
@@ -333,12 +337,13 @@ export default function FilterPanel({ onFiltersChange }) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 5,
+            gap: 6,
             minWidth: 0,
-            flex: "1 1 118px"
+            flex: "1 0 124px",
+            padding: "0 3px"
           }}
         >
-          <span title="Status" style={{ color: "#72e0d7", fontSize: "1em" }}>📊</span>
+          <span title="Status" style={{ color: "#72e0d7", fontSize: "1.06em", display: "flex", alignItems: "center" }}>📊</span>
           <select
             multiple
             value={filters.statuses}
@@ -352,21 +357,23 @@ export default function FilterPanel({ onFiltersChange }) {
             size={1}
             aria-label="Select statuses"
             style={{
-              minWidth: 64,
-              maxWidth: 95,
+              minWidth: 78,
+              maxWidth: 104,
               background: "var(--input-bg)",
-              fontSize: ".97em",
+              fontSize: ".98em",
               color: "var(--color-accent-pastel)",
-              padding: "5px 8px"
+              padding: "7px 9px",
+              borderRadius: 8,
+              height: 33
             }}
           >
             {statusOptions.map((s) => (
               <option value={s} key={s}>{s}</option>
             ))}
           </select>
-          <div style={{ display: "flex", gap: 3 }}>
+          <div style={{ display: "flex", gap: 1 }}>
             {filters.statuses.map((s) => (
-              <span className="filter-chip" style={{ fontSize: ".97em" }} key={s}>
+              <span className="filter-chip" style={{ fontSize: ".96em", minHeight: 28 }} key={s}>
                 {s}
                 <button
                   type="button"
@@ -385,12 +392,13 @@ export default function FilterPanel({ onFiltersChange }) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 5,
+            gap: 6,
             minWidth: 0,
-            flex: "1 1 112px"
+            flex: "1 0 118px",
+            padding: "0 3px"
           }}
         >
-          <span title="Column" style={{ color: "#38B2AC", fontSize: "1em" }}>📦</span>
+          <span title="Column" style={{ color: "#38B2AC", fontSize: "1.03em", display: "flex", alignItems: "center" }}>📦</span>
           <select
             multiple
             value={filters.columns}
@@ -404,12 +412,14 @@ export default function FilterPanel({ onFiltersChange }) {
             size={1}
             aria-label="Select columns"
             style={{
-              minWidth: 64,
-              maxWidth: 90,
+              minWidth: 73,
+              maxWidth: 100,
               background: "var(--input-bg)",
-              fontSize: ".97em",
+              fontSize: ".98em",
               color: "#9ff",
-              padding: "5px 7px"
+              padding: "7px 7px",
+              borderRadius: 8,
+              height: 33
             }}
           >
             {columnOptions.map((col) => (
@@ -418,9 +428,9 @@ export default function FilterPanel({ onFiltersChange }) {
               </option>
             ))}
           </select>
-          <div style={{ display: "flex", gap: 3 }}>
+          <div style={{ display: "flex", gap: 1 }}>
             {filters.columns.map((c) => (
-              <span className="filter-chip" style={{ fontSize: ".97em" }} key={c}>
+              <span className="filter-chip" style={{ fontSize: ".97em", minHeight: 28 }} key={c}>
                 {(columnOptions.find(o=>o.id===c)?.title) || c}
                 <button
                   type="button"
@@ -441,10 +451,11 @@ export default function FilterPanel({ onFiltersChange }) {
             alignItems: "center",
             gap: 4,
             minWidth: 0,
-            flex: "1 1 125px"
+            flex: "1 0 132px",
+            padding: "0 2px"
           }}
         >
-          <span title="Due Date" style={{ color: "#c6fa94", fontSize: "1em" }}>🗓️</span>
+          <span title="Due Date" style={{ color: "#c6fa94", fontSize: "1.01em", paddingBottom: 1, display: "flex", alignItems: "center" }}>🗓️</span>
           <input
             type="date"
             value={filters.dueFrom}
@@ -452,9 +463,9 @@ export default function FilterPanel({ onFiltersChange }) {
             className={"filter-date" + (filters.dueFrom ? " active" : "")}
             aria-label="Due date from"
             title="Due after or on"
-            style={{ minWidth: 60, fontSize: ".91em" }}
+            style={{ minWidth: 69, fontSize: ".93em", borderRadius: 8, height: 32, marginRight: 1 }}
           />
-          <span aria-hidden style={{ color: "#888", fontWeight: 400 }}>–</span>
+          <span aria-hidden style={{ color: "#888", fontWeight: 400, marginTop: 1, marginLeft: 0 }}>–</span>
           <input
             type="date"
             value={filters.dueTo}
@@ -462,7 +473,7 @@ export default function FilterPanel({ onFiltersChange }) {
             className={"filter-date" + (filters.dueTo ? " active" : "")}
             aria-label="Due date to"
             title="Due before or on"
-            style={{ minWidth: 60, fontSize: ".91em" }}
+            style={{ minWidth: 69, fontSize: ".93em", borderRadius: 8, height: 32, marginLeft: 1 }}
           />
         </div>
         {/* Reset All */}
@@ -477,11 +488,12 @@ export default function FilterPanel({ onFiltersChange }) {
             fontWeight: 700,
             fontSize: ".96em",
             padding: "7px 14px",
-            marginLeft: 5,
+            marginLeft: 9,
             marginTop: "0",
             height: 34,
-            minWidth: 66,
-            letterSpacing: "0.02em"
+            minWidth: 68,
+            letterSpacing: "0.02em",
+            borderRadius: "12px"
           }}
           onClick={resetFilters}
         >
