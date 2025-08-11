@@ -190,16 +190,38 @@ function Toolbar() {
           ? null
           : ReactDOM.createPortal(
               <div className="kanban-modal-overlay" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))}>
-                <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
-                  <button className="kanban-modal-close" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))} title="Close">×</button>
-                  <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 14 }}>
+                <div
+                  className="kanban-modal-dialog"
+                  onClick={e => e.stopPropagation()}
+                  style={{
+                    color: "#222",
+                    background: "var(--modal-bg, #fff6e0)",
+                    borderRadius: "17px",
+                  }}
+                >
+                  <button
+                    className="kanban-modal-close"
+                    onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))}
+                    title="Close"
+                    style={{ color: "#222", background: "none", border: "none" }}
+                  >
+                    ×
+                  </button>
+                  <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 14, color: "#222" }}>
                     Bulk Upload: Pick a column for these cards
                   </div>
                   <div style={{ marginBottom: 12 }}>
-                    <div>Select a column:</div>
+                    <div style={{ color: "#555" }}>Select a column:</div>
                     <div style={{ margin: "9px 0"}}>
                       <select
-                        style={{ width: "100%", padding: 6, fontSize: "1em" }}
+                        style={{
+                          width: "100%",
+                          padding: 6,
+                          fontSize: "1em",
+                          background: "var(--input-bg, #fff9e7)",
+                          color: "#292010",
+                          border: "1.5px solid var(--color-input-border, #ffb300)"
+                        }}
                         onChange={e => handleConfirmBulkUpload(e.target.value)}
                         defaultValue=""
                       >
@@ -210,7 +232,7 @@ function Toolbar() {
                       </select>
                     </div>
                   </div>
-                  <div style={{ color: "#acdffc", fontSize: "0.96em", margin: "7px 0 0 1px" }}>
+                  <div style={{ color: "#a06700", fontSize: "0.96em", margin: "7px 0 0 1px" }}>
                     Cards parsed from file: <strong>{bulkUploadState.entries.length}</strong>
                   </div>
                 </div>

@@ -108,11 +108,21 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
         data-column-id={column.id}
         tabIndex={-1}
       >
-        <div className="kanban-column-header">
+        <div className="kanban-column-header" style={{ color: "var(--color-accent, #ffb300)" }}>
           {/* Column Title + Edit */}
           {!editing ? (
-            <span className="kanban-column-title"
-              style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: "pointer" }}
+            <span
+              className="kanban-column-title"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 7,
+                cursor: "pointer",
+                color: "var(--color-accent, #ffb300)",
+                fontWeight: 800,
+                fontSize: "1.14rem",
+                letterSpacing: "0.02em"
+              }}
               onDoubleClick={triggerTitleEdit}
               tabIndex={0}
               onKeyDown={e => {
@@ -128,7 +138,7 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#bfe9f8",
+                  color: "var(--color-accent, #ffb300)",
                   fontSize: "1.11em",
                   marginLeft: 4,
                   cursor: "pointer",
