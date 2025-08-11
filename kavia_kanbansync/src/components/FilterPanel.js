@@ -11,24 +11,15 @@ function getUniqueFieldValues(cards, field) {
   ).sort((a, b) => a.localeCompare(b));
 }
 
-// Helper: badge, returns styled count
-function Badge({ n }) {
-  return n ? (
-    <span className="filter-badge" aria-label={`${n} selected`}>
-      {n}
-    </span>
-  ) : null;
-}
-
 /**
  * PUBLIC_INTERFACE
- * Modern, grouped, accessible FilterPanel for Kanban board. 
- * Features: grouped controls, touch-optimized, accessible cues, modern visuals.
+ * Redesign: Dropdown-based multi-select filter panel for Kanban board.
+ * Selected filters appear as minimal, compact badges/chips for clarity.
  */
 export default function FilterPanel({ onFiltersChange }) {
   const { cards, columns } = useKanban();
 
-  // Main filter state
+  // Filter state
   const [filters, setFilters] = useState({
     assignees: [],
     priorities: [],
@@ -43,7 +34,7 @@ export default function FilterPanel({ onFiltersChange }) {
     // eslint-disable-next-line
   }, [filters]);
 
-  // Dynamically computed options
+  // Unique value options per field
   const assigneeOptions = useMemo(
     () => getUniqueFieldValues(cards, "assignee"),
     [cards]
@@ -61,124 +52,86 @@ export default function FilterPanel({ onFiltersChange }) {
     [columns]
   );
 
-  // Typeahead input for assignee (mobile touch-friendliness)
-  const [assigneeInput, setAssigneeInput] = useState("");
-  const assigneeInputRef = useRef();
-  const undoStack = useRef({});
-
-  // Utility: determine visual active state
-  const isActive = (field) => {
-    if (["dueFrom", "dueTo"].includes(field)) return !!filters[field];
-    return Array.isArray(filters[field]) && filters[field].length > 0;
+  // Handlers for classic dropdown multi-select
+  const handleMultiSelect = (field) => (event) => {
+    const values = Array.from(event.target.selectedOptions).map(o => o.value);
+    setFilters((prev) => ({
+      ...prev,
+      [field]: values
+    }));
   };
 
-  // Utility: can undo per field
-  const canUndo = (field) => !!undoStack.current[field];
-
-  // --- Generic handlers ---
-
-  // For chips & multi-toggle
-  function handleToggleFilter(field, value) {
-    setFilters((prev) => {
-      if (!Array.isArray(prev[field])) return prev;
-      let newArr = prev[field].includes(value)
-        ? prev[field].filter((v) => v !== value)
-        : [...prev[field], value];
-      undoStack.current[field] = prev[field];
-      return { ...prev, [field]: newArr };
-    });
-  }
-
-  // For select-multi fields
-  function handleMultiSelect(field, arr) {
-    undoStack.current[field] = filters[field];
-    setFilters((prev) => ({ ...prev, [field]: arr }));
-  }
-
-  // For adding new Assignee from typeahead
-  function handleAssigneeInput(e) {
-    setAssigneeInput(e.target.value);
-  }
-
-  function handleAssigneeKeyDown(e) {
+  // Handler for assignee manual input
+  const [assigneeInput, setAssigneeInput] = useState("");
+  const assigneeInputRef = useRef();
+  const handleAssigneeInput = (e) => setAssigneeInput(e.target.value);
+  const handleAssigneeKeyDown = (e) => {
     if (e.key === "Enter" && assigneeInput.trim()) {
-      if (!filters.assignees.includes(assigneeInput.trim())) {
-        undoStack.current.assignees = filters.assignees;
+      const trimmed = assigneeInput.trim();
+      if (!filters.assignees.includes(trimmed)) {
         setFilters((prev) => ({
           ...prev,
-          assignees: [...prev.assignees, assigneeInput.trim()],
+          assignees: [...prev.assignees, trimmed],
         }));
       }
       setAssigneeInput("");
       assigneeInputRef.current && assigneeInputRef.current.blur();
     }
-  }
+  };
 
-  // DateRange
-  function handleDateChange(type, val) {
-    undoStack.current[type] = filters[type];
-    setFilters((prev) => ({ ...prev, [type]: val }));
-  }
-
-  // Clear whole filter or single value from array
-  function clearFilter(field, value = null) {
+  const clearFilter = (field, value = null) => {
     if (value !== null) {
-      setFilters((prev) => {
-        undoStack.current[field] = prev[field];
-        return { ...prev, [field]: prev[field].filter((v) => v !== value) };
-      });
+      setFilters((prev) => ({
+        ...prev,
+        [field]: prev[field].filter((v) => v !== value),
+      }));
     } else {
-      undoStack.current[field] = filters[field];
       setFilters((prev) =>
         ["dueFrom", "dueTo"].includes(field)
           ? { ...prev, [field]: "" }
           : { ...prev, [field]: [] }
       );
     }
-  }
+  };
 
-  // Undo per field
-  function undoFilter(field) {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: undoStack.current[field] ?? prev[field],
-    }));
-  }
+  // Date change
+  const handleDateChange = (type, val) => {
+    setFilters((prev) => ({ ...prev, [type]: val }));
+  };
 
   // Reset all
-  function resetFilters() {
+  const resetFilters = () => {
     setFilters({
       assignees: [],
       priorities: [],
       statuses: [],
       columns: [],
       dueFrom: "",
-      dueTo: "",
+      dueTo: ""
     });
     setAssigneeInput("");
-  }
+  };
 
-  // Modern filter chips summary
+  // Chips summary
   function renderActiveChips() {
     const chips = [];
-
     filters.assignees.forEach((a) =>
       chips.push({
-        label: `Assignee: ${a}`,
+        label: a,
         field: "assignees",
         value: a,
       })
     );
     filters.priorities.forEach((p) =>
       chips.push({
-        label: `Priority: ${p}`,
+        label: p,
         field: "priorities",
         value: p,
       })
     );
     filters.statuses.forEach((s) =>
       chips.push({
-        label: `Status: ${s}`,
+        label: s,
         field: "statuses",
         value: s,
       })
@@ -186,7 +139,7 @@ export default function FilterPanel({ onFiltersChange }) {
     filters.columns.forEach((colId) => {
       const col = columnOptions.find((c) => c.id === colId);
       chips.push({
-        label: `Column: ${col ? col.title : colId}`,
+        label: col ? col.title : colId,
         field: "columns",
         value: colId,
       });
@@ -195,18 +148,24 @@ export default function FilterPanel({ onFiltersChange }) {
       chips.push({
         label: `Due ≥ ${filters.dueFrom}`,
         field: "dueFrom",
+        value: undefined,
       });
     if (filters.dueTo)
       chips.push({
         label: `Due ≤ ${filters.dueTo}`,
         field: "dueTo",
+        value: undefined,
       });
     return chips;
   }
 
-  // --- UI Layout, grouped and modern ---
+  // Helper: is field active?
+  const isActive = (field) => {
+    if (["dueFrom", "dueTo"].includes(field)) return !!filters[field];
+    return Array.isArray(filters[field]) && filters[field].length > 0;
+  };
 
-  // MINIMALISTIC UI: Compact all filter groups horizontally, remove visual legends/labels on small screens, use simple outlines.
+  // Compact modern UI layout
   return (
     <section
       className="kanban-filter-panel"
@@ -214,213 +173,104 @@ export default function FilterPanel({ onFiltersChange }) {
       role="region"
       style={{ padding: "6px 0 2px 0", minWidth: 0 }}
     >
-      {/* Main Filters: Highly compact, chip-style grouping, inline, no verbose descriptions */}
       <form
         className="filter-row"
+        onSubmit={e => e.preventDefault()}
         spellCheck={false}
         autoComplete="off"
         aria-label="Kanban Filters"
-        onSubmit={(e) => e.preventDefault()}
-        tabIndex={-1}
         style={{
-          gap: "13px",
+          gap: "12px",
           flexWrap: "wrap",
           marginBottom: "3px",
-          alignItems: "center"
+          alignItems: "center",
+          minWidth: 0
         }}
       >
-        {/* Assignees */}
-        <div
-          className="filter-compact-group"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            minWidth: 0,
-            flex: "1 0 168px",
-            padding: "0 3px"
-          }}
-        >
-          <span title="Assignee" style={{ color: "#38B2AC", fontSize: "1.14em", paddingBottom: 1, display: "flex", alignItems: "center" }}>👤</span>
+        {/* Assignees (dropdown + add via input) */}
+        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <span title="Assignee" aria-label="Assignees" style={{ color: "#38B2AC" }}>👤</span>
+          <select
+            multiple
+            value={filters.assignees}
+            onChange={handleMultiSelect("assignees")}
+            className={"filter-multiselect" + (isActive("assignees") ? " active" : "")}
+            size={1}
+            aria-label="Select assignee(s)"
+            style={{
+              minWidth: 85,
+              maxWidth: 117,
+              fontSize: ".99em",
+              borderRadius: 8,
+              padding: "6px 8px"
+            }}
+          >
+            {assigneeOptions.map((a) => (
+              <option value={a} key={a}>{a}</option>
+            ))}
+          </select>
+          {/* Add new option by typing */}
           <input
             ref={assigneeInputRef}
             value={assigneeInput}
             onChange={handleAssigneeInput}
             onKeyDown={handleAssigneeKeyDown}
-            placeholder="Assignee"
-            aria-label="Filter by assignee"
-            list="kanban-filter-assignee-options"
-            className={"filter-typeahead-input" + (isActive("assignees") ? " active" : "")}
-            autoComplete="off"
-            spellCheck={false}
-            inputMode="text"
-            style={{ minWidth: 68, fontSize: ".99em", maxWidth: 110, borderRadius: 8, height: 33, marginRight: 4 }}
+            placeholder="+assignee"
+            aria-label="Add new assignee filter"
+            className="filter-typeahead-input"
+            style={{
+              width: 72,
+              maxWidth: 108,
+              fontSize: ".97em",
+              borderRadius: "8px"
+            }}
           />
-          <datalist id="kanban-filter-assignee-options">
-            {assigneeOptions.map((a) => (
-              <option value={a} key={a} />
-            ))}
-          </datalist>
-          <div style={{ display: "flex", gap: 2 }}>
-            {filters.assignees.map((a) => (
-              <span className="filter-chip" style={{ fontSize: ".99em", padding: "3px 10px", minHeight: "28px" }} key={a}>
-                {a}
-                <button
-                  type="button"
-                  onClick={() => clearFilter("assignees", a)}
-                  title="Remove"
-                  style={{ marginLeft: "2px", padding: "0 4px", fontSize: ".95em" }}
-                  tabIndex={0}
-                >×</button>
-              </span>
-            ))}
-          </div>
         </div>
         {/* Priority */}
-        <div
-          className="filter-compact-group"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            minWidth: 0,
-            flex: "1 0 124px",
-            padding: "0 3px"
-          }}
-        >
-          <span title="Priority" style={{ color: "#ed6644", fontSize: "1.07em", display: "flex", alignItems: "center" }}>⚡</span>
+        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <span title="Priority" aria-label="Priority" style={{ color: "#ed6644" }}>⚡</span>
           <select
             multiple
             value={filters.priorities}
-            onChange={(e) =>
-              handleMultiSelect(
-                "priorities",
-                Array.from(e.target.selectedOptions, (o) => o.value)
-              )
-            }
+            onChange={handleMultiSelect("priorities")}
             className={"filter-multiselect" + (isActive("priorities") ? " active" : "")}
             size={1}
             aria-label="Select priorities"
-            style={{
-              minWidth: 78,
-              maxWidth: 104,
-              background: "var(--input-bg)",
-              fontSize: ".98em",
-              color: "var(--base-light)",
-              padding: "7px 9px",
-              borderRadius: 8,
-              height: 33
-            }}
+            style={{ minWidth: 74, maxWidth: 97, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
           >
             {priorityOptions.map((p) => (
               <option value={p} key={p}>{p}</option>
             ))}
           </select>
-          <div style={{ display: "flex", gap: 1 }}>
-            {filters.priorities.map((p) => (
-              <span className="filter-chip" style={{ fontSize: ".98em", minHeight: 28 }} key={p}>
-                {p}
-                <button
-                  type="button"
-                  onClick={() => clearFilter("priorities", p)}
-                  title="Remove"
-                  style={{ marginLeft: "2px", padding: "0 4px", fontSize: ".95em" }}
-                  tabIndex={0}
-                >×</button>
-              </span>
-            ))}
-          </div>
         </div>
         {/* Status */}
-        <div
-          className="filter-compact-group"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            minWidth: 0,
-            flex: "1 0 124px",
-            padding: "0 3px"
-          }}
-        >
-          <span title="Status" style={{ color: "#72e0d7", fontSize: "1.06em", display: "flex", alignItems: "center" }}>📊</span>
+        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <span title="Status" aria-label="Status" style={{ color: "#72e0d7" }}>📊</span>
           <select
             multiple
             value={filters.statuses}
-            onChange={(e) =>
-              handleMultiSelect(
-                "statuses",
-                Array.from(e.target.selectedOptions, (o) => o.value)
-              )
-            }
+            onChange={handleMultiSelect("statuses")}
             className={"filter-multiselect" + (isActive("statuses") ? " active" : "")}
             size={1}
             aria-label="Select statuses"
-            style={{
-              minWidth: 78,
-              maxWidth: 104,
-              background: "var(--input-bg)",
-              fontSize: ".98em",
-              color: "var(--color-accent-pastel)",
-              padding: "7px 9px",
-              borderRadius: 8,
-              height: 33
-            }}
+            style={{ minWidth: 72, maxWidth: 87, fontSize: ".97em", borderRadius: 8, padding: "6px 8px" }}
           >
             {statusOptions.map((s) => (
               <option value={s} key={s}>{s}</option>
             ))}
           </select>
-          <div style={{ display: "flex", gap: 1 }}>
-            {filters.statuses.map((s) => (
-              <span className="filter-chip" style={{ fontSize: ".96em", minHeight: 28 }} key={s}>
-                {s}
-                <button
-                  type="button"
-                  onClick={() => clearFilter("statuses", s)}
-                  title="Remove"
-                  style={{ marginLeft: "2px", padding: "0 4px", fontSize: ".93em" }}
-                  tabIndex={0}
-                >×</button>
-              </span>
-            ))}
-          </div>
         </div>
         {/* Columns */}
-        <div
-          className="filter-compact-group"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            minWidth: 0,
-            flex: "1 0 118px",
-            padding: "0 3px"
-          }}
-        >
-          <span title="Column" style={{ color: "#38B2AC", fontSize: "1.03em", display: "flex", alignItems: "center" }}>📦</span>
+        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <span title="Column" aria-label="Column" style={{ color: "#38B2AC" }}>📦</span>
           <select
             multiple
             value={filters.columns}
-            onChange={(e) =>
-              handleMultiSelect(
-                "columns",
-                Array.from(e.target.selectedOptions, (o) => o.value)
-              )
-            }
+            onChange={handleMultiSelect("columns")}
             className={"filter-multiselect" + (isActive("columns") ? " active" : "")}
             size={1}
             aria-label="Select columns"
-            style={{
-              minWidth: 73,
-              maxWidth: 100,
-              background: "var(--input-bg)",
-              fontSize: ".98em",
-              color: "#9ff",
-              padding: "7px 7px",
-              borderRadius: 8,
-              height: 33
-            }}
+            style={{ minWidth: 70, maxWidth: 90, fontSize: ".97em", borderRadius: 8, padding: "6px 8px" }}
           >
             {columnOptions.map((col) => (
               <option key={col.id} value={col.id}>
@@ -428,55 +278,29 @@ export default function FilterPanel({ onFiltersChange }) {
               </option>
             ))}
           </select>
-          <div style={{ display: "flex", gap: 1 }}>
-            {filters.columns.map((c) => (
-              <span className="filter-chip" style={{ fontSize: ".97em", minHeight: 28 }} key={c}>
-                {(columnOptions.find(o=>o.id===c)?.title) || c}
-                <button
-                  type="button"
-                  onClick={() => clearFilter("columns", c)}
-                  title="Remove"
-                  tabIndex={0}
-                  style={{ marginLeft: "2px", padding: "0 4px", fontSize: ".93em" }}
-                >×</button>
-              </span>
-            ))}
-          </div>
         </div>
-        {/* Due Date */}
-        <div
-          className="filter-compact-group"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 4,
-            minWidth: 0,
-            flex: "1 0 132px",
-            padding: "0 2px"
-          }}
-        >
-          <span title="Due Date" style={{ color: "#c6fa94", fontSize: "1.01em", paddingBottom: 1, display: "flex", alignItems: "center" }}>🗓️</span>
+        {/* Due Date Range */}
+        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
+          <span title="Due Date" aria-label="Due Date" style={{ color: "#c6fa94" }}>🗓️</span>
           <input
             type="date"
             value={filters.dueFrom}
-            onChange={(e) => handleDateChange("dueFrom", e.target.value)}
+            onChange={e => handleDateChange("dueFrom", e.target.value)}
             className={"filter-date" + (filters.dueFrom ? " active" : "")}
             aria-label="Due date from"
-            title="Due after or on"
             style={{ minWidth: 69, fontSize: ".93em", borderRadius: 8, height: 32, marginRight: 1 }}
           />
           <span aria-hidden style={{ color: "#888", fontWeight: 400, marginTop: 1, marginLeft: 0 }}>–</span>
           <input
             type="date"
             value={filters.dueTo}
-            onChange={(e) => handleDateChange("dueTo", e.target.value)}
+            onChange={e => handleDateChange("dueTo", e.target.value)}
             className={"filter-date" + (filters.dueTo ? " active" : "")}
             aria-label="Due date to"
-            title="Due before or on"
             style={{ minWidth: 69, fontSize: ".93em", borderRadius: 8, height: 32, marginLeft: 1 }}
           />
         </div>
-        {/* Reset All */}
+        {/* Reset Button */}
         <button
           type="button"
           className="btn filter-reset-btn"
@@ -500,12 +324,20 @@ export default function FilterPanel({ onFiltersChange }) {
           Reset
         </button>
       </form>
-      {/* Chips for currently active filters (all at once, single bar, no extra labels) */}
+      {/* Render all active chips/badges in a compact way */}
       <div className="filter-chipbar" role="list" aria-label="Active filter list" style={{
-        margin: "1px 0 0 0", gap: "6px", minHeight: "20px", flexWrap: "wrap"
+        margin: "1px 0 0 0",
+        gap: "5px",
+        minHeight: "18px",
+        flexWrap: "wrap"
       }}>
         {renderActiveChips().map((chip) => (
-          <span role="listitem" className="filter-chip" style={{ fontSize: ".96em", padding: "3px 9px" }} key={chip.label + chip.value}>
+          <span
+            role="listitem"
+            className="filter-chip"
+            key={chip.label + String(chip.value)}
+            style={{ fontSize: ".94em", padding: "2px 9px", minHeight: 22 }}
+          >
             {chip.label}
             <button
               tabIndex={0}
@@ -513,7 +345,7 @@ export default function FilterPanel({ onFiltersChange }) {
               title="Remove filter"
               aria-label={`Remove ${chip.label}`}
               onClick={() => clearFilter(chip.field, chip.value)}
-              style={{ marginLeft: "3px" }}
+              style={{ marginLeft: "4px", fontSize: ".95em" }}
             >×</button>
           </span>
         ))}
