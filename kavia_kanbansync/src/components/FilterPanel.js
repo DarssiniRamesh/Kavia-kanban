@@ -1,29 +1,71 @@
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useState } from "react";
 import { useKanban } from "../KanbanContext";
 import "./FilterPanel.css";
+import {
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Checkbox,
+  ListItemText,
+  OutlinedInput,
+  Chip,
+  Box,
+  useTheme,
+  Autocomplete,
+  TextField,
+} from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import FlagIcon from "@mui/icons-material/Flag";
+import ViewColumnIcon from "@mui/icons-material/ViewColumn";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import EventIcon from "@mui/icons-material/Event";
 
-/**
- * Helper: Get unique values for a field among all cards (case-insensitive, trimmed, deduped).
- */
+// Helper: get unique field values for multi-selects
 function getUniqueFieldValues(cards, field) {
   return Array.from(
     new Set(cards.map((c) => (c[field] || "").trim()).filter(Boolean))
   ).sort((a, b) => a.localeCompare(b));
 }
 
+// Render MUI chips with minimal style
+function renderChips(values, getLabel, onDelete) {
+  return (
+    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.7 }}>
+      {values.map((val) => (
+        <Chip
+          key={val}
+          label={getLabel(val)}
+          size="small"
+          sx={{
+            bgcolor: "var(--color-bg-chip, #263949)",
+            color: "var(--color-chip-text, #ebfdff)",
+            fontWeight: 600,
+            m: "1px",
+            ".MuiChip-deleteIcon": { color: "#ef8585" },
+          }}
+          onDelete={onDelete ? () => onDelete(val) : undefined}
+        />
+      ))}
+    </Box>
+  );
+}
+
+// PUBLIC_INTERFACE
 /**
- * PUBLIC_INTERFACE
- * Minimal, dropdown-list, multi-select filter panel for Kanban board.
- * Filters: assignee, status, priority, and column—all use dropdown multi-selects with compact chips for selected options.
+ * Minimal, modern, MUI-powered filter panel for Kanban board.
+ * Assignee, Status, Priority, Column filters use <Select multiple> w/ checkboxes, chips for tag display,
+ * and searchable typeahead drop-down (MUI Autocomplete).
  */
 export default function FilterPanel({ onFiltersChange }) {
   const { cards, columns } = useKanban();
+  const theme = useTheme();
 
-  // Filter state: keys based on field names
+  // Filter state
   const [filters, setFilters] = useState({
     assignees: [],
-    priorities: [],
     statuses: [],
+    priorities: [],
     columns: [],
     dueFrom: "",
     dueTo: "",
@@ -34,7 +76,7 @@ export default function FilterPanel({ onFiltersChange }) {
     // eslint-disable-next-line
   }, [filters]);
 
-  // Build unique option lists for dropdowns (from cards or columns)
+  // Build options
   const assigneeOptions = useMemo(
     () => getUniqueFieldValues(cards, "assignee"),
     [cards]
@@ -52,33 +94,39 @@ export default function FilterPanel({ onFiltersChange }) {
     [columns]
   );
 
-  // Handler for dropdown multi-selects (all fields apply same logic)
-  const handleMultiSelect = (field) => (event) => {
-    const values = Array.from(event.target.selectedOptions).map((o) => o.value);
-    setFilters((prev) => ({
-      ...prev,
-      [field]: values
-    }));
-  };
-
-  // Handler to clear a filter field, or a single value if provided
-  const clearFilter = (field, value = null) => {
-    if (value !== null) {
+  // Change handlers for filters
+  function handleSelectChange(field) {
+    return (event) => {
       setFilters((prev) => ({
         ...prev,
-        [field]: prev[field].filter((v) => v !== value),
+        [field]: event.target.value,
       }));
-    } else {
-      setFilters((prev) =>
-        ["dueFrom", "dueTo"].includes(field)
-          ? { ...prev, [field]: "" }
-          : { ...prev, [field]: [] }
-      );
-    }
-  };
+    };
+  }
 
-  // Reset all fields
-  const resetFilters = () => {
+  function handleChipDelete(field, value) {
+    setFilters((prev) => ({
+      ...prev,
+      [field]: prev[field].filter((v) => v !== value),
+    }));
+  }
+
+  function handleAutocompleteChange(field, options) {
+    setFilters((prev) => ({
+      ...prev,
+      [field]: options,
+    }));
+  }
+
+  function clearFilter(field) {
+    setFilters((prev) =>
+      ["dueFrom", "dueTo"].includes(field)
+        ? { ...prev, [field]: "" }
+        : { ...prev, [field]: [] }
+    );
+  }
+
+  function resetFilters() {
     setFilters({
       assignees: [],
       priorities: [],
@@ -87,14 +135,13 @@ export default function FilterPanel({ onFiltersChange }) {
       dueFrom: "",
       dueTo: ""
     });
-  };
+  }
 
-  // Date filter change
-  const handleDateChange = (type, val) => {
+  function handleDateChange(type, val) {
     setFilters((prev) => ({ ...prev, [type]: val }));
-  };
+  }
 
-  // Render all selected filter badges
+  // Render active filter chips
   function renderActiveChips() {
     const chips = [];
     filters.assignees.forEach((a) =>
@@ -117,19 +164,193 @@ export default function FilterPanel({ onFiltersChange }) {
     return chips;
   }
 
-  // Helper: mark an input as active if it has selections or values
-  const isActive = (field) => {
-    if (["dueFrom", "dueTo"].includes(field)) return !!filters[field];
-    return Array.isArray(filters[field]) && filters[field].length > 0;
+  // Helpers for getting option label for columns
+  const getColumnLabel = (id) =>
+    (columnOptions.find((col) => col.id === id) || {}).title || id;
+
+  // Min width + font for minimal, modern look
+  const selectSx = {
+    minWidth: 86,
+    maxWidth: { xs: 150, sm: 200 },
+    fontSize: ".98em",
+    bgcolor: "var(--input-bg, #222a3b)",
+    borderRadius: 1.1,
   };
 
-  // Minimal, visually unified form layout (all dropdowns = multi-select with dropdown UI)
+  // MUI Autocomplete for searchable, taggable drop-downs (assignee, etc)
+  // We'll use freeSolo=false for enforced options, and checkboxes for accessibility.
+  function MultiAutocomplete(field, options, label, icon, placeholder) {
+    return (
+      <Autocomplete
+        sx={{
+          minWidth: 115,
+          maxWidth: 200,
+          "& .MuiInputBase-root": {
+            bgcolor: "var(--input-bg, #232945)",
+            borderRadius: "10px"
+          }
+        }}
+        multiple
+        disableCloseOnSelect
+        options={options}
+        value={filters[field]}
+        onChange={(_, val) => handleAutocompleteChange(field, val)}
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <Chip
+              size="small"
+              variant="filled"
+              sx={{
+                bgcolor: "var(--color-bg-chip, #21384d)",
+                color: "var(--color-chip-text, #ebfdff)",
+                fontWeight: 600,
+                fontSize: ".97em"
+              }}
+              label={option}
+              {...getTagProps({ index })}
+              key={option}
+            />
+          ))
+        }
+        renderOption={(props, option, { selected }) => (
+          <li {...props} key={option}>
+            <Checkbox
+              style={{ marginRight: 8 }}
+              checked={selected}
+              size="small"
+              color="primary"
+            />
+            {option}
+          </li>
+        )}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            size="small"
+            placeholder={placeholder}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <Box sx={{ mr: 0.7, mt: "2px", color: "var(--primary,#38B2AC)" }}>
+                  {icon}
+                </Box>
+              ),
+              sx: { bgcolor: "var(--input-bg, #252B38)" }
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+                px: 0.7,
+                py: 0.3,
+                background: "var(--input-bg, #212a3b)",
+                fontSize: ".97em",
+              }
+            }}
+          />
+        )}
+        isOptionEqualToValue={(opt, val) => opt === val}
+        disableClearable={false}
+        clearOnBlur={false}
+        noOptionsText="No options"
+        checkboxIcon={<Checkbox color="primary" size="small" />}
+        popupIcon={null}
+      />
+    );
+  }
+
+  function ColumnMultiAutocomplete() {
+    return (
+      <Autocomplete
+        sx={{
+          minWidth: 120,
+          maxWidth: 195,
+          "& .MuiInputBase-root": {
+            bgcolor: "var(--input-bg, #232945)",
+            borderRadius: "10px"
+          }
+        }}
+        multiple
+        disableCloseOnSelect
+        options={columnOptions}
+        getOptionLabel={(o) => o.title}
+        value={columnOptions.filter((col) => filters.columns.includes(col.id))}
+        onChange={(_, selectedCols) =>
+          setFilters((prev) => ({
+            ...prev,
+            columns: selectedCols.map((col) => col.id),
+          }))
+        }
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <Chip
+              size="small"
+              variant="filled"
+              sx={{
+                bgcolor: "var(--color-bg-chip,#21384d)",
+                color: "var(--color-chip-text,#ebfdff)",
+                fontWeight: 600,
+                fontSize: ".97em"
+              }}
+              label={option.title}
+              {...getTagProps({ index })}
+              key={option.id}
+            />
+          ))
+        }
+        renderOption={(props, option, { selected }) => (
+          <li {...props} key={option.id}>
+            <Checkbox
+              style={{ marginRight: 8 }}
+              checked={selected}
+              size="small"
+              color="primary"
+            />
+            {option.title}
+          </li>
+        )}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            size="small"
+            placeholder="Columns"
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <Box sx={{ mr: 0.5, mt: "1px", color: "var(--primary,#38B2AC)" }}>
+                  <ViewColumnIcon fontSize="small" />
+                </Box>
+              ),
+              sx: { bgcolor: "var(--input-bg, #252B38)" }
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+                px: 0.7,
+                py: 0.3,
+                background: "var(--input-bg, #212a3b)",
+                fontSize: ".97em",
+              }
+            }}
+          />
+        )}
+        isOptionEqualToValue={(opt, val) => opt.id === val.id}
+        disableClearable={false}
+        clearOnBlur={false}
+        noOptionsText="No columns"
+        popupIcon={null}
+      />
+    );
+  }
+
+  // Minimal, visually unified panel layout
   return (
     <section
       className="kanban-filter-panel"
       aria-label="Kanban Filter Panel"
       role="region"
-      style={{ padding: "6px 0 2px 0", minWidth: 0 }}
+      style={{ padding: "7px 0 3px 0", background: "var(--color-bg-surface,#222937)" }}
     >
       <form
         className="filter-row"
@@ -138,115 +359,89 @@ export default function FilterPanel({ onFiltersChange }) {
         autoComplete="off"
         aria-label="Kanban Filters"
         style={{
-          gap: "12px",
           flexWrap: "wrap",
-          marginBottom: "3px",
+          gap: "10px",
           alignItems: "center",
-          minWidth: 0
+          marginBottom: "3px",
+          minWidth: 0,
         }}
       >
         {/* ASSIGNEE multi-select */}
-        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-          <span title="Assignee" aria-label="Assignees" style={{ color: "#38B2AC" }}>👤</span>
-          <select
-            multiple
-            value={filters.assignees}
-            onChange={handleMultiSelect("assignees")}
-            className={"filter-multiselect" + (isActive("assignees") ? " active" : "")}
-            size={1}
-            aria-label="Select assignee(s)"
-            style={{
-              minWidth: 85,
-              maxWidth: 120,
-              fontSize: ".98em",
-              borderRadius: 8,
-              padding: "6px 8px"
-            }}
-          >
-            {assigneeOptions.map((a) => (
-              <option value={a} key={a}>{a}</option>
-            ))}
-          </select>
+        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+          {MultiAutocomplete(
+            "assignees",
+            assigneeOptions,
+            "Assignee(s)",
+            <PersonIcon fontSize="small" />,
+            "Assignees"
+          )}
         </div>
-
         {/* PRIORITY multi-select */}
-        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-          <span title="Priority" aria-label="Priority" style={{ color: "#ed6644" }}>⚡</span>
-          <select
-            multiple
-            value={filters.priorities}
-            onChange={handleMultiSelect("priorities")}
-            className={"filter-multiselect" + (isActive("priorities") ? " active" : "")}
-            size={1}
-            aria-label="Select priorities"
-            style={{ minWidth: 75, maxWidth: 105, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
-          >
-            {priorityOptions.map((p) => (
-              <option value={p} key={p}>{p}</option>
-            ))}
-          </select>
+        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+          {MultiAutocomplete(
+            "priorities",
+            priorityOptions,
+            "Priority(ies)",
+            <FlagIcon fontSize="small" style={{ color: "#ed6644" }} />,
+            "Priority"
+          )}
         </div>
-
         {/* STATUS multi-select */}
-        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-          <span title="Status" aria-label="Status" style={{ color: "#72e0d7" }}>📊</span>
-          <select
-            multiple
-            value={filters.statuses}
-            onChange={handleMultiSelect("statuses")}
-            className={"filter-multiselect" + (isActive("statuses") ? " active" : "")}
-            size={1}
-            aria-label="Select statuses"
-            style={{ minWidth: 77, maxWidth: 110, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
-          >
-            {statusOptions.map((s) => (
-              <option value={s} key={s}>{s}</option>
-            ))}
-          </select>
+        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+          {MultiAutocomplete(
+            "statuses",
+            statusOptions,
+            "Status(es)",
+            <AssignmentIcon fontSize="small" style={{ color: "#72e0d7" }} />,
+            "Status"
+          )}
         </div>
-
         {/* COLUMN multi-select */}
-        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-          <span title="Column" aria-label="Column" style={{ color: "#38B2AC" }}>📦</span>
-          <select
-            multiple
-            value={filters.columns}
-            onChange={handleMultiSelect("columns")}
-            className={"filter-multiselect" + (isActive("columns") ? " active" : "")}
-            size={1}
-            aria-label="Select columns"
-            style={{ minWidth: 74, maxWidth: 105, fontSize: ".98em", borderRadius: 8, padding: "6px 8px" }}
-          >
-            {columnOptions.map((col) => (
-              <option key={col.id} value={col.id}>
-                {col.title}
-              </option>
-            ))}
-          </select>
+        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+          {ColumnMultiAutocomplete()}
         </div>
-
         {/* Due Date Range */}
-        <div className="filter-compact-group" style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-          <span title="Due Date" aria-label="Due Date" style={{ color: "#c6fa94" }}>🗓️</span>
+        <div
+          style={{
+            minWidth: 0, display: "flex", alignItems: "center", gap: 4,
+            marginLeft: 10
+          }}
+        >
+          <EventIcon fontSize="small" style={{ color: "#c6fa94", marginRight: 2 }} />
           <input
             type="date"
             value={filters.dueFrom}
             onChange={e => handleDateChange("dueFrom", e.target.value)}
-            className={"filter-date" + (filters.dueFrom ? " active" : "")}
+            className="filter-date"
             aria-label="Due date from"
-            style={{ minWidth: 69, fontSize: ".93em", borderRadius: 8, height: 32, marginRight: 1 }}
+            style={{
+              minWidth: 69,
+              fontSize: ".93em",
+              borderRadius: 8,
+              height: 32,
+              background: "var(--input-bg,#212a3b)",
+              color: "var(--color-text-main,#fff)",
+              border: "1.5px solid var(--input-border,#38B2AC)"
+            }}
           />
-          <span aria-hidden style={{ color: "#888", fontWeight: 400, marginTop: 1, marginLeft: 0 }}>–</span>
+          <span aria-hidden style={{ color: "#888", fontWeight: 400, margin: "0 2px" }}>–</span>
           <input
             type="date"
             value={filters.dueTo}
             onChange={e => handleDateChange("dueTo", e.target.value)}
-            className={"filter-date" + (filters.dueTo ? " active" : "")}
+            className="filter-date"
             aria-label="Due date to"
-            style={{ minWidth: 69, fontSize: ".93em", borderRadius: 8, height: 32, marginLeft: 1 }}
+            style={{
+              minWidth: 69,
+              fontSize: ".93em",
+              borderRadius: 8,
+              height: 32,
+              background: "var(--input-bg,#212a3b)",
+              color: "var(--color-text-main,#fff)",
+              border: "1.5px solid var(--input-border,#38B2AC)"
+            }}
           />
         </div>
-
         {/* Reset Button */}
         <button
           type="button"
@@ -257,13 +452,9 @@ export default function FilterPanel({ onFiltersChange }) {
             background: "#132944",
             color: "#ff8070",
             fontWeight: 700,
-            fontSize: ".96em",
-            padding: "7px 14px",
             marginLeft: 9,
-            marginTop: "0",
-            height: 34,
-            minWidth: 68,
-            letterSpacing: "0.02em",
+            fontSize: ".98em",
+            padding: "7px 15px",
             borderRadius: "12px"
           }}
           onClick={resetFilters}
@@ -271,19 +462,33 @@ export default function FilterPanel({ onFiltersChange }) {
           Reset
         </button>
       </form>
-      {/* Render all active chips/badges in a compact way */}
-      <div className="filter-chipbar" role="list" aria-label="Active filter list" style={{
-        margin: "1px 0 0 0",
-        gap: "5px",
-        minHeight: "18px",
-        flexWrap: "wrap"
-      }}>
+      {/* Render active chips for any field */}
+      <div
+        className="filter-chipbar"
+        role="list"
+        aria-label="Active filter list"
+        style={{
+          margin: "2px 0 0 0",
+          gap: "4px",
+          minHeight: "18px",
+          flexWrap: "wrap",
+        }}
+      >
         {renderActiveChips().map((chip) => (
           <span
             role="listitem"
             className="filter-chip"
             key={chip.label + String(chip.value)}
-            style={{ fontSize: ".94em", padding: "2px 9px", minHeight: 22 }}
+            style={{
+              fontSize: ".92em",
+              padding: "2.7px 9px",
+              minHeight: 24,
+              background: "var(--chip-bg,#213a4d)",
+              color: "var(--color-chip-text,#ebfdff)",
+              borderRadius: 13,
+              marginRight: 3,
+              marginBottom: 3,
+            }}
           >
             {chip.label}
             <button
@@ -291,8 +496,12 @@ export default function FilterPanel({ onFiltersChange }) {
               type="button"
               title="Remove filter"
               aria-label={`Remove ${chip.label}`}
-              onClick={() => clearFilter(chip.field, chip.value)}
-              style={{ marginLeft: "4px", fontSize: ".95em" }}
+              onClick={() =>
+                chip.value
+                  ? handleChipDelete(chip.field, chip.value)
+                  : clearFilter(chip.field)
+              }
+              style={{ marginLeft: "4px", fontSize: ".95em", color: "#ef8585" }}
             >×</button>
           </span>
         ))}
