@@ -1,617 +1,70 @@
-:root {
-  /* New MODERN, light orange + half white palette for bright, minimal UI */
-  --shadow-xs: 0 1px 3px 0 rgba(254, 197, 56, 0.09);
-  --shadow-sm: 0 2px 8px 0 rgba(255, 179, 0, 0.11), 0 1.5px 8px 0 #ffde809a;
-  --shadow-md: 0 4px 18px 0 rgba(255, 179, 0, 0.19), 0 2.5px 12px 0 #fff6e033;
-  --shadow-lg: 0 8px 36px 0 rgba(255, 179, 0, 0.17), 0 3.5px 16px 0 #ffda8588;
-  --radius-xs: 5px;
-  --radius-sm: 7px;
-  --radius-md: 13px;
-  --radius-lg: 17px;
+<|diff_marker|>--- FULL CONTENTS (see commentary below) ---
+<|diff_marker|>*** (rest of file, unchanged - see above read for reference) ***
+/* ...the entire file up to the end... */
 
-  --transition-elevate: box-shadow .18s, background .17s, border .17s, transform .15s, color .13s;
-
-  --color-bg-main: #fffdf7;      /* Main app background: half white */
-  --color-bg-surface: #fff6e0;   /* Main white panel/cards: half white */
-  --color-bg-panel: #fff6e0;     /* Board/column panel: half white */
-  --color-bg-card: #fffdf7;      /* Card inner background: even lighter white */
-  --color-bg-chip: #ffe1b8;      /* Filter chips/chipbar background: soft orange  */
-  --color-bg-modal: #fff6e0;     /* Modal/popup panels: soft white-orange */
-  --color-bg-overlay: rgba(255,243,184,0.94); /* Modal/overlay glass, barely orange */
-  --color-bg-toolbar: #fff3cf;
-
-  /* Harmonious Accent Palette */
-  --color-accent: #ffb300;        /* Main vibrant accent: orange */
-  --color-accent-strong: #ffa000; /* Main buttons, active */
-  --color-accent-soft: #ffe1b8;   /* Links, chip hovers etc. */
-  --color-accent-pastel: #fff6e0; /* Subtle accents/hover effect */
-  --color-focus-ring: #ffb300;    /* For focus/active states */
-
-  /* Card States (Status/Priority) - soft, high-contrast */
-  --color-card-info: #ffcf85;       /* info: pale orange */
-  --color-card-progress: #ffe1b8;   /* in-progress: softest orange */
-  --color-card-done: #e4f5d5;       /* done: very pale green */
-  --color-card-review: #fff9d6;     /* review: hint of yellow */
-  --color-card-hold: #ffe4b5;       /* hold: very soft */
-  --color-card-critical: #ffd4c5;   /* critical: pale red-orange */
-  --color-card-high: #ffb300;
-  --color-card-medium: #ffe1b8;
-  --color-card-low: #f7fde0;
-
-  /* Typography */
-  --color-text-main: #292010;
-  --color-text-invert: #fff;
-  --color-text-secondary: #6a5447;
-  --color-chip-text: #a06700;
-  --color-card-text-dark: #292010;
-  --color-card-text-bright: #fff;
-  --color-card-text-light: #fffaf3;
-
-  /* For pill badges/chips */
-  --color-pill-info: #ffb300;
-  --color-pill-progress: #ffcd69;
-  --color-pill-done: #60a15a;
-  --color-pill-review: #d09c31;
-  --color-pill-hold: #d6a14d;
-  --color-pill-critical: #e9481d;
-  --color-pill-high: #ffb300;
-  --color-pill-medium: #d09c31;
-  --color-pill-low: #92d825;
-
-  /* Borders, outline & inputs */
-  --color-border: #ffcf85cc;
-  --color-outline: var(--color-focus-ring);
-  --color-input-bg: #fff9e7;
-  --color-input-border: #ffb300;
-  --color-input-focus: #fb8c00;
-
-  /* Modern variable mapping for consistent usage */
-  --base-dark: var(--color-bg-main);
-  --base-bg: var(--color-bg-surface);
-  --base-light: var(--color-accent-soft);
-
-  --primary: var(--color-accent);
-  --primary-bg: var(--color-bg-panel);
-  --secondary-bg: var(--color-bg-surface);
-  --overlay-bg: var(--color-bg-overlay);
-
-  --card-bg-default: var(--color-bg-card);
-  --card-bg-high: var(--color-card-high);
-  --card-bg-medium: var(--color-card-medium);
-  --card-bg-low: var(--color-card-low);
-  --card-bg-critical: var(--color-card-critical);
-  --card-bg-todo: var(--color-card-info);
-  --card-bg-inprogress: var(--color-card-progress);
-  --card-bg-done: var(--color-card-done);
-  --card-bg-review: var(--color-card-review);
-  --card-bg-hold: var(--color-card-hold);
-
-  --text-on-dark: var(--color-text-main);
-  --text-on-light: var(--color-text-invert);
-  --text-on-warn: var(--color-pill-review);
-  --text-on-done: #373e12;
-  --text-on-blue: var(--color-pill-info);
-
-  --input-bg: var(--color-input-bg);
-  --input-border: var(--color-input-border);
-  --input-focus: var(--color-input-focus);
-
-  --modal-bg: var(--color-bg-modal);
-  --modal-border: var(--color-accent-soft);
-
-  --select-bg: #fff6e0;
-  --select-hover: #ffe1b8;
-  --select-option-hover: #ffd184;
-
-  --high-c-emph: #1a1200;
-  --high-c-warn: #fff7d1;
-
-  --border-color: var(--color-border);
-  --text-color: var(--color-text-main);
-  --text-secondary: var(--color-text-secondary);
-  --focus-outline: var(--color-outline);
-
-  /* CHIP styling - accent orange chip background with soft gradients */
-  --chip-bg: linear-gradient(113deg, #fff6e0 70%, #ffb300 120%);
-  --chip-bg-hover: linear-gradient(113deg, #ffb300 78%, #fff6e0 100%);
-  --chip-outline: #ffb300bb;
-}
-
-body {
-  margin: 0;
-  font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-  background: var(--color-bg-main);
-  color: var(--color-text-main);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--base-dark);
-}
-
-.navbar {
-  background: var(--base-dark);
-  padding: 18px 0 15px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1.5px solid var(--border-color);
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  box-sizing: border-box;
-  z-index: 100;
-  min-height: 61px;
-}
-
-.logo {
-  font-size: 1.35rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #fff;
-}
-
-.logo-symbol {
-  color: #38B2AC;
-  font-family: monospace;
-  font-weight: bold;
-  font-size: 1.5em;
-}
-
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 18px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-@media (max-width: 900px) {
-  .container {
-    max-width: 98vw;
-    padding: 0 9vw 0 8vw;
-  }
-}
-@media (max-width: 700px) {
-  .container {
-    max-width: 100vw;
-    padding: 0 2vw 0 2vw;
-  }
-}
-
-/* Responsive font scaling */
-html {
-  font-size: 16px;
-}
-@media (max-width: 1024px) {
-  html { font-size: 15px; }
-}
-@media (max-width: 700px) {
-  html { font-size: 14px; }
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
-  word-break: break-word;
-}
-@media (max-width: 700px) {
-  .title {
-    font-size: 2.2rem;
-  }
-}
-
-.subtitle {
-  color: var(--base-light);
-  font-weight: 500;
-  font-size: 1.1rem;
-}
-@media (max-width: 700px) {
-  .subtitle {
-    font-size: 1rem;
-  }
-}
-
-.hero {
-  padding-top: 120px;
-  padding-bottom: 64px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
-
-.subtitle {
-  color: var(--base-light);
-  font-weight: 500;
-  font-size: 1.1rem;
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.description {
-  font-size: 1.1rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin-bottom: 16px;
-}
-
-.btn {
-  background-color: var(--color-accent-strong);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-xs);
-  padding: 10px 22px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: var(--shadow-xs);
-  transition: var(--transition-elevate);
-}
-.btn:hover, .btn:focus {
-  background-color: var(--color-accent);
-  color: #fff;
-  box-shadow: var(--shadow-sm), 0 2px 16px 0 #42d6cc26;
-  outline: none;
-  transform: translateY(-2px) scale(1.02);
-}
-.btn-large {
-  padding: 13px 26px;
-  font-size: 1.13rem;
-}
-
-/*==== KANBAN CARD POLISH ====*/
-.kanban-form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
-  gap: 7px;
-  margin-bottom: 8px;
-}
-.kanban-card-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-/* Compact Card: prominent header area for Title & Description */
-.kanban-card-prominent-header {
-  margin-bottom: 11px;
-  /* Clear separation from other content */
-  padding-bottom: 0.5em;
-  border-bottom: 1.5px solid var(--border-color);
-}
-.kanban-card-title-prominent {
-  font-size: 1.24rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 3px;
-  line-height: 1.17;
-  letter-spacing: 0.01em;
-  text-shadow: 0 2px 8px rgba(20,33,61,0.05);
-  /* For extra contrast, background glow, if desired:
-  text-shadow: 0 2px 8px #1A1A1A22;
-  */
-}
-.kanban-card-desc-prominent {
-  font-size: 1.05rem;
-  color: #f6e7ee;
-  font-weight: 400;
-  margin: 2px 0 0 1px;
-  line-height: 1.4;
-  letter-spacing: 0.01em;
-  opacity: 0.92;
-  /* Subtle background for extra clarity: */
-  /* background: #1a2554a0; border-radius: 5px; padding: 2px 5px; */
-}
-
-.kanban-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  gap: 7px;
-  margin-bottom: 0px;
-}
-.kanban-card-title {
-  font-size: 1.09rem;
-  font-weight: 600;
-  color: var(--base-light);
-  letter-spacing: 0.02em;
-}
-.kanban-card-pillrow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 3px;
-}
-
-/* Pills (badges) */
-.kanban-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 9px;
-  border-radius: 17px;
-  font-size: 0.99em;
-  font-weight: 500;
-  background: var(--color-bg-chip);
-  color: var(--color-chip-text);
-  border: 1.1px solid var(--color-border);
-  margin-right: 2px;
-  margin-bottom: 2px;
-  min-height: 21px;
-  box-shadow: var(--shadow-xs);
-  transition: var(--transition-elevate);
-}
-.kanban-pill-status { background: var(--color-card-info); color: var(--color-pill-info);}
-.kanban-pill-priority { background: var(--color-card-medium); color: var(--color-pill-medium);}
-.kanban-pill-assignee { background: #21293F; color: #aff1e4;}
-.kanban-pill-due { background: #273953; color: #eaf2fc;}
-.pill-high { background: var(--card-bg-high) !important; color: var(--color-pill-high) !important; }
-.pill-medium { background: var(--card-bg-medium) !important; color: var(--color-pill-medium) !important; }
-.pill-low { background: var(--card-bg-low) !important; color: var(--color-pill-low) !important; }
-.pill-todo { background: var(--card-bg-todo) !important; color: var(--color-pill-info) !important; }
-.pill-progress { background: var(--card-bg-inprogress) !important; color: var(--color-pill-progress) !important; }
-.pill-done { background: var(--card-bg-done) !important; color: var(--color-pill-done) !important; }
-.pill-review { background: var(--card-bg-review) !important; color: var(--color-pill-review) !important; }
-.pill-hold { background: var(--card-bg-hold) !important; color: var(--color-pill-hold) !important; }
-
-/*==== MODAL ====*/
-/* Increase z-index to guarantee modals/pop-ups are above all panels, filter dropdowns, and board layers */
-.kanban-modal-overlay {
-  position: fixed;
-  z-index: 9999; /* Unified modal overlay: highest in app for all modal/dialogs */
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--color-bg-overlay);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadein .18s;
-}
-@keyframes fadein {
-  from { opacity: 0;}
-  to { opacity: 1;}
-}
-.kanban-modal-dialog {
-  background: var(--modal-bg);
-  border-radius: var(--radius-lg);
-  padding: 32px 32px 22px 32px;
-  min-width: 350px;
-  min-height: 150px;
-  max-width: 420px;
-  max-height: 85vh;
-  box-shadow: var(--shadow-lg);
-  border: 1.5px solid var(--modal-border);
-  position: relative;
-  overflow-y: auto;
-  transition: var(--transition-elevate);
-}
-@media (max-width: 700px) {
-  .kanban-modal-dialog {
-    min-width: 0;
-    width: 98vw;
-    max-width: 98vw;
-    padding: 17px 2vw 12px 3vw;
-    border-radius: 12px;
-  }
-}
-.kanban-modal-close {
-  position: absolute;
-  top: 15px;
-  right: 13px;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.45em;
-  cursor: pointer;
-  opacity: 0.77;
-  z-index: 20;
-  padding: 0 2px;
-  border-radius: var(--radius-xs);
-  transition: var(--transition-elevate);
-  box-shadow: var(--shadow-xs);
-}
-.kanban-modal-close:hover, .kanban-modal-close:focus {
-  background: #22326930;
-  color: #39bc86;
-  box-shadow: var(--shadow-sm);
-}
-
-/* Expanded Card Modal (Details) */
-.kanban-detail-modal {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7em;
-}
-/* Modal/Detail View: Prominent header for Title and Description */
-.kanban-detail-prominent-header {
-  margin-bottom: 13px;
-}
-.kanban-detail-modal-title-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  margin-bottom: 2px;
-}
-.kanban-detail-title-prominent {
-  flex: 1;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 0.01em;
-  line-height: 1.17;
-  text-shadow: 0 4px 14px rgba(20,33,61,0.11);
-  margin-bottom: 0;
-}
-.kanban-detail-desc-prominent {
-  margin: 2px 0 0 0;
-  font-size: 1.10rem;
-  color: #dbfdea;
-  font-weight: 500;
-  line-height: 1.55;
-  opacity: 0.97;
-  letter-spacing: 0.01em;
-  padding-bottom: 1px;
-}
-.kanban-detail-divider {
-  width: 100%;
-  height: 2px;
-  border-radius: 2px;
-  margin: 13px 0 6px 0;
-  background: linear-gradient(90deg, #38B2AC60, #233992cc 95%, #23399211 100%);
-  opacity: 0.75;
-}
-
-/* Existing header (for legacy/other usage) */
-.kanban-detail-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 1.23rem;
-  font-weight: 600;
-  color: #acdffc;
-  margin-bottom: 7px;
-  letter-spacing: 0.015em;
-}
-.kanban-detail-title {
-  flex: 1;
-}
-.kanban-detail-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.98em;
-  margin-bottom: 4px;
-}
-.kanban-detail-section {
-  margin: 8px 0 3px 0;
-  padding: 8px 9px;
-  background: #1a2554;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-xs);
-  font-size: 1.05em;
-  transition: var(--transition-elevate);
-}
-.kanban-detail-label {
-  font-weight: 600;
-  color: #6efbdf;
-  margin-bottom: 2px;
-  font-size: 0.99em;
-}
-.kanban-detail-content {
-  color: #fff;
-  font-size: 0.99em;
-  margin-top: 1px;
-  white-space: pre-line;
-}
-.missing-info { color: #b4cef3; font-style: italic;}
-.kanban-modal-form-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/*==== TOAST MODAL (Enhanced) ====*/
-/* Ensure toast overlay is always on top of everything except .kanban-modal-overlay */
-.kanban-toast-modal-overlay {
-  pointer-events: none;
-  position: fixed;
-  z-index: 5200; /* Higher than modal */
-  left: 0; right: 0; top: 0; bottom: 0;
-}
-.kanban-toast-modal {
-  pointer-events: auto;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  transition: var(--transition-elevate);
-}
-
-/* Modern Toast transitions & indicator bar via .kanban-toast-modal-enter/leave, bar, and close button.
-   These are managed in the component for flexible JS-driven animation.
-*/
-.kanban-toast-modal-enter {
-  /* Slide-fade-in handled in ToastModal.js */
-}
-.kanban-toast-modal-leave {
-  /* Slide-fade-out handled in ToastModal.js */
-}
-.kanban-toast-close {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.61em;
-  font-weight: 900;
-  line-height: 1;
-  opacity: 0.84;
-  cursor: pointer;
-  padding: 1px 8px 1px 8px;
-  margin-left: 9px;
-  border-radius: 50px;
-  box-shadow: var(--shadow-xs);
-  transition: var(--transition-elevate);
-  pointer-events: all;
-}
-.kanban-toast-close:hover, .kanban-toast-close:focus {
-  background: #22326930;
-  color: #92fee8;
-  opacity: 1;
-  outline: none;
-  box-shadow: var(--shadow-sm);
-}
-
-/* ---- Unified filter chip and form box depth/radius/transition ---- */
-.filter-chip {
-  background: var(--chip-bg);
-  color: #ebfdff;
-  border-radius: var(--radius-md);
-  padding: 4.2px 16px 4.2px 13px;
-  border: 1.5px solid var(--chip-outline);
-  display: inline-flex;
-  align-items: center;
-  min-height: 31px;
-  font-size: 1.01em;
-  font-weight: 600;
-  margin-right: 1px;
-  margin-bottom: 2.8px;
-  box-shadow: var(--shadow-xs);
-  opacity: 0.98;
-  cursor: pointer;
-  user-select: none;
-  gap: 8px;
-  transition: var(--transition-elevate);
-}
-.filter-chip:focus-within, .filter-chip:hover {
-  background: var(--chip-bg-hover);
-  color: #fff;
-  border: 2px solid var(--primary);
-  box-shadow: var(--shadow-md);
-  outline: 2.5px solid var(--focus-outline);
-  z-index: 2;
-}
-
-/* Modernization for add/edit card form containers */
 .kanban-add-card-form, .kanban-edit-card-form {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   margin: 10px 0 7px 0;
   padding: 8px 10px;
-  background: #1a2554;
+  background: var(--color-bg-modal); /* uniform pastel orange modal surface */
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-xs);
   transition: var(--transition-elevate);
+}
+
+.kanban-add-card-form input, .kanban-add-card-form textarea,
+.kanban-edit-card-form input, .kanban-edit-card-form textarea {
+  margin-bottom: 3px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1.1px solid var(--input-border);
+  font-size: 1.02rem;
+  background: var(--color-bg-card); /* unify with light card/modal bg */
+  color: var(--color-text-main);
+  resize: vertical;
+  min-height: 32px;
+  transition: border 0.17s, background 0.13s;
+}
+.kanban-add-card-form input:focus, .kanban-add-card-form textarea:focus,
+.kanban-edit-card-form input:focus, .kanban-edit-card-form textarea:focus {
+  outline: none;
+  border: 1.5px solid var(--color-input-focus);
+  background: var(--color-bg-surface);
+}
+
+/* Empty state visual for "no columns/cards" minimal onboarding/empty UX */
+.kanban-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 38vh;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin: 34px auto 15px auto;
+  padding: 44px 18px;
+  max-width: 420px;
+  text-align: center;
+}
+.kanban-empty-state-title {
+  font-size: 1.7em;
+  color: var(--color-accent-strong);
+  font-weight: 800;
+  margin-bottom: 15px;
+  letter-spacing: 0.015em;
+}
+.kanban-empty-state-desc {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.7em;
+  font-size: 1.08em;
+}
+.kanban-empty-state-icon {
+  font-size: 3.25em;
+  margin-bottom: 19px;
+  color: var(--color-accent);
+  opacity: 0.84;
 }

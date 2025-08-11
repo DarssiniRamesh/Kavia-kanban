@@ -183,6 +183,12 @@ function KanbanBoardInner() {
           <div className="kanban-loading">Loading...</div>
         ) : error ? (
           <div className="kanban-error">{error}</div>
+        ) : columns.length === 0 ? (
+          <div className="kanban-empty-state">
+            <span className="kanban-empty-state-icon" role="img" aria-label="Clipboard">📋</span>
+            <div className="kanban-empty-state-title">No columns yet</div>
+            <div className="kanban-empty-state-desc">Start by adding your first column.<br />Columns organize your work by stage or priority.</div>
+          </div>
         ) : (
           columns.map((col, idx) =>
             <DraggableKanbanColumn
