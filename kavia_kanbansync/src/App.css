@@ -381,17 +381,18 @@ html {
   to { opacity: 1;}
 }
 .kanban-modal-dialog {
-  background: var(--modal-bg);
+  background: #0747A6; /* Jira blue strong for modal */
   border-radius: var(--radius-lg);
   padding: 32px 32px 22px 32px;
   min-width: 350px;
   min-height: 150px;
   max-width: 420px;
   max-height: 85vh;
-  box-shadow: var(--shadow-lg);
-  border: 1.5px solid var(--modal-border);
+  box-shadow: 0 8px 36px 0 rgba(0, 82, 204, 0.33), 0 3.5px 18px 0 #0052cc40;
+  border: 2.5px solid #0052CC;
   position: relative;
   overflow-y: auto;
+  color: #fff;
   transition: var(--transition-elevate);
 }
 @media (max-width: 700px) {
@@ -407,22 +408,26 @@ html {
   position: absolute;
   top: 15px;
   right: 13px;
-  background: none;
+  background: #0052CC;
   border: none;
   color: #fff;
   font-size: 1.45em;
   cursor: pointer;
-  opacity: 0.77;
+  opacity: 0.94;
   z-index: 20;
-  padding: 0 2px;
-  border-radius: var(--radius-xs);
+  padding: 1px 8px;
+  border-radius: 22px;
   transition: var(--transition-elevate);
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 2px 10px #0052cc55;
+  font-weight: bold;
+  outline: 2px solid transparent;
 }
-.kanban-modal-close:hover, .kanban-modal-close:focus {
-  background: #22326930;
-  color: #39bc86;
-  box-shadow: var(--shadow-sm);
+.kanban-modal-close:hover,
+.kanban-modal-close:focus {
+  background: #0747a6;
+  color: #ffb300;
+  box-shadow: 0 2px 17px #0052cc77;
+  outline: 2px solid #ffb300;
 }
 
 /* Expanded Card Modal (Details) */
@@ -430,10 +435,13 @@ html {
   display: flex;
   flex-direction: column;
   gap: 0.7em;
+  background: transparent !important;
+  color: #fff;
 }
 /* Modal/Detail View: Prominent header for Title and Description */
 .kanban-detail-prominent-header {
   margin-bottom: 13px;
+  background: none !important;
 }
 .kanban-detail-modal-title-row {
   display: flex;
@@ -443,21 +451,23 @@ html {
 }
 .kanban-detail-title-prominent {
   flex: 1;
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 800;
   color: #fff;
   letter-spacing: 0.01em;
-  line-height: 1.17;
-  text-shadow: 0 4px 14px rgba(20,33,61,0.11);
+  line-height: 1.14;
+  text-shadow: 0 4px 18px rgba(14,34,89,0.18);
   margin-bottom: 0;
+  border-radius: 5px;
+  padding-left: 0;
 }
 .kanban-detail-desc-prominent {
   margin: 2px 0 0 0;
-  font-size: 1.10rem;
-  color: #dbfdea;
-  font-weight: 500;
+  font-size: 1.11rem;
+  color: #b9d7ff;
+  font-weight: 400;
   line-height: 1.55;
-  opacity: 0.97;
+  opacity: 0.99;
   letter-spacing: 0.01em;
   padding-bottom: 1px;
 }
@@ -466,8 +476,8 @@ html {
   height: 2px;
   border-radius: 2px;
   margin: 13px 0 6px 0;
-  background: linear-gradient(90deg, #38B2AC60, #233992cc 95%, #23399211 100%);
-  opacity: 0.75;
+  background: linear-gradient(90deg, #0052CC 5%, #0747A6 55%, #B8D3F5 100%);
+  opacity: 0.87;
 }
 
 /* Existing header (for legacy/other usage) */
@@ -494,18 +504,20 @@ html {
 .kanban-detail-section {
   margin: 8px 0 3px 0;
   padding: 8px 9px;
-  background: var(--color-bg-modal);
+  background: #0052CC33 !important;
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-xs);
-  font-size: 1.05em;
-  color: var(--color-text-main);
+  box-shadow: 0 1px 7px #0052cc22;
+  font-size: 1.07em;
+  color: #fff !important;
   transition: var(--transition-elevate);
 }
 .kanban-detail-label {
-  font-weight: 600;
-  color: var(--color-accent, #ffb300);
-  margin-bottom: 2px;
-  font-size: 0.99em;
+  font-weight: 700;
+  color: #ffb300;
+  margin-bottom: 3px;
+  font-size: 1.01em;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 6px rgba(14,34,89,0.12);
 }
 .kanban-detail-content {
   color: var(--color-text-main);
@@ -518,6 +530,8 @@ html {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  background: none;
+  border: none;
 }
 
 /*==== TOAST MODAL (Enhanced) ====*/
@@ -605,9 +619,10 @@ html {
   gap: 0.5em;
   margin: 10px 0 7px 0;
   padding: 8px 10px;
-  background: var(--color-bg-modal, #fff6e0);
+  background: #0747A6 !important;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-xs);
+  border: 1.8px solid #0052CC;
+  box-shadow: 0 1.5px 14px 0 #0052cc3b;
+  color: #fff;
   transition: var(--transition-elevate);
 }
