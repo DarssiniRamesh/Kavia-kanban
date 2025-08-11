@@ -1,9 +1,9 @@
 :root {
-  /* New MODERN, light orange + half white palette for bright, minimal UI */
-  --shadow-xs: 0 1px 3px 0 rgba(254, 197, 56, 0.09);
-  --shadow-sm: 0 2px 8px 0 rgba(255, 179, 0, 0.11), 0 1.5px 8px 0 #ffde809a;
-  --shadow-md: 0 4px 18px 0 rgba(255, 179, 0, 0.19), 0 2.5px 12px 0 #fff6e033;
-  --shadow-lg: 0 8px 36px 0 rgba(255, 179, 0, 0.17), 0 3.5px 16px 0 #ffda8588;
+  /* Modern JIRA-themed palette using Jira blue (#0052CC) and Atlassian neutrals */
+  --shadow-xs: 0 1px 3px 0 rgba(0, 82, 204, 0.09);
+  --shadow-sm: 0 2px 8px 0 rgba(0, 82, 204, 0.13), 0 1.5px 8px 0 #B8D3F5aa;
+  --shadow-md: 0 4px 18px 0 rgba(0, 82, 204, 0.16), 0 2.5px 12px 0 #a6befb51;
+  --shadow-lg: 0 8px 36px 0 rgba(0,82,204,0.17), 0 3.5px 16px 0 #74a1de88;
   --radius-xs: 5px;
   --radius-sm: 7px;
   --radius-md: 13px;
@@ -11,61 +11,61 @@
 
   --transition-elevate: box-shadow .18s, background .17s, border .17s, transform .15s, color .13s;
 
-  --color-bg-main: #fffdf7;      /* Main app background: half white */
-  --color-bg-surface: #fff6e0;   /* Main white panel/cards: half white */
-  --color-bg-panel: #fff6e0;     /* Board/column panel: half white */
-  --color-bg-card: #fffdf7;      /* Card inner background: even lighter white */
-  --color-bg-chip: #ffe1b8;      /* Filter chips/chipbar background: soft orange  */
-  --color-bg-modal: #fff6e0;     /* Modal/popup panels: soft white-orange */
-  --color-bg-overlay: rgba(255,243,184,0.94); /* Modal/overlay glass, barely orange */
-  --color-bg-toolbar: #fff3cf;
+  --color-bg-main: #F4F5F7;      /* Main app background: Jira off white */
+  --color-bg-surface: #EBECF0;   /* Panel/surface */
+  --color-bg-panel: #EBECF0;     /* Board/column panel */
+  --color-bg-card: #fff;         /* Card true background: white */
+  --color-bg-chip: #DEEBFF;      /* Filter chips/chipbar background: pale blue */
+  --color-bg-modal: #fff;        /* Modal/popup panels: pure white */
+  --color-bg-overlay: rgba(14, 38, 89, 0.13); /* Modal/overlay glass, Jira blue tint */
+  --color-bg-toolbar: #EBECF0;
 
-  /* Harmonious Accent Palette */
-  --color-accent: #ffb300;        /* Main vibrant accent: orange */
-  --color-accent-strong: #ffa000; /* Main buttons, active */
-  --color-accent-soft: #ffe1b8;   /* Links, chip hovers etc. */
-  --color-accent-pastel: #fff6e0; /* Subtle accents/hover effect */
-  --color-focus-ring: #ffb300;    /* For focus/active states */
+  /* Accent Palette using Jira Blue */
+  --color-accent: #0052CC;        /* Main accent: Jira blue */
+  --color-accent-strong: #0747A6; /* Buttons, active states */
+  --color-accent-soft: #DEEBFF;   /* Link/chip hover etc. */
+  --color-accent-pastel: #F4F5F7; /* Subtle accent/hover */
+  --color-focus-ring: #0052CC;    /* For focus/active states */
 
-  /* Card States (Status/Priority) - soft, high-contrast */
-  --color-card-info: #ffcf85;       /* info: pale orange */
-  --color-card-progress: #ffe1b8;   /* in-progress: softest orange */
-  --color-card-done: #e4f5d5;       /* done: very pale green */
-  --color-card-review: #fff9d6;     /* review: hint of yellow */
-  --color-card-hold: #ffe4b5;       /* hold: very soft */
-  --color-card-critical: #ffd4c5;   /* critical: pale red-orange */
-  --color-card-high: #ffb300;
-  --color-card-medium: #ffe1b8;
-  --color-card-low: #f7fde0;
+  /* Card States - JIRA inspired */
+  --color-card-info: #DEEBFF;       /* info: Jira chip blue */
+  --color-card-progress: #B3D4FF;   /* in-progress: mid blue */
+  --color-card-done: #E3FCEF;       /* done: pale green */
+  --color-card-review: #FFF0B3;     /* review: hint yellow */
+  --color-card-hold: #FFEBE6;       /* hold: pale red */
+  --color-card-critical: #FF7452;   /* critical: bright red */
+  --color-card-high: #FFAB00;       /* Jira yellow/orange */
+  --color-card-medium: #B3D4FF;
+  --color-card-low: #DEEBFF;
 
   /* Typography */
-  --color-text-main: #292010;
+  --color-text-main: #172B4D;
   --color-text-invert: #fff;
-  --color-text-secondary: #6a5447;
-  --color-chip-text: #a06700;
-  --color-card-text-dark: #292010;
+  --color-text-secondary: #42526E;
+  --color-chip-text: #0747A6;
+  --color-card-text-dark: #172B4D;
   --color-card-text-bright: #fff;
-  --color-card-text-light: #fffaf3;
+  --color-card-text-light: #F4F5F7;
 
   /* For pill badges/chips */
-  --color-pill-info: #ffb300;
-  --color-pill-progress: #ffcd69;
-  --color-pill-done: #60a15a;
-  --color-pill-review: #d09c31;
-  --color-pill-hold: #d6a14d;
-  --color-pill-critical: #e9481d;
-  --color-pill-high: #ffb300;
-  --color-pill-medium: #d09c31;
-  --color-pill-low: #92d825;
+  --color-pill-info: #0052CC;
+  --color-pill-progress: #0065ff;
+  --color-pill-done: #36B37E;
+  --color-pill-review: #FFAB00;
+  --color-pill-hold: #FF5630;
+  --color-pill-critical: #DE350B;
+  --color-pill-high: #FFAB00;
+  --color-pill-medium: #B3D4FF;
+  --color-pill-low: #DEEBFF;
 
   /* Borders, outline & inputs */
-  --color-border: #ffcf85cc;
+  --color-border: #B8D3F5cc;
   --color-outline: var(--color-focus-ring);
-  --color-input-bg: #fff9e7;
-  --color-input-border: #ffb300;
-  --color-input-focus: #fb8c00;
+  --color-input-bg: #EBECF0;
+  --color-input-border: #0052CC;
+  --color-input-focus: #0747A6;
 
-  /* Modern variable mapping for consistent usage */
+  /* Consistent variable mapping */
   --base-dark: var(--color-bg-main);
   --base-bg: var(--color-bg-surface);
   --base-light: var(--color-accent-soft);
@@ -97,24 +97,24 @@
   --input-focus: var(--color-input-focus);
 
   --modal-bg: var(--color-bg-modal);
-  --modal-border: var(--color-accent-soft);
+  --modal-border: var(--color-accent);
 
-  --select-bg: #fff6e0;
-  --select-hover: #ffe1b8;
-  --select-option-hover: #ffd184;
+  --select-bg: #EBECF0;
+  --select-hover: #DEEBFF;
+  --select-option-hover: #B3D4FF;
 
-  --high-c-emph: #1a1200;
-  --high-c-warn: #fff7d1;
+  --high-c-emph: #172B4D;
+  --high-c-warn: #FFFAE6;
 
   --border-color: var(--color-border);
   --text-color: var(--color-text-main);
   --text-secondary: var(--color-text-secondary);
   --focus-outline: var(--color-outline);
 
-  /* CHIP styling - accent orange chip background with soft gradients */
-  --chip-bg: linear-gradient(113deg, #fff6e0 70%, #ffb300 120%);
-  --chip-bg-hover: linear-gradient(113deg, #ffb300 78%, #fff6e0 100%);
-  --chip-outline: #ffb300bb;
+  /* CHIP styling - Jira blue chip backgrounds, gradient for hover */
+  --chip-bg: linear-gradient(113deg, #EBECF0 70%, #0052CC 120%);
+  --chip-bg-hover: linear-gradient(113deg, #0052CC 78%, #EBECF0 100%);
+  --chip-outline: #0052CCbb;
 }
 
 body {

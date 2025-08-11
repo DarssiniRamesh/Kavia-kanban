@@ -8,29 +8,29 @@ const kaviaTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#ffb300",
-      contrastText: "#212121"
+      main: "#0052CC", // Jira Blue
+      contrastText: "#fff"
     },
     secondary: {
-      main: "#fff6e0",
+      main: "#EBECF0", // Jira secondary background
       contrastText: "#333"
     },
     background: {
-      default: "#fffdf7",
-      paper: "#fff6e0"
+      default: "#F4F5F7",
+      paper: "#EBECF0"
     },
     accent: {
-      main: "#ffb300"
+      main: "#0052CC"
     },
     info: {
-      main: "#1976d2"
+      main: "#0052CC"
     },
     success: {
-      main: "#388e3c"
+      main: "#36B37E"
     },
     text: {
-      primary: "#212121",
-      secondary: "#333"
+      primary: "#172B4D",
+      secondary: "#42526E"
     }
   },
   typography: {
@@ -44,8 +44,8 @@ const kaviaTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         colorPrimary: {
-          backgroundColor: "#fff6e0",
-          color: "#ffb300"
+          backgroundColor: "#0052CC",
+          color: "#fff"
         }
       }
     },
@@ -54,7 +54,12 @@ const kaviaTheme = createTheme({
         root: {
           borderRadius: 7,
           textTransform: "none",
-          fontWeight: 600
+          fontWeight: 600,
+          backgroundColor: "#0052CC",
+          color: "#fff",
+          "&:hover": {
+            backgroundColor: "#0747A6"
+          }
         }
       }
     },
@@ -68,7 +73,7 @@ const kaviaTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: "#fffdf7"
+          backgroundColor: "#F4F5F7"
         }
       }
     }
