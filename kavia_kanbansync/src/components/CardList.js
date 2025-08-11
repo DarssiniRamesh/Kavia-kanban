@@ -56,8 +56,8 @@ function CardList({ column, cards: colCardsProp }) {
       ref={colCards.length === 0 ? drop : undefined}
       style={{
         minHeight: 34,
-        background: isOver && canDrop && colCards.length === 0 ? '#ffd18433' : undefined,
-        border: isOver && canDrop && colCards.length === 0 ? '2px dashed #ffb300' : undefined,
+        background: isOver && canDrop && colCards.length === 0 ? '#22326944' : undefined,
+        border: isOver && canDrop && colCards.length === 0 ? '2px dashed #38B2AC' : undefined,
         borderRadius: isOver && canDrop && colCards.length === 0 ? 7 : undefined,
         transition: 'background 0.16s, border 0.16s'
       }}
@@ -104,15 +104,6 @@ function CardList({ column, cards: colCardsProp }) {
           </div>
         </form>
       )}
-
-      {colCards.length === 0 && !adding && (
-        <div className="kanban-empty-state" style={{margin: "23px auto 8px auto", boxShadow:"none", padding:"23px 10px", minHeight:62}}>
-          <span className="kanban-empty-state-icon" role="img" aria-label="Notepad">📝</span>
-          <div className="kanban-empty-state-title" style={{ fontSize: "1.08em", marginBottom: "7px" }}>No cards in this column</div>
-          <div className="kanban-empty-state-desc" style={{fontSize:"0.99em"}}>Click <strong>+ Add Card</strong> to get started.</div>
-        </div>
-      )}
-
       {colCards.map((card, i) => (
         <DnDKanbanCard
           key={card.id}
