@@ -1,11 +1,11 @@
 .kanban-filter-panel {
   background: var(--color-bg-surface);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1.5px solid var(--primary);
   position: sticky;
   top: 61px;
   z-index: 4;
   border-radius: 0 0 14px 14px;
-  padding: 5px 1vw 0 1vw;
+  padding: 8px 1vw 0 1vw;
   margin-bottom: 0;
   min-width: 0;
   transition: box-shadow 0.18s, background 0.18s;
