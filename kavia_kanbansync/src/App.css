@@ -385,34 +385,38 @@ body.summary-fullscreen .summary-columns-board {
   overflow-x: auto !important;            /* horizontal scroll for many columns */
   overflow-y: hidden;
   align-items: stretch;
-  gap: 12px;                               /* slightly tighter gaps between columns */
-  padding: 6px 4px 10px 4px;               /* reduce padding to reclaim space */
+  gap: 8px;                               /* tighter gaps to fit more columns */
+  padding: 4px 2px 8px 2px;               /* minimal padding for slide-like view */
+  scroll-snap-type: x proximity;          /* smooth horizontal navigation */
 }
 
 /* Fullscreen: wider columns for better readability on slides */
 body.summary-fullscreen .summary-col {
-  flex: 0 0 740px !important;             /* wider column to fit more cards per row inside */
-  flex-basis: 740px !important;
-  min-width: 680px !important;            /* maintain readability */
-  max-width: 900px !important;            /* allow some flex on ultra-wide screens */
-  padding: 8px 10px 10px 10px;            /* small bump for content spacing */
+  /* Narrow, compact columns for slide-like layout (roughly two mini-cards per row inside) */
+  flex: 0 0 272px !important;
+  flex-basis: 272px !important;
+  min-width: 248px !important;
+  max-width: 300px !important;
+  padding: 6px 6px 8px 6px;               /* minimal padding */
+  scroll-snap-align: start;               /* snap per column on horizontal scroll */
 }
 
 /* Fullscreen: cards list becomes a single column to avoid chip fragmentation */
 body.summary-fullscreen .summary-col-cards {
   display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; /* multi-column, dense but readable */
+  /* Two-up mini cards within narrow columns; expands to one if column is very narrow */
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)) !important;
   grid-auto-rows: auto !important;
-  grid-auto-flow: row dense !important;   /* pack more efficiently while keeping order */
-  gap: 8px !important;                    /* compact gaps */
+  grid-auto-flow: row dense !important;   /* pack efficiently while preserving order */
+  gap: 6px !important;                    /* tighter gaps for density */
 }
 
 /* Fullscreen: ensure each card content stays on one line and aligns cleanly */
 body.summary-fullscreen .summary-col-card {
   flex-wrap: nowrap;                      /* keep title + assignee on a single line */
-  min-height: 26px;                       /* slightly shorter for density */
-  padding: 4px 6px;                       /* reduced padding */
-  font-size: 0.86rem;                     /* compact but readable */
+  min-height: 24px;                       /* shorter for density */
+  padding: 3px 6px;                       /* minimal padding */
+  font-size: 0.84rem;                     /* compact but readable */
 }
 
 /* Fullscreen: title truncates instead of wrapping to preserve row integrity */
@@ -424,7 +428,7 @@ body.summary-fullscreen .summary-col-card-title {
 
 /* Fullscreen: assignee is already nowrap; ensure spacing at end is tight */
 body.summary-fullscreen .summary-col-assignee {
-  margin-left: 6px;
+  margin-left: 4px;
 }
 
 /* Larger, readable headers on the slide */
