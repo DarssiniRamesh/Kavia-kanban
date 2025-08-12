@@ -46,9 +46,10 @@ const ASSIGNEES = ["Alice", "Bob", "Charlie", "Unassigned"]; // demo, could be p
  * PUBLIC_INTERFACE
  * Card component representing a Kanban task card.
  * Displays compact view and modal/expanded detail view.
- * The Title (feature) and Description are visually prominent as the primary card fields.
+ * In compact mode: shows Title, status color dot, Priority badge, and Assignee.
+ * In expanded board view: shows Title, Description, Status, Priority, Assignee, Due date.
  */
-function KanbanCard({ card }) {
+function KanbanCard({ card, isCompact = false }) {
   const { updateCard, deleteCard } = useKanban();
   const [edit, setEdit] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -141,27 +142,49 @@ function KanbanCard({ card }) {
     }
   };
 
-  // Compact Card View
-  const compactCard = (
+  // Small status color indicator
+  function getStatusDotColor() {
+    const st = (card.status || '').toLowerCase();
+    if (st.includes('progress')) return '#E1986E';
+    if (st.includes('done')) return '#36B37E';
+    if (st.includes('review')) return '#D3A94E';
+    if (st.includes('hold')) return '#D7827F';
+    if (st.includes('todo')) return '#A0A4AE';
+    return '#CFCFD4';
+  }
+
+  // Inline Card View (respects compact mode)
+  const inlineCard = (
     <div
       className="kanban-card-inner"
       onClick={openModal}
       style={{ cursor: "pointer" }}
     >
-      {/* Visually distinct card header for title and description */}
-      <div className="kanban-card-prominent-header">
-        <div className="kanban-card-title-prominent">{card.feature}</div>
-        {card.description && (
+      <div className="kanban-card-prominent-header" style={{ borderBottom: isCompact ? 'none' : undefined, marginBottom: isCompact ? 6 : 11, paddingBottom: isCompact ? 0 : '0.5em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Status color indicator dot */}
+          <span
+            className="kanban-status-dot"
+            aria-label={`Status ${card.status || 'Unknown'}`}
+            title={card.status || 'Status'}
+            style={{ background: getStatusDotColor() }}
+          />
+          <div className="kanban-card-title-prominent" style={{ marginBottom: 0 }}>
+            {card.feature}
+          </div>
+        </div>
+        {!isCompact && card.description && (
           <div className="kanban-card-desc-prominent">
             {card.description}
           </div>
         )}
       </div>
       <div className="kanban-card-pillrow">
-        <Pill value={card.status} type="status" />
+        {/* In compact mode, omit status pill and due date; keep priority + assignee */}
+        {!isCompact && <Pill value={card.status} type="status" />}
         <Pill value={card.priority} type="priority" />
         <Pill value={card.assignee} type="assignee" />
-        {card.due_date && (
+        {!isCompact && card.due_date && (
           <span className="kanban-pill kanban-pill-due" title="Due">
             <span role="img" aria-label="due">🗓️</span> {card.due_date}
           </span>
@@ -310,9 +333,9 @@ function KanbanCard({ card }) {
   );
 
   return (
-    <div className={`kanban-card ${getCardColorClass()}`}>
-      {/* Show compact or modal card */}
-      {modalOpen ? modalCard : compactCard}
+    <div className={`kanban-card ${getCardColorClass()} ${isCompact ? 'compact' : ''}`}>
+      {/* Show inline or modal card */}
+      {modalOpen ? modalCard : inlineCard}
     </div>
   );
 }

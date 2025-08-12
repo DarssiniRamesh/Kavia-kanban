@@ -189,6 +189,23 @@
 .kanban-card:hover {
   box-shadow: 0 2px 10px 0 rgba(26,33,61,0.16);
 }
+
+/* Compact mode adjustments */
+.kanban-card.compact {
+  padding: 8px 9px 6px 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+}
+.kanban-status-dot {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.9);
+}
 @media (max-width: 900px) {
   .kanban-card {
     padding: 10px 7px 7px 9px;

@@ -9,7 +9,7 @@ import { CARD_TYPE } from './dndTypes';
  * Props for drag visuals: isDragging, isOver (optional).
  * If filteredCards prop is provided, use those cards for render.
  */
-function Column({ column, index, isDragging, isOver, filteredCards }) {
+function Column({ column, index, isDragging, isOver, filteredCards, isCompact }) {
   const { updateColumn, deleteColumn, cards } = useKanban();
   // Use filteredCards if provided, otherwise filter all cards for this column
   const colCards = (filteredCards !== undefined)
@@ -208,7 +208,7 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
             ×
           </button>
         </div>
-        <CardList column={column} cards={colCards} />
+        <CardList column={column} cards={colCards} isCompact={isCompact} />
         <span className="sr-only">{isDragging ? 'Dragging column' : ''}</span>
       </div>
       {/* Delete Confirm Modal */}

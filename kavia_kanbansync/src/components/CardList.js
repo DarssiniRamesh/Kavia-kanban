@@ -9,7 +9,7 @@ import { useFeedback } from '../KanbanBoard';
  * CardList supports dropping cards for intra-column reordering (vertical movement)
  * and renders cards with drag/hover context.
  */
-function CardList({ column, cards: colCardsProp }) {
+function CardList({ column, cards: colCardsProp, isCompact = false }) {
   // colCards: sorted - passed in or computed
   const { cards, addCard, updateCard } = useKanban();
   const [adding, setAdding] = useState(false);
@@ -111,6 +111,7 @@ function CardList({ column, cards: colCardsProp }) {
           index={i}
           column={column}
           colCards={colCards}
+          isCompact={isCompact}
         />
       ))}
     </div>
@@ -119,7 +120,7 @@ function CardList({ column, cards: colCardsProp }) {
 
 // DnDKanbanCard wraps KanbanCard with drag/drop capability
 
-function DnDKanbanCard({ card, index, column, colCards }) {
+function DnDKanbanCard({ card, index, column, colCards, isCompact = false }) {
   const { updateCard } = useKanban();
   const { showToast } = useFeedback();
 
@@ -218,7 +219,7 @@ function DnDKanbanCard({ card, index, column, colCards }) {
         transition: 'background .15s, border .15s, opacity .14s, box-shadow .16s'
       }}
     >
-      <KanbanCard card={card} />
+      <KanbanCard card={card} isCompact={isCompact} />
     </div>
   );
 }

@@ -306,6 +306,11 @@ html {
   padding-bottom: 0.5em;
   border-bottom: 1.5px solid var(--border-color);
 }
+.kanban-card.compact .kanban-card-prominent-header {
+  border-bottom: none;
+  margin-bottom: 6px;
+  padding-bottom: 0;
+}
 .kanban-card-title-prominent {
   font-size: 1.08rem;
   font-weight: 600;
@@ -345,6 +350,10 @@ html {
   flex-wrap: wrap;
   gap: 7px;
   margin-bottom: 3px;
+}
+.kanban-card.compact .kanban-card-pillrow {
+  gap: 6px;
+  margin-bottom: 1px;
 }
 
 /* Pills (badges) */

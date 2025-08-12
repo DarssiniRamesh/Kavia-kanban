@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useKanban } from '../KanbanContext';
 import * as XLSX from 'xlsx';
-import { useFeedback } from '../KanbanBoard';
+import { useFeedback, useExpandMode } from '../KanbanBoard';
 
 function downloadExcelTemplate() {
   // Columns per Supabase schema
@@ -20,6 +20,7 @@ function Toolbar() {
   const { addColumn, bulkInsertCards, columns } = useKanban();
   const inputRef = useRef();
   const { showToast } = useFeedback();
+  const { isCompact, setIsCompact } = useExpandMode();
 
   // Modal state for Add Column
   const [addColumnModal, setAddColumnModal] = React.useState(false);
@@ -142,6 +143,16 @@ function Toolbar() {
         </button>
         <button className="btn" onClick={downloadExcelTemplate}>
           Download Excel Template
+        </button>
+        <button
+          className="btn"
+          style={{ marginLeft: 8, background: isCompact ? '#445' : undefined }}
+          onClick={() => setIsCompact(v => !v)}
+          aria-pressed={isCompact}
+          aria-label={isCompact ? 'Expand all cards' : 'Shorten all cards'}
+          title={isCompact ? 'Expand all cards' : 'Shorten all cards'}
+        >
+          {isCompact ? 'Expand' : 'Shorten'}
         </button>
         <label className="btn" style={{ marginLeft: 8 }}>
           Bulk Upload Excel
