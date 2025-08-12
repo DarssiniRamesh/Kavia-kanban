@@ -5,6 +5,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { COLUMN_TYPE } from '../components/dndTypes';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
 /**
  * PUBLIC_INTERFACE
@@ -17,12 +19,42 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 export default function Summary() {
   const { columns, cards, isLoading, error, reorderColumns } = useKanban();
 
-  // Enable slide-like mode on body for presentation styling
+  // Fullscreen toggle state (persisted)
+  const [fullScreen, setFullScreen] = React.useState(() => {
+    try {
+      return localStorage.getItem('summary-fullscreen') === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('summary-fullscreen', fullScreen ? '1' : '0');
+    } catch {
+      // ignore
+    }
+  }, [fullScreen]);
+
+  // Apply/remove fullscreen body class for presentation styling
   React.useEffect(() => {
     if (typeof document !== 'undefined') {
-      document.body.classList.add('summary-slide-mode');
-      return () => document.body.classList.remove('summary-slide-mode');
+      document.body.classList.toggle('summary-fullscreen', fullScreen);
+      return () => {
+        document.body.classList.remove('summary-fullscreen');
+      };
     }
+  }, [fullScreen]);
+
+  // Keyboard shortcut: 'f' toggles fullscreen
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.key.toLowerCase() === 'f') {
+        setFullScreen((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   // Persist collapsed columns in localStorage
@@ -179,10 +211,27 @@ export default function Summary() {
   return (
     <div className="summary-page">
       <div className="container summary-container">
-        <h1 className="page-title" style={{ marginTop: 8, marginBottom: 6 }}>Board Summary</h1>
-        <p className="page-subtitle" style={{ marginBottom: 12 }}>
-          Presentation view (clean, draggable columns). Tip: Use left/right arrows to reorder, "m" to minimize while focused.
-        </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div>
+            <h1 className="page-title" style={{ marginTop: 8, marginBottom: 6 }}>Board Summary</h1>
+            <p className="page-subtitle" style={{ marginBottom: 12 }}>
+              Presentation view (clean, draggable columns). Tips: Left/Right to reorder, "m" to minimize, "f" to toggle fullscreen.
+            </p>
+          </div>
+          <div>
+            <button
+              type="button"
+              className="summary-col-actionbtn"
+              aria-label={fullScreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              title={fullScreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              onClick={() => setFullScreen(v => !v)}
+              style={{ padding: '6px 10px', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+            >
+              {fullScreen ? <FullscreenExitIcon fontSize="small" /> : <FullscreenIcon fontSize="small" />}
+              <span style={{ fontWeight: 700 }}>{fullScreen ? 'Exit' : 'Fullscreen'}</span>
+            </button>
+          </div>
+        </div>
 
         <DndProvider backend={HTML5Backend}>
           <div className="summary-columns-board" role="list" aria-label="Summary columns (draggable)">
