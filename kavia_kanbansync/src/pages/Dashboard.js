@@ -107,65 +107,68 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Status counts (chips) */}
-      <section className="panel" aria-label="Status breakdown">
-        <div className="panel-title">Status</div>
-        <div className="status-row">
-          {statusOrder.map((s) => (
-            <div className="status-chip" key={s} title={s}>
-              <span className={"dot " + s.toLowerCase().replace(/\s+/g, '-')}></span>
-              <span className="status-label">{s}</span>
-              <span className="status-count">{statusCounts[s] || 0}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Assignee summary with per-status counts */}
-      <section className="panel" aria-label="Assignee summary">
-        <div className="panel-title">Assignees</div>
-        <div className="simple-table assignee-grid" role="table" aria-label="Assignee per-status counts">
-          <div className="table-row header" role="row">
-            <div role="columnheader">Assignee</div>
-            <div role="columnheader">To do</div>
-            <div role="columnheader">In Progress</div>
-            <div role="columnheader">Done</div>
+      {/* Widgets row: Status | Assignees | Columns */}
+      <section className="dashboard-widgets" aria-label="Overview widgets">
+        {/* Status widget */}
+        <div className="widget" aria-labelledby="widget-status-title">
+          <div className="widget-title" id="widget-status-title">Status</div>
+          <div className="status-row">
+            {statusOrder.map((s) => (
+              <div className="status-chip" key={s} title={s}>
+                <span className={"dot " + s.toLowerCase().replace(/\s+/g, '-')}></span>
+                <span className="status-label">{s}</span>
+                <span className="status-count">{statusCounts[s] || 0}</span>
+              </div>
+            ))}
           </div>
-          {assigneeBreakdown.map((row) => (
-            <div className="table-row" role="row" key={row.assignee}>
-              <div role="cell">{row.assignee}</div>
-              <div role="cell" className="count-cell">{row['To do']}</div>
-              <div role="cell" className="count-cell">{row['In Progress']}</div>
-              <div role="cell" className="count-cell">{row['Done']}</div>
-            </div>
-          ))}
-          {assigneeBreakdown.length === 0 && (
-            <div className="table-row" role="row">
-              <div role="cell" style={{ gridColumn: '1 / -1', opacity: 0.7 }}>No data</div>
-            </div>
-          )}
         </div>
-      </section>
 
-      {/* Column summary */}
-      <section className="panel" aria-label="Column summary">
-        <div className="panel-title">Columns</div>
-        <div className="simple-table" role="table" aria-label="Column counts">
-          <div className="table-row header" role="row">
-            <div role="columnheader">Column</div>
-            <div role="columnheader" style={{ textAlign: 'right' }}>Features</div>
+        {/* Assignees widget */}
+        <div className="widget" aria-labelledby="widget-assignees-title">
+          <div className="widget-title" id="widget-assignees-title">Assignees</div>
+          <div className="simple-table assignee-grid" role="table" aria-label="Assignee per-status counts">
+            <div className="table-row header" role="row">
+              <div role="columnheader">Assignee</div>
+              <div role="columnheader">To do</div>
+              <div role="columnheader">In Progress</div>
+              <div role="columnheader">Done</div>
+            </div>
+            {assigneeBreakdown.map((row) => (
+              <div className="table-row" role="row" key={row.assignee}>
+                <div role="cell">{row.assignee}</div>
+                <div role="cell" className="count-cell">{row['To do']}</div>
+                <div role="cell" className="count-cell">{row['In Progress']}</div>
+                <div role="cell" className="count-cell">{row['Done']}</div>
+              </div>
+            ))}
+            {assigneeBreakdown.length === 0 && (
+              <div className="table-row" role="row">
+                <div role="cell" style={{ gridColumn: '1 / -1', opacity: 0.7 }}>No data</div>
+              </div>
+            )}
           </div>
-          {colCounts.map((c) => (
-            <div className="table-row" role="row" key={c.title}>
-              <div role="cell">{c.title}</div>
-              <div role="cell" style={{ textAlign: 'right', fontWeight: 700 }}>{c.count}</div>
+        </div>
+
+        {/* Columns widget */}
+        <div className="widget" aria-labelledby="widget-columns-title">
+          <div className="widget-title" id="widget-columns-title">Columns</div>
+          <div className="simple-table" role="table" aria-label="Column counts">
+            <div className="table-row header" role="row">
+              <div role="columnheader">Column</div>
+              <div role="columnheader" style={{ textAlign: 'right' }}>Features</div>
             </div>
-          ))}
-          {colCounts.length === 0 && (
-            <div className="table-row" role="row">
-              <div role="cell" style={{ gridColumn: '1 / -1', opacity: 0.7 }}>No data</div>
-            </div>
-          )}
+            {colCounts.map((c) => (
+              <div className="table-row" role="row" key={c.title}>
+                <div role="cell">{c.title}</div>
+                <div role="cell" style={{ textAlign: 'right', fontWeight: 700 }}>{c.count}</div>
+              </div>
+            ))}
+            {colCounts.length === 0 && (
+              <div className="table-row" role="row">
+                <div role="cell" style={{ gridColumn: '1 / -1', opacity: 0.7 }}>No data</div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </div>
