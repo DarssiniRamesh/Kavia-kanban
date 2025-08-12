@@ -3,40 +3,35 @@ import './App.css';
 import KanbanBoard from './KanbanBoard';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 
-// Define the custom theme
+// Define the custom Kavia theme
 const kaviaTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#0052CC", // Jira Blue
-      contrastText: "#fff"
+      main: "#E87A41", // Kavia Orange
+      contrastText: "#ffffff"
     },
     secondary: {
-      main: "#EBECF0", // Jira secondary background
-      contrastText: "#333"
+      main: "#FFF3E9", // Light Kavia panel/surface
+      contrastText: "#1A1A1A"
     },
     background: {
-      default: "#F4F5F7",
-      paper: "#EBECF0"
-    },
-    accent: {
-      main: "#0052CC"
+      default: "#FFF7F0", // App background
+      paper: "#FFFFFF"    // Paper/surfaces
     },
     info: {
-      main: "#0052CC"
+      main: "#E87A41"
     },
     success: {
       main: "#36B37E"
     },
     text: {
-      primary: "#172B4D",
-      secondary: "#42526E"
+      primary: "#1A1A1A",
+      secondary: "#5C5C5C"
     }
   },
   typography: {
-    fontFamily: [
-      "Inter", "Roboto", "Helvetica", "Arial", "sans-serif"
-    ].join(","),
+    fontFamily: ["Inter", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     fontWeightMedium: 500,
     fontWeightBold: 700
   },
@@ -44,8 +39,10 @@ const kaviaTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         colorPrimary: {
-          backgroundColor: "#0052CC",
-          color: "#fff"
+          backgroundColor: "#FFF3E9",
+          color: "#E87A41",
+          borderBottom: "2px solid #E87A41",
+          boxShadow: "none"
         }
       }
     },
@@ -55,10 +52,10 @@ const kaviaTheme = createTheme({
           borderRadius: 7,
           textTransform: "none",
           fontWeight: 600,
-          backgroundColor: "#0052CC",
+          backgroundColor: "#C9612F",
           color: "#fff",
           "&:hover": {
-            backgroundColor: "#0747A6"
+            backgroundColor: "#E87A41"
           }
         }
       }
@@ -73,7 +70,7 @@ const kaviaTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: "#F4F5F7"
+          backgroundColor: "#FFF7F0"
         }
       }
     }
@@ -85,13 +82,12 @@ function App() {
     <ThemeProvider theme={kaviaTheme}>
       <CssBaseline />
       <div className="app">
-        <nav className="navbar" style={{background: "#fff6e0", color: "#ffb300", borderBottom: "2px solid #ffb300"}}>
+        <nav className="navbar">
           <div className="container">
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-              <div className="logo" style={{color: "#ffb300"}}>
-                <span className="logo-symbol" style={{color: "#ffb300"}}>*</span> KAVIA KanbanSync
+              <div className="logo">
+                <span className="logo-symbol">*</span> Kavia Kanban Board
               </div>
-              <span style={{color: "#ffb300"}}>AI Board</span>
             </div>
           </div>
         </nav>

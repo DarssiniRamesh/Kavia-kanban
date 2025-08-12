@@ -1,9 +1,9 @@
 :root {
-  /* Modern JIRA-themed palette using Jira blue (#0052CC) and Atlassian neutrals */
-  --shadow-xs: 0 1px 3px 0 rgba(0, 82, 204, 0.09);
-  --shadow-sm: 0 2px 8px 0 rgba(0, 82, 204, 0.13), 0 1.5px 8px 0 #B8D3F5aa;
-  --shadow-md: 0 4px 18px 0 rgba(0, 82, 204, 0.16), 0 2.5px 12px 0 #a6befb51;
-  --shadow-lg: 0 8px 36px 0 rgba(0,82,204,0.17), 0 3.5px 16px 0 #74a1de88;
+  /* Kavia-themed palette: Orange accents on light, warm surfaces */
+  --shadow-xs: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 8px 0 rgba(0, 0, 0, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 18px 0 rgba(0, 0, 0, 0.12), 0 2.5px 12px 0 rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 36px 0 rgba(0,0,0,0.14), 0 3.5px 16px 0 rgba(0,0,0,0.08);
   --radius-xs: 5px;
   --radius-sm: 7px;
   --radius-md: 13px;
@@ -11,59 +11,59 @@
 
   --transition-elevate: box-shadow .18s, background .17s, border .17s, transform .15s, color .13s;
 
-  --color-bg-main: #F4F5F7;      /* Main app background: Jira off white */
-  --color-bg-surface: #EBECF0;   /* Panel/surface */
-  --color-bg-panel: #EBECF0;     /* Board/column panel */
-  --color-bg-card: #fff;         /* Card true background: white */
-  --color-bg-chip: #DEEBFF;      /* Filter chips/chipbar background: pale blue */
-  --color-bg-modal: #fff;        /* Modal/popup panels: pure white */
-  --color-bg-overlay: rgba(14, 38, 89, 0.13); /* Modal/overlay glass, Jira blue tint */
-  --color-bg-toolbar: #EBECF0;
+  --color-bg-main: #FFF7F0;       /* App background: warm, light */
+  --color-bg-surface: #FFF3E9;    /* Panels/surface */
+  --color-bg-panel: #FFFFFF;      /* Board/column panel */
+  --color-bg-card: #FFFFFF;       /* Card background */
+  --color-bg-chip: #FFE6D8;       /* Filter chips/chipbar background (pale orange) */
+  --color-bg-modal: #FFFFFF;      /* Modal/popup panels: pure white */
+  --color-bg-overlay: rgba(232, 122, 65, 0.15); /* Modal overlay tinted with Kavia orange */
+  --color-bg-toolbar: #FFF3E9;
 
-  /* Accent Palette using Jira Blue */
-  --color-accent: #0052CC;        /* Main accent: Jira blue */
-  --color-accent-strong: #0747A6; /* Buttons, active states */
-  --color-accent-soft: #DEEBFF;   /* Link/chip hover etc. */
-  --color-accent-pastel: #F4F5F7; /* Subtle accent/hover */
-  --color-focus-ring: #0052CC;    /* For focus/active states */
+  /* Kavia Accent Palette */
+  --color-accent: #E87A41;        /* Kavia Orange */
+  --color-accent-strong: #C9612F; /* Darker orange for hover/active */
+  --color-accent-soft: #FFE1D1;   /* Soft tint for subtle backgrounds */
+  --color-accent-pastel: #FFF7F0; /* Lightest tint */
+  --color-focus-ring: #E87A41;    /* Focus/active ring */
 
-  /* Card States - JIRA inspired */
-  --color-card-info: #DEEBFF;       /* info: Jira chip blue */
-  --color-card-progress: #B3D4FF;   /* in-progress: mid blue */
+  /* Card States */
+  --color-card-info: #FFE6D8;       /* info: warm pale orange */
+  --color-card-progress: #FFD5C2;   /* in-progress: mid warm */
   --color-card-done: #E3FCEF;       /* done: pale green */
   --color-card-review: #FFF0B3;     /* review: hint yellow */
   --color-card-hold: #FFEBE6;       /* hold: pale red */
   --color-card-critical: #FF7452;   /* critical: bright red */
-  --color-card-high: #FFAB00;       /* Jira yellow/orange */
-  --color-card-medium: #B3D4FF;
-  --color-card-low: #DEEBFF;
+  --color-card-high: #FFAB00;       /* priority high: amber */
+  --color-card-medium: #FFD5C2;     /* mid warm */
+  --color-card-low: #FFE6D8;        /* low warm */
 
   /* Typography */
-  --color-text-main: #172B4D;
-  --color-text-invert: #fff;
-  --color-text-secondary: #42526E;
-  --color-chip-text: #0747A6;
-  --color-card-text-dark: #172B4D;
-  --color-card-text-bright: #fff;
+  --color-text-main: #1A1A1A;
+  --color-text-invert: #FFFFFF;
+  --color-text-secondary: #5C5C5C;
+  --color-chip-text: #8B3C1F;
+  --color-card-text-dark: #1A1A1A;
+  --color-card-text-bright: #FFFFFF;
   --color-card-text-light: #F4F5F7;
 
   /* For pill badges/chips */
-  --color-pill-info: #0052CC;
-  --color-pill-progress: #0065ff;
+  --color-pill-info: #E87A41;
+  --color-pill-progress: #C9612F;
   --color-pill-done: #36B37E;
   --color-pill-review: #FFAB00;
   --color-pill-hold: #FF5630;
   --color-pill-critical: #DE350B;
   --color-pill-high: #FFAB00;
-  --color-pill-medium: #B3D4FF;
-  --color-pill-low: #DEEBFF;
+  --color-pill-medium: #FFD5C2;
+  --color-pill-low: #FFE6D8;
 
   /* Borders, outline & inputs */
-  --color-border: #B8D3F5cc;
+  --color-border: #F0D7CB;
   --color-outline: var(--color-focus-ring);
-  --color-input-bg: #EBECF0;
-  --color-input-border: #0052CC;
-  --color-input-focus: #0747A6;
+  --color-input-bg: #FFF3E9;
+  --color-input-border: #E87A41;
+  --color-input-focus: #C9612F;
 
   /* Consistent variable mapping */
   --base-dark: var(--color-bg-main);
@@ -99,11 +99,11 @@
   --modal-bg: var(--color-bg-modal);
   --modal-border: var(--color-accent);
 
-  --select-bg: #EBECF0;
-  --select-hover: #DEEBFF;
-  --select-option-hover: #B3D4FF;
+  --select-bg: #FFF3E9;
+  --select-hover: #FFE6D8;
+  --select-option-hover: #FFD5C2;
 
-  --high-c-emph: #172B4D;
+  --high-c-emph: #1A1A1A;
   --high-c-warn: #FFFAE6;
 
   --border-color: var(--color-border);
@@ -111,10 +111,10 @@
   --text-secondary: var(--color-text-secondary);
   --focus-outline: var(--color-outline);
 
-  /* CHIP styling - Jira blue chip backgrounds, gradient for hover */
-  --chip-bg: linear-gradient(113deg, #EBECF0 70%, #0052CC 120%);
-  --chip-bg-hover: linear-gradient(113deg, #0052CC 78%, #EBECF0 100%);
-  --chip-outline: #0052CCbb;
+  /* CHIP styling - Kavia orange chip backgrounds, gradient for hover */
+  --chip-bg: linear-gradient(113deg, #FFF3E9 70%, #E87A41 120%);
+  --chip-bg-hover: linear-gradient(113deg, #E87A41 78%, #FFF3E9 100%);
+  --chip-outline: #E87A41bb;
 }
 
 body {
@@ -135,12 +135,12 @@ body {
 }
 
 .navbar {
-  background: var(--base-dark);
+  background: var(--color-bg-toolbar);
   padding: 18px 0 15px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1.5px solid var(--border-color);
+  border-bottom: 2px solid var(--color-accent);
   position: fixed;
   top: 0;
   width: 100vw;
@@ -155,11 +155,11 @@ body {
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #fff;
+  color: var(--color-accent);
 }
 
 .logo-symbol {
-  color: #38B2AC;
+  color: var(--color-accent);
   font-family: monospace;
   font-weight: bold;
   font-size: 1.5em;
@@ -381,18 +381,18 @@ html {
   to { opacity: 1;}
 }
 .kanban-modal-dialog {
-  background: #0747A6; /* Jira blue strong for modal */
+  background: var(--modal-bg);
   border-radius: var(--radius-lg);
   padding: 32px 32px 22px 32px;
   min-width: 350px;
   min-height: 150px;
   max-width: 420px;
   max-height: 85vh;
-  box-shadow: 0 8px 36px 0 rgba(0, 82, 204, 0.33), 0 3.5px 18px 0 #0052cc40;
-  border: 2.5px solid #0052CC;
+  box-shadow: 0 8px 36px 0 rgba(0,0,0,0.16), 0 3.5px 18px 0 rgba(0,0,0,0.08);
+  border: 2px solid var(--color-accent);
   position: relative;
   overflow-y: auto;
-  color: #fff;
+  color: var(--color-text-main);
   transition: var(--transition-elevate);
 }
 @media (max-width: 700px) {
@@ -408,7 +408,7 @@ html {
   position: absolute;
   top: 15px;
   right: 13px;
-  background: #0052CC;
+  background: var(--color-accent);
   border: none;
   color: #fff;
   font-size: 1.45em;
@@ -418,16 +418,16 @@ html {
   padding: 1px 8px;
   border-radius: 22px;
   transition: var(--transition-elevate);
-  box-shadow: 0 2px 10px #0052cc55;
+  box-shadow: 0 2px 10px rgba(232,122,65,0.35);
   font-weight: bold;
   outline: 2px solid transparent;
 }
 .kanban-modal-close:hover,
 .kanban-modal-close:focus {
-  background: #0747a6;
-  color: #ffb300;
-  box-shadow: 0 2px 17px #0052cc77;
-  outline: 2px solid #ffb300;
+  background: var(--color-accent-strong);
+  color: #fff;
+  box-shadow: 0 2px 17px rgba(232,122,65,0.5);
+  outline: 1.5px solid var(--color-accent);
 }
 
 /* Expanded Card Modal (Details) */
@@ -466,7 +466,7 @@ html {
 .kanban-detail-desc-prominent {
   margin: 2px 0 0 0;
   font-size: 1.11rem;
-  color: #1976d2; /* Primary Jira blue for description, strong contrast, readable */
+  color: var(--color-text-secondary);
   font-weight: 400;
   line-height: 1.55;
   opacity: 0.99;
@@ -478,7 +478,7 @@ html {
   height: 2px;
   border-radius: 2px;
   margin: 13px 0 6px 0;
-  background: linear-gradient(90deg, #0052CC 5%, #0747A6 55%, #B8D3F5 100%);
+  background: linear-gradient(90deg, #E87A41 5%, #C9612F 55%, #F0D7CB 100%);
   opacity: 0.87;
 }
 
@@ -513,20 +513,20 @@ html {
 .kanban-detail-section {
   margin: 8px 0 3px 0;
   padding: 8px 9px;
-  background: #0052CC33 !important;
+  background: var(--color-accent-soft) !important;
   border-radius: var(--radius-sm);
-  box-shadow: 0 1px 7px #0052cc22;
+  box-shadow: 0 1px 7px rgba(0,0,0,0.08);
   font-size: 1.07em;
-  color: #fff !important;
+  color: var(--color-text-main) !important;
   transition: var(--transition-elevate);
 }
 .kanban-detail-label {
   font-weight: 700;
-  color: #ffb300;
+  color: var(--color-accent);
   margin-bottom: 3px;
   font-size: 1.01em;
   letter-spacing: 0.01em;
-  text-shadow: 0 0 6px rgba(14,34,89,0.12);
+  text-shadow: none;
 }
 .kanban-detail-content {
   color: var(--color-text-main);
@@ -628,10 +628,10 @@ html {
   gap: 0.5em;
   margin: 10px 0 7px 0;
   padding: 8px 10px;
-  background: #0747A6 !important;
+  background: var(--color-bg-panel) !important;
   border-radius: var(--radius-md);
-  border: 1.8px solid #0052CC;
-  box-shadow: 0 1.5px 14px 0 #0052cc3b;
-  color: #fff;
+  border: 1.8px solid var(--color-accent);
+  box-shadow: 0 1.5px 14px 0 rgba(0,0,0,0.10);
+  color: var(--color-text-main);
   transition: var(--transition-elevate);
 }
