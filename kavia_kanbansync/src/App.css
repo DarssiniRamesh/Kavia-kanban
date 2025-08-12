@@ -365,10 +365,8 @@ body.summary-slide-mode {
   background: #ffffff; /* clean, printable */
 }
 
-/* Hide navbar and any extra chrome when in slide mode */
-body.summary-slide-mode .navbar {
-  display: none !important;
-}
+/* Keep navbar visible in summary mode for navigation (Dashboard, Product, Summary) */
+/* body.summary-slide-mode .navbar { display: none !important; } */
 
 /* Slide container tuning */
 body.summary-slide-mode .summary-container {
@@ -487,7 +485,136 @@ body.summary-slide-mode .summary-container {
   font-size: 1rem;
 }
 
-/* Make sure body background doesn't bleed color in slide mode when printing */
+/* Summary page wrapper to offset fixed navbar */
+.summary-page {
+  padding-top: 82px;
+  min-height: 100vh;
+  background: #fff7f0;
+}
+
+@media (max-width: 900px) {
+  .summary-page { padding-top: 67px; }
+}
+@media (max-width: 700px) {
+  .summary-page { padding-top: 56px; }
+}
+
+/* Vertical columns board for Summary */
+.summary-columns-board {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 12px 2px 32px 2px;
+  overflow-x: auto;
+  min-height: 60vh;
+}
+
+/* Individual summary column (mini slide style) */
+.summary-col {
+  flex: 0 0 280px;
+  background: #FFFFFF;
+  border: 1.2px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px 10px 12px 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: box-shadow .18s, outline .14s, transform .14s;
+}
+.summary-col:focus-visible {
+  outline: 3px solid #38B2AC;
+  box-shadow: 0 2px 14px rgba(56,178,172,0.35);
+}
+
+/* Column header */
+.summary-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 8px;
+}
+.summary-col-title {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.summary-col-title-text {
+  font-weight: 800;
+  color: var(--color-accent-strong);
+}
+.summary-col-count {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: .9rem;
+}
+.summary-col-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.summary-col-actionbtn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--color-accent-strong);
+  transition: background .15s, color .15s, border .15s;
+}
+.summary-col-actionbtn:hover, .summary-col-actionbtn:focus {
+  background: #FFF3E9;
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Column content */
+.summary-col-content {
+  display: block;
+}
+
+/* Cards within summary column */
+.summary-col-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.summary-col-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #EFDFD6;
+  border-radius: 10px;
+  background: #FFFFFF;
+  padding: 8px 10px;
+  min-height: 36px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+}
+.summary-col-card-title {
+  font-weight: 700;
+  color: #222;
+  flex: 1 1 auto;
+  min-width: 0;
+  word-break: break-word;
+}
+.summary-col-assignee {
+  background: #FFF0E7;
+  color: #8B3C1F;
+  border: 1px solid #F0D7CB;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: .85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+ /* Make sure body background doesn't bleed color in slide mode when printing */
 @media print {
   body.summary-slide-mode {
     -webkit-print-color-adjust: exact !important;

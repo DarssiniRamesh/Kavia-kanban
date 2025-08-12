@@ -1,28 +1,45 @@
 import React from 'react';
 import { useKanban } from '../KanbanContext';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { COLUMN_TYPE } from '../components/dndTypes';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 
 /**
  * PUBLIC_INTERFACE
- * Summary
- * A presentation-friendly, single-slide-styled page for stakeholders.
- * - Each Kanban column renders as a prominent row with a bold header.
- * - A horizontal grid/list of card titles is displayed under each header.
- * - Each card chip includes the feature title and an assignee tag (if present).
- * - All app controls/decorations are hidden (via body class toggle).
- * - Large, readable fonts with subtle color, whitespace, and balance.
+ * Summary (Presentation-friendly vertical columns view)
+ * - Displays each Kanban column as a vertical panel (side-by-side) with minimal UI.
+ * - Allows drag & drop reordering of columns (persisted via KanbanContext.reorderColumns).
+ * - Provides controls to minimize/expand each column to customize the presentation.
+ * - Keeps the application navigation header visible (Dashboard, Product).
  */
 export default function Summary() {
-  const { columns, cards, isLoading, error } = useKanban();
+  const { columns, cards, isLoading, error, reorderColumns } = useKanban();
 
-  // Toggle "slide" mode to hide global chrome (navbar, etc.)
+  // Persist collapsed columns in localStorage
+  const [collapsed, setCollapsed] = React.useState(() => {
+    try {
+      const raw = localStorage.getItem('summary-collapsed-columns');
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  });
+
   React.useEffect(() => {
-    document.body.classList.add('summary-slide-mode');
-    return () => {
-      document.body.classList.remove('summary-slide-mode');
-    };
-  }, []);
+    try {
+      localStorage.setItem('summary-collapsed-columns', JSON.stringify(collapsed));
+    } catch {
+      // ignore
+    }
+  }, [collapsed]);
 
-  // Map cards by column for clean rendering (sorted by position)
+  const toggleCollapsed = (id) => {
+    setCollapsed(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  // Cards by column, sorted by position
   const cardsByColumn = React.useMemo(() => {
     const map = new Map();
     (columns || []).forEach((c) => map.set(c.id, []));
@@ -35,7 +52,109 @@ export default function Summary() {
     return map;
   }, [columns, cards]);
 
-  // Subtle status color dot for chips
+  // Move column via context API
+  const moveColumn = (fromIdx, toIdx) => {
+    if (!columns || fromIdx === toIdx || fromIdx < 0 || toIdx < 0 || fromIdx >= columns.length || toIdx >= columns.length) {
+      return;
+    }
+    const reordered = [...columns];
+    const [removed] = reordered.splice(fromIdx, 1);
+    reordered.splice(toIdx, 0, removed);
+    const ordered = reordered.map((col, i) => ({ id: col.id, position: i + 1 }));
+    reorderColumns(ordered).catch(() => {
+      // No toast here to keep summary clean
+    });
+  };
+
+  function DraggableSummaryColumn({ column, index, totalColumns }) {
+    // Drag source
+    const [{ isDragging }, drag] = useDrag({
+      type: COLUMN_TYPE,
+      item: { id: column.id, index },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    });
+
+    // Drop target
+    const [{ isOver, canDrop }, drop] = useDrop({
+      accept: COLUMN_TYPE,
+      canDrop: (item) => item.id !== column.id,
+      drop: (item) => {
+        if (item.index !== index) {
+          moveColumn(item.index, index);
+          item.index = index;
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver({ shallow: true }),
+        canDrop: monitor.canDrop(),
+      }),
+    });
+
+    const items = cardsByColumn.get(column.id) || [];
+    const isCollapsed = !!collapsed[column.id];
+
+    return (
+      <section
+        ref={(node) => drag(drop(node))}
+        className="summary-col"
+        role="listitem"
+        aria-label={`Column ${column.title}`}
+        style={{
+          opacity: isDragging ? 0.35 : 1,
+          outline: (isOver && canDrop) ? '3px solid #38B2AC' : undefined,
+          boxShadow: isDragging ? '0 2px 18px rgba(56,178,172,0.35)' : undefined,
+        }}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowLeft' && index > 0) moveColumn(index, index - 1);
+          if (e.key === 'ArrowRight' && index < totalColumns - 1) moveColumn(index, index + 1);
+          if (e.key === 'm') toggleCollapsed(column.id);
+        }}
+      >
+        <header className="summary-col-header">
+          <div className="summary-col-title" title={column.title}>
+            <span className="summary-col-title-text">{column.title}</span>
+            <span className="summary-col-count" title="Card count">{items.length}</span>
+          </div>
+          <div className="summary-col-actions">
+            <button
+              type="button"
+              className="summary-col-actionbtn"
+              aria-label={isCollapsed ? 'Expand column' : 'Minimize column'}
+              title={isCollapsed ? 'Expand' : 'Minimize'}
+              onClick={() => toggleCollapsed(column.id)}
+            >
+              {isCollapsed ? <UnfoldMoreIcon fontSize="small" /> : <UnfoldLessIcon fontSize="small" />}
+            </button>
+          </div>
+        </header>
+
+        {!isCollapsed && (
+          <div className="summary-col-content">
+            {items.length > 0 ? (
+              <ul className="summary-col-cards" aria-label={`${column.title} cards`}>
+                {items.map((card) => (
+                  <li key={card.id} className="summary-col-card" title={card.description || card.feature}>
+                    <span className="summary-chip-dot" aria-hidden
+                      style={{ background: getStatusDotColor(card.status) }} />
+                    <span className="summary-col-card-title">{card.feature}</span>
+                    {card.assignee && (
+                      <span className="summary-col-assignee" title="Assignee">@{card.assignee}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="summary-empty">No items</div>
+            )}
+          </div>
+        )}
+      </section>
+    );
+  }
+
   function getStatusDotColor(status) {
     const st = (status || '').toLowerCase();
     if (st.includes('progress')) return '#E1986E';
@@ -46,64 +165,29 @@ export default function Summary() {
     return '#CFCFD4';
   }
 
-  if (isLoading) {
-    return <div className="kanban-loading">Loading...</div>;
-  }
-  if (error) {
-    return <div className="kanban-error">{error}</div>;
-  }
+  if (isLoading) return <div className="kanban-loading">Loading...</div>;
+  if (error) return <div className="kanban-error">{error}</div>;
 
   return (
-    <div className="container summary-container summary-slide">
-      <h1 className="page-title" style={{ marginTop: 8, marginBottom: 10 }}>
-        Board Summary
-      </h1>
-      <p className="page-subtitle" style={{ marginBottom: 24 }}>
-        Presentation view (clean slide layout)
-      </p>
+    <div className="summary-page">
+      <div className="container summary-container">
+        <h1 className="page-title" style={{ marginTop: 8, marginBottom: 6 }}>Board Summary</h1>
+        <p className="page-subtitle" style={{ marginBottom: 12 }}>
+          Presentation view (clean, draggable columns). Tip: Use left/right arrows to reorder, "m" to minimize while focused.
+        </p>
 
-      <div className="summary-list" role="list" aria-label="Kanban summary by column">
-        {(columns || []).map((col, i) => {
-          const items = cardsByColumn.get(col.id) || [];
-          return (
-            <section
-              className="summary-row"
-              role="listitem"
-              aria-roledescription="Column summary"
-              key={col.id}
-            >
-              <header className="summary-row-title" aria-label={`Column ${col.title}`}>
-                <span className="summary-row-title-text">{col.title}</span>
-                <span className="summary-row-count" title="Card count">
-                  {items.length}
-                </span>
-              </header>
-
-              <div className="summary-row-chips">
-                {items.map((card) => (
-                  <span
-                    className="summary-chip"
-                    key={card.id}
-                    title={card.description || card.feature}
-                  >
-                    <span
-                      className="summary-chip-dot"
-                      aria-hidden
-                      style={{ background: getStatusDotColor(card.status) }}
-                    />
-                    <span className="summary-chip-title">{card.feature}</span>
-                    {card.assignee && (
-                      <span className="summary-assignee-tag" title="Assignee">
-                        @{card.assignee}
-                      </span>
-                    )}
-                  </span>
-                ))}
-                {items.length === 0 && <span className="summary-empty">No items</span>}
-              </div>
-            </section>
-          );
-        })}
+        <DndProvider backend={HTML5Backend}>
+          <div className="summary-columns-board" role="list" aria-label="Summary columns (draggable)">
+            {(columns || []).map((col, idx) => (
+              <DraggableSummaryColumn
+                key={col.id}
+                column={col}
+                index={idx}
+                totalColumns={columns.length}
+              />
+            ))}
+          </div>
+        </DndProvider>
       </div>
     </div>
   );
