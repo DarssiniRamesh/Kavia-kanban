@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useKanban } from '../KanbanContext';
 import { useFeedback } from '../KanbanBoard';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
 
 // Field badge/pill helpers
 function Pill({ value, type }) {
@@ -180,7 +181,15 @@ function KanbanCard({ card }) {
                 <div className="kanban-detail-modal-title-row">
                   <span className="kanban-detail-title-prominent">{card.feature}</span>
                   <button className="kanban-card-editbtn" onClick={() => setEdit(true)} title="Edit">✎</button>
-                  <button className="kanban-card-delbtn" onClick={handleDelete}>×</button>
+                  <button
+                    className="kanban-card-delbtn"
+                    onClick={handleDelete}
+                    aria-label="Delete card"
+                    title="Delete"
+                    style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 0 }}
+                  >
+                    <DeleteOutline fontSize="small" />
+                  </button>
                 </div>
                 {card.description && (
                   <div className="kanban-detail-desc-prominent">
@@ -253,7 +262,17 @@ function KanbanCard({ card }) {
               <div className="kanban-modal-form-buttons">
                 <button className="btn" type="submit">Save</button>
                 <button className="btn" type="button" onClick={()=>setEdit(false)}>Cancel</button>
-                <button className="btn" type="button" onClick={handleDelete} style={{marginLeft:"auto"}}>Delete</button>
+                <button
+                  className="btn"
+                  type="button"
+                  onClick={handleDelete}
+                  style={{ marginLeft: "auto", display: 'inline-flex', alignItems: 'center' }}
+                  aria-label="Delete card"
+                  title="Delete"
+                >
+                  <DeleteOutline fontSize="small" style={{ marginRight: 6 }} />
+                  Delete
+                </button>
               </div>
             </form>
           )}
