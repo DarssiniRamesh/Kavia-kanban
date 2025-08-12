@@ -9,9 +9,11 @@ function Pill({ value, type }) {
   let className = "kanban-pill";
   if (type) className += " kanban-pill-" + type.toLowerCase().replace(/\s+/g, "");
   if (type === "priority") {
-    if (value === "High" || value === "Critical") className += " pill-high";
-    if (value === "Medium") className += " pill-medium";
-    if (value === "Low") className += " pill-low";
+    const v = String(value).toLowerCase();
+    if (v === "high" || v === "critical") className += " pill-high";
+    else if (v === "medium") className += " pill-medium";
+    else if (v === "low") className += " pill-low";
+    else if (v === "none" || v === "no priority" || v === "unprioritized") className += " pill-none";
   }
   if (type === "status") {
     if (value === "To Do") className += " pill-todo";
