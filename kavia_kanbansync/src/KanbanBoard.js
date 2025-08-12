@@ -1,5 +1,4 @@
 import React, { useState, createContext, useContext } from 'react';
-import { KanbanProvider } from './KanbanContext';
 import Toolbar from './components/Toolbar';
 import Column from './components/Column';
 import FilterPanel from './components/FilterPanel';
@@ -16,6 +15,12 @@ import './KanbanBoard.css';
 const FeedbackContext = createContext();
 export function useFeedback() {
   return useContext(FeedbackContext);
+}
+
+// Global expand/shorten context for cards
+const ExpandModeContext = createContext({ isCompact: false, setIsCompact: () => {} });
+export function useExpandMode() {
+  return useContext(ExpandModeContext);
 }
 
 /**
@@ -67,6 +72,7 @@ function filterCardsAND(cards, filters, columns) {
 function KanbanBoardInner() {
   const { columns, isLoading, error, reorderColumns, cards } = useKanban();
   const { showToast } = useFeedback();
+  const { isCompact } = useExpandMode();
   const [draggedCol, setDraggedCol] = React.useState(null);
 
   // Filter state local to board
@@ -107,7 +113,7 @@ function KanbanBoardInner() {
   };
 
   // Only define DraggableKanbanColumn once!
-  function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDraggedCol, totalColumns, filteredCards }) {
+  function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDraggedCol, totalColumns, filteredCards, isCompact }) {
     // Drag source
     const [{ isDragging }, drag, preview] = useDrag({
       type: COLUMN_TYPE,
@@ -169,7 +175,7 @@ function KanbanBoardInner() {
     // Pass filteredCards to Column if present
     return (
       <div {...draggableProps} onKeyDown={handleKeyDown}>
-        <Column column={column} index={index} isDragging={isDragging} isOver={isOver && canDrop} filteredCards={filteredCards} />
+        <Column column={column} index={index} isDragging={isDragging} isOver={isOver && canDrop} filteredCards={filteredCards} isCompact={isCompact} />
       </div>
     );
   }
@@ -194,6 +200,7 @@ function KanbanBoardInner() {
               setDraggedCol={setDraggedCol}
               totalColumns={columns.length}
               filteredCards={filteredCards.filter(c => c.column_id === col.id)}
+              isCompact={isCompact}
             />
           )
         )}
@@ -214,9 +221,12 @@ export default function KanbanBoard() {
 
   const closeToast = () => setToast(null);
 
+  // Global expand/shorten state for cards
+  const [isCompact, setIsCompact] = useState(false);
+
   return (
-    <KanbanProvider>
-      <FeedbackContext.Provider value={{ showToast }}>
+    <FeedbackContext.Provider value={{ showToast }}>
+      <ExpandModeContext.Provider value={{ isCompact, setIsCompact }}>
         <DndProvider backend={HTML5Backend}>
           <KanbanBoardInner />
           {toast && (
@@ -229,7 +239,7 @@ export default function KanbanBoard() {
             />
           )}
         </DndProvider>
-      </FeedbackContext.Provider>
-    </KanbanProvider>
+      </ExpandModeContext.Provider>
+    </FeedbackContext.Provider>
   );
 }

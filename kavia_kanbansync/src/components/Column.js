@@ -9,7 +9,7 @@ import { CARD_TYPE } from './dndTypes';
  * Props for drag visuals: isDragging, isOver (optional).
  * If filteredCards prop is provided, use those cards for render.
  */
-function Column({ column, index, isDragging, isOver, filteredCards }) {
+function Column({ column, index, isDragging, isOver, filteredCards, isCompact }) {
   const { updateColumn, deleteColumn, cards } = useKanban();
   // Use filteredCards if provided, otherwise filter all cards for this column
   const colCards = (filteredCards !== undefined)
@@ -108,11 +108,21 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
         data-column-id={column.id}
         tabIndex={-1}
       >
-        <div className="kanban-column-header">
+        <div className="kanban-column-header" style={{ color: "var(--color-accent, #ffb300)" }}>
           {/* Column Title + Edit */}
           {!editing ? (
-            <span className="kanban-column-title"
-              style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: "pointer" }}
+            <span
+              className="kanban-column-title"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 7,
+                cursor: "pointer",
+                color: "var(--color-accent, #ffb300)",
+                fontWeight: 800,
+                fontSize: "1.14rem",
+                letterSpacing: "0.02em"
+              }}
               onDoubleClick={triggerTitleEdit}
               tabIndex={0}
               onKeyDown={e => {
@@ -128,7 +138,7 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#bfe9f8",
+                  color: "var(--color-accent, #ffb300)",
                   fontSize: "1.11em",
                   marginLeft: 4,
                   cursor: "pointer",
@@ -198,7 +208,7 @@ function Column({ column, index, isDragging, isOver, filteredCards }) {
             ×
           </button>
         </div>
-        <CardList column={column} cards={colCards} />
+        <CardList column={column} cards={colCards} isCompact={isCompact} />
         <span className="sr-only">{isDragging ? 'Dragging column' : ''}</span>
       </div>
       {/* Delete Confirm Modal */}

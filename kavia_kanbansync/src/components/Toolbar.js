@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useKanban } from '../KanbanContext';
 import * as XLSX from 'xlsx';
-import { useFeedback } from '../KanbanBoard';
+import { useFeedback, useExpandMode } from '../KanbanBoard';
 
 function downloadExcelTemplate() {
   // Columns per Supabase schema
@@ -20,6 +20,7 @@ function Toolbar() {
   const { addColumn, bulkInsertCards, columns } = useKanban();
   const inputRef = useRef();
   const { showToast } = useFeedback();
+  const { isCompact, setIsCompact } = useExpandMode();
 
   // Modal state for Add Column
   const [addColumnModal, setAddColumnModal] = React.useState(false);
@@ -143,6 +144,16 @@ function Toolbar() {
         <button className="btn" onClick={downloadExcelTemplate}>
           Download Excel Template
         </button>
+        <button
+          className="btn"
+          style={{ marginLeft: 8, background: isCompact ? '#445' : undefined }}
+          onClick={() => setIsCompact(v => !v)}
+          aria-pressed={isCompact}
+          aria-label={isCompact ? 'Expand all cards' : 'Shorten all cards'}
+          title={isCompact ? 'Expand all cards' : 'Shorten all cards'}
+        >
+          {isCompact ? 'Expand' : 'Shorten'}
+        </button>
         <label className="btn" style={{ marginLeft: 8 }}>
           Bulk Upload Excel
           <input
@@ -190,16 +201,38 @@ function Toolbar() {
           ? null
           : ReactDOM.createPortal(
               <div className="kanban-modal-overlay" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))}>
-                <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()}>
-                  <button className="kanban-modal-close" onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))} title="Close">×</button>
-                  <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 14 }}>
+                <div
+                  className="kanban-modal-dialog"
+                  onClick={e => e.stopPropagation()}
+                  style={{
+                    color: "#222",
+                    background: "var(--modal-bg, #fff6e0)",
+                    borderRadius: "17px",
+                  }}
+                >
+                  <button
+                    className="kanban-modal-close"
+                    onClick={() => setBulkUploadState(s => ({ ...s, showModal: false }))}
+                    title="Close"
+                    style={{ color: "#222", background: "none", border: "none" }}
+                  >
+                    ×
+                  </button>
+                  <div style={{ fontWeight: 700, fontSize: '1.19em', marginBottom: 14, color: "#222" }}>
                     Bulk Upload: Pick a column for these cards
                   </div>
                   <div style={{ marginBottom: 12 }}>
-                    <div>Select a column:</div>
+                    <div style={{ color: "#555" }}>Select a column:</div>
                     <div style={{ margin: "9px 0"}}>
                       <select
-                        style={{ width: "100%", padding: 6, fontSize: "1em" }}
+                        style={{
+                          width: "100%",
+                          padding: 6,
+                          fontSize: "1em",
+                          background: "var(--input-bg, #fff9e7)",
+                          color: "#292010",
+                          border: "1.5px solid var(--color-input-border, #ffb300)"
+                        }}
                         onChange={e => handleConfirmBulkUpload(e.target.value)}
                         defaultValue=""
                       >
@@ -210,7 +243,7 @@ function Toolbar() {
                       </select>
                     </div>
                   </div>
-                  <div style={{ color: "#acdffc", fontSize: "0.96em", margin: "7px 0 0 1px" }}>
+                  <div style={{ color: "#a06700", fontSize: "0.96em", margin: "7px 0 0 1px" }}>
                     Cards parsed from file: <strong>{bulkUploadState.entries.length}</strong>
                   </div>
                 </div>
