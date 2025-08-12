@@ -360,6 +360,142 @@ body {
   font-style: italic;
 }
 
+/* Summary Slide (presentation mode) overrides */
+body.summary-slide-mode {
+  background: #ffffff; /* clean, printable */
+}
+
+/* Hide navbar and any extra chrome when in slide mode */
+body.summary-slide-mode .navbar {
+  display: none !important;
+}
+
+/* Slide container tuning */
+body.summary-slide-mode .summary-container {
+  max-width: 1280px;
+  padding-top: 28px !important;
+  padding-bottom: 28px !important;
+}
+
+/* Larger, readable headers on the slide */
+.summary-slide .page-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #1A1A1A;
+}
+.summary-slide .page-subtitle {
+  font-size: 1.05rem;
+  color: #7A7A7A;
+}
+
+/* Row: clean surface with subtle left accent and generous spacing */
+.summary-row {
+  background: #ffffff;
+  border: 1px solid #F0E5DC;
+  border-left: 6px solid var(--color-accent, #E87A41);
+  border-radius: 12px;
+  padding: 18px 18px 16px 18px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+}
+
+/* Alternate row tint for subtle grouping */
+.summary-list .summary-row:nth-child(even) {
+  background: #FFFDFB;
+}
+
+/* Column title area */
+.summary-row-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.summary-row-title-text {
+  font-weight: 900;
+  font-size: 1.35rem;
+  color: #1A1A1A;
+  letter-spacing: 0.01em;
+}
+.summary-row-count {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: .95rem;
+}
+
+/* Horizontal list/grid of chips for good wrapping on slides/screens */
+.summary-row-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px 14px;
+}
+
+/* Card chip: large, airy, and readable */
+.summary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #EFDFD6;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #FFFFFF;
+  color: var(--color-text-main);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  min-height: 44px;
+}
+
+/* Subtle status color dot */
+.summary-chip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Title of the feature */
+.summary-chip-title {
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.2;
+  color: #222;
+  flex: 1 1 auto;
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* Assignee tag styling for clarity */
+.summary-assignee-tag {
+  background: #FFF0E7; /* pale orange tint */
+  color: #8B3C1F;
+  border: 1px solid #F0D7CB;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: .9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* Compact empty label */
+.summary-empty {
+  color: #9F9F9F;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+/* Make sure body background doesn't bleed color in slide mode when printing */
+@media print {
+  body.summary-slide-mode {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #ffffff !important;
+  }
+}
+
 .logo-symbol {
   color: var(--color-accent);
   font-family: monospace;
