@@ -379,6 +379,52 @@ body.summary-fullscreen .container {
   padding-bottom: 20px !important;
 }
 
+/* Fullscreen: keep columns in a single horizontal row with scroll if needed */
+body.summary-fullscreen .summary-columns-board {
+  flex-wrap: nowrap !important;           /* keep columns in one line */
+  overflow-x: auto !important;            /* horizontal scroll for many columns */
+  overflow-y: hidden;
+  align-items: stretch;
+  gap: 16px;
+  padding: 8px 4px 12px 4px;              /* a bit more breathing room for presentation */
+}
+
+/* Fullscreen: wider columns for better readability on slides */
+body.summary-fullscreen .summary-col {
+  flex: 0 0 560px !important;             /* fixed basis for consistent column width */
+  flex-basis: 560px !important;
+  min-width: 520px !important;            /* do not shrink too small */
+  max-width: 620px !important;            /* slight flex for very wide screens */
+  padding: 8px 10px 10px 10px;            /* small bump for content spacing */
+}
+
+/* Fullscreen: cards list becomes a single column to avoid chip fragmentation */
+body.summary-fullscreen .summary-col-cards {
+  display: grid !important;
+  grid-template-columns: 1fr !important;  /* one card per row */
+  grid-auto-rows: auto !important;
+  grid-auto-flow: row !important;         /* keep natural order */
+  gap: 8px !important;
+}
+
+/* Fullscreen: ensure each card content stays on one line and aligns cleanly */
+body.summary-fullscreen .summary-col-card {
+  flex-wrap: nowrap;                      /* keep title + assignee on a single line */
+  min-height: 32px;
+}
+
+/* Fullscreen: title truncates instead of wrapping to preserve row integrity */
+body.summary-fullscreen .summary-col-card-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Fullscreen: assignee is already nowrap; ensure spacing at end is tight */
+body.summary-fullscreen .summary-col-assignee {
+  margin-left: 6px;
+}
+
 /* Larger, readable headers on the slide */
 .summary-slide .page-title {
   font-size: 2.4rem;
