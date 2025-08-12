@@ -518,7 +518,7 @@ body.summary-fullscreen .summary-page {
   align-items: stretch;
   align-content: flex-start;
   gap: 12px;
-  padding: 8px 2px 8px 2px;
+  padding: 6px 2px 8px 2px;
   height: auto;
   overflow: visible;
 }
@@ -526,15 +526,15 @@ body.summary-fullscreen .summary-page {
 /* Individual summary column (compact slide card) */
 .summary-col {
   flex: 1 1 280px;             /* expand to take available space */
-  min-width: 240px;            /* compact minimum width */
+  min-width: 240px;            /* ensure readability, don't shrink below */
   max-width: 100%;
   background: #FFFFFF;
   border: 1.2px solid var(--color-border);
   border-radius: 10px;
-  padding: 8px 8px 10px 8px;   /* compact */
+  padding: 6px 7px 8px 7px;    /* tighter for compact layout */
   box-shadow: 0 3px 10px rgba(0,0,0,0.05);
   transition: box-shadow .18s, outline .14s, transform .14s, width .18s, min-width .18s, padding .16s, flex-basis .18s;
-  min-height: 90px;
+  min-height: 88px;
 }
 .summary-col:focus-visible {
   outline: 3px solid #38B2AC;
@@ -543,9 +543,9 @@ body.summary-fullscreen .summary-page {
 
 /* Horizontal collapsed state: keep only a thin header strip */
 .summary-col.collapsed {
-  flex: 0 0 48px !important;   /* shrink column width in flex layout */
-  width: 48px !important;
-  min-width: 48px !important;
+  flex: 0 0 52px !important;   /* slightly wider for header readability */
+  width: 52px !important;
+  min-width: 52px !important;
   padding: 6px 4px !important;
   overflow: hidden;
 }
@@ -570,7 +570,7 @@ body.summary-fullscreen .summary-page {
 .summary-col-title-text {
   font-weight: 800;
   color: var(--color-accent-strong);
-  font-size: 0.98rem;
+  font-size: 0.95rem; /* slightly smaller for compactness */
 }
 .summary-col-count {
   background: var(--color-accent);
@@ -605,14 +605,44 @@ body.summary-fullscreen .summary-page {
   display: block;
 }
 
+/* Status-based background colors for summary cards (compact, presentation-friendly) */
+:root {
+  --summary-card-done: #F4FBF7;       /* light green */
+  --summary-card-inprogress: #FFFCE6; /* light yellow */
+  --summary-card-todo: #FFECEC;       /* light red */
+  --summary-card-review: #FFF9E8;     /* soft yellow (review) */
+  --summary-card-hold: #FFF3F1;       /* soft red (on hold) */
+  --summary-card-border: #EADCD3;     /* subtle card border */
+}
+.summary-col-card.status-done {
+  background: var(--summary-card-done) !important;
+  border-color: #CFE9DB;
+}
+.summary-col-card.status-inprogress {
+  background: var(--summary-card-inprogress) !important;
+  border-color: #F1E6B8;
+}
+.summary-col-card.status-todo {
+  background: var(--summary-card-todo) !important;
+  border-color: #F1C9C9;
+}
+.summary-col-card.status-review {
+  background: var(--summary-card-review) !important;
+  border-color: #F1E1AD;
+}
+.summary-col-card.status-hold {
+  background: var(--summary-card-hold) !important;
+  border-color: #EAC3BF;
+}
+
 /* Cards within summary column */
 .summary-col-cards {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* horizontal multi-per-row */
-  grid-auto-rows: minmax(28px, auto);
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* tighter but readable */
+  grid-auto-rows: minmax(26px, auto);
   grid-auto-flow: dense; /* pack tightly */
   gap: 6px;
 }
@@ -623,10 +653,10 @@ body.summary-fullscreen .summary-page {
   border: 1px solid #EFDFD6;
   border-radius: 8px;
   background: #FFFFFF;
-  padding: 6px 8px;
-  min-height: 30px;
+  padding: 5px 7px;          /* reduced padding */
+  min-height: 28px;          /* slightly shorter */
   box-shadow: 0 1px 5px rgba(0,0,0,0.04);
-  font-size: 0.92rem;
+  font-size: 0.88rem;        /* slightly smaller font for density */
 }
 .summary-col-card-title {
   font-weight: 700;
@@ -641,7 +671,7 @@ body.summary-fullscreen .summary-page {
   border: 1px solid #F0D7CB;
   border-radius: 999px;
   padding: 1px 6px;
-  font-size: .78rem;
+  font-size: .76rem;
   font-weight: 700;
   white-space: nowrap;
 }

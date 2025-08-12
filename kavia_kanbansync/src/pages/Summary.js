@@ -176,12 +176,21 @@ export default function Summary() {
             {items.length > 0 ? (
               <ul className="summary-col-cards" aria-label={`${column.title} cards`}>
                 {items.map((card) => (
-                  <li key={card.id} className="summary-col-card" title={card.description || card.feature}>
-                    <span className="summary-chip-dot" aria-hidden
-                      style={{ background: getStatusDotColor(card.status) }} />
+                  <li
+                    key={card.id}
+                    className={`summary-col-card ${getStatusClass(card.status)}`}
+                    title={card.description || card.feature}
+                  >
+                    <span
+                      className="summary-chip-dot"
+                      aria-hidden
+                      style={{ background: getStatusDotColor(card.status) }}
+                    />
                     <span className="summary-col-card-title">{card.feature}</span>
                     {card.assignee && (
-                      <span className="summary-col-assignee" title="Assignee">@{card.assignee}</span>
+                      <span className="summary-col-assignee" title="Assignee">
+                        @{card.assignee}
+                      </span>
                     )}
                   </li>
                 ))}
@@ -203,6 +212,17 @@ export default function Summary() {
     if (st.includes('hold')) return '#D7827F';
     if (st.includes('todo')) return '#A0A4AE';
     return '#CFCFD4';
+  }
+
+  // Map card status to a CSS class for status-based background colors on summary cards
+  function getStatusClass(status) {
+    const st = (status || '').toLowerCase();
+    if (st.includes('done')) return 'status-done';
+    if (st.includes('progress')) return 'status-inprogress';
+    if (st.includes('to do') || st.includes('todo')) return 'status-todo';
+    if (st.includes('review')) return 'status-review';
+    if (st.includes('hold')) return 'status-hold';
+    return '';
   }
 
   if (isLoading) return <div className="kanban-loading">Loading...</div>;
