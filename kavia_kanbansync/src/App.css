@@ -363,6 +363,7 @@ body {
 /* Summary Slide (presentation mode) overrides */
 body.summary-slide-mode {
   background: #ffffff; /* clean, printable */
+  overflow: hidden;    /* prevent window scroll */
 }
 
 /* Keep navbar visible in summary mode for navigation (Dashboard, Product, Summary) */
@@ -488,79 +489,94 @@ body.summary-slide-mode .summary-container {
 /* Summary page wrapper to offset fixed navbar */
 .summary-page {
   padding-top: 82px;
-  min-height: 100vh;
+  height: calc(100vh - 82px); /* fill visible slide height, no scrolling */
+  overflow: hidden;           /* prevent scrollbars for slide-like view */
   background: #fff7f0;
 }
 
 @media (max-width: 900px) {
-  .summary-page { padding-top: 67px; }
+  .summary-page { padding-top: 67px; height: calc(100vh - 67px); }
 }
 @media (max-width: 700px) {
-  .summary-page { padding-top: 56px; }
+  .summary-page { padding-top: 56px; height: calc(100vh - 56px); }
 }
 
-/* Vertical columns board for Summary */
+/* Columns board for Summary - grid fits columns into the visible slide without scrolling */
 .summary-columns-board {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 12px 2px 32px 2px;
-  overflow-x: auto;
-  min-height: 60vh;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* compact and fills width */
+  align-items: start;
+  align-content: start;
+  gap: 12px;
+  padding: 8px 2px 8px 2px;
+  height: calc(100% - 86px); /* leave space for title/subtitle in container */
+  overflow: hidden;          /* non-scrollable board */
 }
 
-/* Individual summary column (mini slide style) */
+/* Individual summary column (compact slide card) */
 .summary-col {
-  flex: 0 0 280px;
+  width: 100%;
   background: #FFFFFF;
   border: 1.2px solid var(--color-border);
-  border-radius: 12px;
-  padding: 10px 10px 12px 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  transition: box-shadow .18s, outline .14s, transform .14s;
+  border-radius: 10px;
+  padding: 8px 8px 10px 8px;   /* compact */
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  transition: box-shadow .18s, outline .14s, transform .14s, width .18s, min-width .18s, padding .16s;
+  min-height: 90px;
 }
 .summary-col:focus-visible {
   outline: 3px solid #38B2AC;
   box-shadow: 0 2px 14px rgba(56,178,172,0.35);
 }
 
+/* Horizontal collapsed state: keep only a thin header strip */
+.summary-col.collapsed {
+  width: 48px !important;
+  min-width: 48px !important;
+  padding: 6px 4px !important;
+  overflow: hidden;
+}
+.summary-col.collapsed .summary-col-content { display: none !important; }
+.summary-col.collapsed .summary-col-title-text { display: none !important; }
+.summary-col.collapsed .summary-col-count { display: none !important; }
+
 /* Column header */
 .summary-col-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--color-border);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .summary-col-title {
   display: inline-flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 .summary-col-title-text {
   font-weight: 800;
   color: var(--color-accent-strong);
+  font-size: 0.98rem;
 }
 .summary-col-count {
   background: var(--color-accent);
   color: #fff;
   font-weight: 800;
   border-radius: 999px;
-  padding: 2px 8px;
-  font-size: .9rem;
+  padding: 1px 6px;
+  font-size: .82rem;
 }
 .summary-col-actions {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 .summary-col-actionbtn {
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 4px 8px;
+  border-radius: 7px;
+  padding: 3px 6px;
   cursor: pointer;
   color: var(--color-accent-strong);
   transition: background .15s, color .15s, border .15s;
@@ -582,19 +598,22 @@ body.summary-slide-mode .summary-container {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* horizontal multi-per-row */
+  grid-auto-rows: minmax(28px, auto);
+  grid-auto-flow: dense; /* pack tightly */
+  gap: 6px;
 }
 .summary-col-card {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   border: 1px solid #EFDFD6;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #FFFFFF;
-  padding: 8px 10px;
-  min-height: 36px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  padding: 6px 8px;
+  min-height: 30px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.04);
+  font-size: 0.92rem;
 }
 .summary-col-card-title {
   font-weight: 700;
@@ -608,8 +627,8 @@ body.summary-slide-mode .summary-container {
   color: #8B3C1F;
   border: 1px solid #F0D7CB;
   border-radius: 999px;
-  padding: 2px 8px;
-  font-size: .85rem;
+  padding: 1px 6px;
+  font-size: .78rem;
   font-weight: 700;
   white-space: nowrap;
 }

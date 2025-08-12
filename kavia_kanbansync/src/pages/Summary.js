@@ -17,6 +17,14 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 export default function Summary() {
   const { columns, cards, isLoading, error, reorderColumns } = useKanban();
 
+  // Enable slide-like mode on body for presentation styling
+  React.useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('summary-slide-mode');
+      return () => document.body.classList.remove('summary-slide-mode');
+    }
+  }, []);
+
   // Persist collapsed columns in localStorage
   const [collapsed, setCollapsed] = React.useState(() => {
     try {
@@ -98,7 +106,7 @@ export default function Summary() {
     return (
       <section
         ref={(node) => drag(drop(node))}
-        className="summary-col"
+        className={`summary-col${isCollapsed ? ' collapsed' : ''}`}
         role="listitem"
         aria-label={`Column ${column.title}`}
         style={{
