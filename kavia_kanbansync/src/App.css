@@ -296,6 +296,21 @@ body {
   font-weight: 800;
 }
 
+/* Assignee per-status compact grid (Assignee | To do | In Progress | Done) */
+.simple-table.assignee-grid .table-row {
+  grid-template-columns: 1fr 90px 110px 90px;
+}
+.simple-table.assignee-grid .table-row.header > div:nth-child(n+2),
+.simple-table.assignee-grid .table-row > div.count-cell {
+  text-align: right;
+  font-weight: 800;
+}
+.simple-table.assignee-grid .table-row > div:nth-child(n+2) {
+  /* ensure numeric columns are aligned even if class missing */
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Summary */
 .summary-container {
   width: 100%;

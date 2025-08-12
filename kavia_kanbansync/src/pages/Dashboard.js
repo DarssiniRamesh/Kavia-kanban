@@ -1,43 +1,73 @@
-/* PUBLIC_INTERFACE */
 import React from 'react';
 import { useKanban } from '../KanbanContext';
 
 /** PUBLIC_INTERFACE
  * Dashboard
  * A high-level overview of the Kanban data:
- * - Status counts (To Do, In Progress, Review, Done, On Hold)
- * - Assignee summary (assignee -> number of cards)
+ * - Status counts (To do, In Progress, Review, Done, On Hold)
+ * - Assignee summary with per-status counts (To do, In Progress, Done)
  * - Column summary (column -> number of cards)
  * All powered by live data from KanbanContext (Supabase).
  */
 export default function Dashboard() {
   const { cards, columns, isLoading, error } = useKanban();
 
-  const statusOrder = ['To Do', 'In Progress', 'Review', 'Done', 'On Hold'];
+  // Canonical, user-facing status labels (ensure exact casing for "To do").
+  const statusOrder = ['To do', 'In Progress', 'Review', 'Done', 'On Hold'];
+
+  // Normalize any input status value to one of the canonical labels above.
+  const normalizeStatus = React.useCallback((value) => {
+    const raw = (value || '').toString().trim().toLowerCase();
+    if (!raw) return null;
+    if (raw.includes('progress')) return 'In Progress';
+    if (raw.includes('review')) return 'Review';
+    if (raw.includes('hold')) return 'On Hold';
+    if (raw.includes('done')) return 'Done';
+    if (raw.includes('to do') || raw.includes('todo') || raw.includes('backlog')) return 'To do';
+    return null; // Unknown/untracked statuses not counted
+  }, []);
+
+  // Global status counts (chips)
   const statusCounts = React.useMemo(() => {
     const counts = Object.create(null);
-    statusOrder.forEach(s => { counts[s] = 0; });
-    (cards || []).forEach(c => {
-      const s = c.status && statusOrder.includes(c.status) ? c.status : null;
-      if (s) counts[s] += 1;
+    statusOrder.forEach((s) => { counts[s] = 0; });
+    (cards || []).forEach((c) => {
+      const s = normalizeStatus(c.status);
+      if (s && counts[s] != null) counts[s] += 1;
     });
     return counts;
-  }, [cards]);
+  }, [cards, normalizeStatus]);
 
-  const assigneeCounts = React.useMemo(() => {
+  // Assignee -> per-status breakdown (To do, In Progress, Done)
+  const assigneeBreakdown = React.useMemo(() => {
     const map = Object.create(null);
-    (cards || []).forEach(c => {
-      const key = (c.assignee && String(c.assignee).trim()) || 'Unassigned';
-      map[key] = (map[key] || 0) + 1;
+    (cards || []).forEach((c) => {
+      const assignee = (c.assignee && String(c.assignee).trim()) || 'Unassigned';
+      const st = normalizeStatus(c.status);
+      if (!map[assignee]) {
+        map[assignee] = { 'To do': 0, 'In Progress': 0, 'Done': 0 };
+      }
+      if (st === 'To do') map[assignee]['To do'] += 1;
+      else if (st === 'In Progress') map[assignee]['In Progress'] += 1;
+      else if (st === 'Done') map[assignee]['Done'] += 1;
+      // Other statuses (Review, On Hold) are not shown per spec; excluded from this table intentionally
     });
-    // Convert to sorted array
-    return Object.entries(map).sort((a, b) => b[1] - a[1]);
-  }, [cards]);
 
+    // Convert to array with totals for sorting
+    const rows = Object.entries(map).map(([name, counts]) => {
+      const total = counts['To do'] + counts['In Progress'] + counts['Done'];
+      return { assignee: name, ...counts, total };
+    });
+    // Sort by total desc, then by name asc for stable ordering
+    rows.sort((a, b) => (b.total - a.total) || a.assignee.localeCompare(b.assignee));
+    return rows;
+  }, [cards, normalizeStatus]);
+
+  // Column counts (column title -> number of cards)
   const colCounts = React.useMemo(() => {
     const map = new Map();
-    columns.forEach(col => map.set(col.id, { title: col.title, count: 0 }));
-    (cards || []).forEach(c => {
+    (columns || []).forEach((col) => map.set(col.id, { title: col.title, count: 0 }));
+    (cards || []).forEach((c) => {
       if (map.has(c.column_id)) {
         const item = map.get(c.column_id);
         item.count += 1;
@@ -47,7 +77,7 @@ export default function Dashboard() {
   }, [cards, columns]);
 
   const totalCards = cards?.length || 0;
-  const uniqueAssignees = assigneeCounts.length;
+  const uniqueAssignees = assigneeBreakdown.length;
 
   if (isLoading) {
     return <div className="kanban-loading">Loading...</div>;
@@ -61,7 +91,7 @@ export default function Dashboard() {
       <h1 className="page-title">Dashboard</h1>
       <p className="page-subtitle">Live summary of your product board</p>
 
-      {/* KPI cards */}
+      {/* KPI cards (keep existing) */}
       <section className="dashboard-grid" aria-label="Key metrics">
         <div className="stat-card">
           <div className="stat-label">Total Features</div>
@@ -77,11 +107,11 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Status counts */}
+      {/* Status counts (chips) */}
       <section className="panel" aria-label="Status breakdown">
         <div className="panel-title">Status</div>
         <div className="status-row">
-          {statusOrder.map(s => (
+          {statusOrder.map((s) => (
             <div className="status-chip" key={s} title={s}>
               <span className={"dot " + s.toLowerCase().replace(/\s+/g, '-')}></span>
               <span className="status-label">{s}</span>
@@ -91,23 +121,27 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Assignee summary */}
+      {/* Assignee summary with per-status counts */}
       <section className="panel" aria-label="Assignee summary">
         <div className="panel-title">Assignees</div>
-        <div className="simple-table" role="table" aria-label="Assignee counts">
+        <div className="simple-table assignee-grid" role="table" aria-label="Assignee per-status counts">
           <div className="table-row header" role="row">
             <div role="columnheader">Assignee</div>
-            <div role="columnheader" style={{ textAlign: 'right' }}>Features</div>
+            <div role="columnheader">To do</div>
+            <div role="columnheader">In Progress</div>
+            <div role="columnheader">Done</div>
           </div>
-          {assigneeCounts.map(([name, count]) => (
-            <div className="table-row" role="row" key={name}>
-              <div role="cell">{name}</div>
-              <div role="cell" style={{ textAlign: 'right', fontWeight: 700 }}>{count}</div>
+          {assigneeBreakdown.map((row) => (
+            <div className="table-row" role="row" key={row.assignee}>
+              <div role="cell">{row.assignee}</div>
+              <div role="cell" className="count-cell">{row['To do']}</div>
+              <div role="cell" className="count-cell">{row['In Progress']}</div>
+              <div role="cell" className="count-cell">{row['Done']}</div>
             </div>
           ))}
-          {assigneeCounts.length === 0 && (
+          {assigneeBreakdown.length === 0 && (
             <div className="table-row" role="row">
-              <div role="cell" colSpan={2} style={{ opacity: 0.7 }}>No data</div>
+              <div role="cell" style={{ gridColumn: '1 / -1', opacity: 0.7 }}>No data</div>
             </div>
           )}
         </div>
@@ -127,6 +161,11 @@ export default function Dashboard() {
               <div role="cell" style={{ textAlign: 'right', fontWeight: 700 }}>{c.count}</div>
             </div>
           ))}
+          {colCounts.length === 0 && (
+            <div className="table-row" role="row">
+              <div role="cell" style={{ gridColumn: '1 / -1', opacity: 0.7 }}>No data</div>
+            </div>
+          )}
         </div>
       </section>
     </div>
