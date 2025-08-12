@@ -1,0 +1,4 @@
+{
+    "command": "PORT=<port> BROWSER=none npm start",
+    "working_directory": "/home/kavia/workspace/code-generation/kavia-kanbansync-106823-fd4e91f2/kavia_kanbansync"
+}
