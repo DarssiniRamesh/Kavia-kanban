@@ -228,9 +228,65 @@ export default function Summary() {
   if (isLoading) return <div className="kanban-loading">Loading...</div>;
   if (error) return <div className="kanban-error">{error}</div>;
 
+  // Dynamic grid and density scaling for fullscreen
+  const boardRef = React.useRef(null);
+  const [densityClass, setDensityClass] = React.useState('');
+  const [cssVars, setCssVars] = React.useState({});
+
+  const computeScale = React.useCallback((count) => {
+    // Piecewise scaling for legibility
+    if (count <= 5) return 1;
+    if (count <= 7) return 0.92;
+    if (count <= 9) return 0.88;
+    if (count <= 12) return 0.84;
+    if (count <= 16) return 0.78;
+    return 0.74;
+  }, []);
+
+  React.useEffect(() => {
+    if (!fullScreen) {
+      setDensityClass('');
+      setCssVars({});
+      return;
+    }
+    const el = boardRef.current;
+    if (!el) return;
+
+    const GAP = 8; // default gap in px; will be reduced via density class
+    const containerWidth = el.clientWidth || 0;
+    const count = (columns || []).length || 0;
+    if (count === 0 || containerWidth === 0) return;
+
+    const perCol = containerWidth / count - (GAP * (count - 1)) / Math.max(1, count);
+    // Determine density thresholds
+    let dc = '';
+    if (perCol < 240) dc = 'summary-density-1';
+    if (perCol < 200) dc = 'summary-density-2';
+    if (perCol < 160) dc = 'summary-density-3';
+    setDensityClass(dc);
+
+    const scale = computeScale(count);
+    setCssVars({
+      '--summary-scale': String(scale),
+      '--summary-cols': String(count),
+      // grid template is passed inline for precision, but we expose a variable for CSS fallback
+      '--summary-grid': `repeat(${count}, minmax(0, 1fr))`,
+    });
+  }, [fullScreen, columns, computeScale]);
+
+  React.useEffect(() => {
+    if (!fullScreen) return;
+    const onResize = () => {
+      // retrigger effect by cloning cssVars to force recalculation
+      setCssVars(v => ({ ...v }));
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [fullScreen]);
+
   return (
-    <div className="summary-page">
-      <div className="container summary-container">
+    <div className="summary-page" style={fullScreen ? { fontSize: `calc(1rem * var(--summary-scale, 1))` } : undefined}>
+      <div className="container summary-container" style={cssVars}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <div>
             <h1 className="page-title" style={{ marginTop: 8, marginBottom: 6 }}>Board Summary</h1>
@@ -254,7 +310,22 @@ export default function Summary() {
         </div>
 
         <DndProvider backend={HTML5Backend}>
-          <div className="summary-columns-board" role="list" aria-label="Summary columns (draggable)">
+          <div
+            ref={boardRef}
+            className={`summary-columns-board ${fullScreen ? `summary-grid ${densityClass}` : ''}`}
+            role="list"
+            aria-label="Summary columns (draggable)"
+            style={
+              fullScreen
+                ? {
+                    display: 'grid',
+                    gridAutoFlow: 'column',
+                    gridTemplateColumns: `repeat(${(columns || []).length || 0}, minmax(0, 1fr))`,
+                    gap: 'var(--summary-gap, 8px)',
+                  }
+                : undefined
+            }
+          >
             {(columns || []).map((col, idx) => (
               <DraggableSummaryColumn
                 key={col.id}

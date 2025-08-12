@@ -379,56 +379,85 @@ body.summary-fullscreen .container {
   padding-bottom: 16px !important;
 }
 
-/* Fullscreen: keep columns in a single horizontal row with scroll if needed */
+/* Fullscreen: grid layout that fits all columns without horizontal scrolling */
 body.summary-fullscreen .summary-columns-board {
-  flex-wrap: nowrap !important;           /* keep columns in one line */
-  overflow-x: auto !important;            /* horizontal scroll for many columns */
-  overflow-y: hidden;
-  align-items: stretch;
-  gap: 8px;                               /* tighter gaps to fit more columns */
-  padding: 4px 2px 8px 2px;               /* minimal padding for slide-like view */
-  scroll-snap-type: x proximity;          /* smooth horizontal navigation */
-}
-
-/* Fullscreen: wider columns for better readability on slides */
-body.summary-fullscreen .summary-col {
-  /* Narrow, compact columns for slide-like layout (roughly two mini-cards per row inside) */
-  flex: 0 0 272px !important;
-  flex-basis: 272px !important;
-  min-width: 248px !important;
-  max-width: 300px !important;
-  padding: 6px 6px 8px 6px;               /* minimal padding */
-  scroll-snap-align: start;               /* snap per column on horizontal scroll */
-}
-
-/* Fullscreen: cards list becomes a single column to avoid chip fragmentation */
-body.summary-fullscreen .summary-col-cards {
+  /* Use CSS Grid to force-fit all columns across available width */
   display: grid !important;
-  /* Two-up mini cards within narrow columns; expands to one if column is very narrow */
-  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)) !important;
-  grid-auto-rows: auto !important;
-  grid-auto-flow: row dense !important;   /* pack efficiently while preserving order */
-  gap: 6px !important;                    /* tighter gaps for density */
+  grid-auto-flow: column;                 /* preserve column order left-to-right */
+  grid-template-columns: var(--summary-grid, repeat(auto-fit, minmax(140px, 1fr)));
+  align-items: stretch;
+  align-content: start;
+  gap: var(--summary-gap, 8px);
+  padding: 4px 2px 8px 2px;
+  overflow-x: hidden !important;          /* never allow horizontal scroll in fullscreen */
+  overflow-y: auto;
 }
 
-/* Fullscreen: ensure each card content stays on one line and aligns cleanly */
+/* Fullscreen: each column flexes evenly; remove rigid min/max widths */
+body.summary-fullscreen .summary-col {
+  min-width: 0 !important;                /* allow columns to shrink to fit */
+  width: 100%;                            /* let grid assign width */
+  max-width: 100%;
+  padding: var(--summary-col-padding, 6px 6px 8px 6px);
+  border-radius: var(--summary-col-radius, 10px);
+  scroll-snap-align: none;                /* no horizontal snapping needed */
+}
+
+/* Fullscreen: cards render as a single vertical list inside each column */
+body.summary-fullscreen .summary-col-cards {
+  display: block !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fullscreen: compact card styling with wrapping to avoid hidden content */
 body.summary-fullscreen .summary-col-card {
-  flex-wrap: nowrap;                      /* keep title + assignee on a single line */
-  min-height: 24px;                       /* shorter for density */
-  padding: 3px 6px;                       /* minimal padding */
-  font-size: 0.84rem;                     /* compact but readable */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 22px;
+  padding: var(--summary-card-padding, 3px 6px);
+  font-size: calc(0.84rem * var(--summary-scale, 1));
+  border-radius: var(--summary-card-radius, 8px);
 }
 
-/* Fullscreen: title truncates instead of wrapping to preserve row integrity */
+/* Fullscreen: ensure title wraps and stays visible; never clipped */
 body.summary-fullscreen .summary-col-card-title {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  overflow: visible;
+  white-space: normal;                    /* allow wrapping */
+  text-overflow: clip;
+  word-break: break-word;
+  line-height: 1.15;
 }
 
-/* Fullscreen: assignee is already nowrap; ensure spacing at end is tight */
+/* Fullscreen: allow assignee to wrap when space is tight */
 body.summary-fullscreen .summary-col-assignee {
   margin-left: 4px;
+  white-space: normal;                    /* allow wrapping */
+  line-height: 1.1;
+}
+
+/* Density scaling based on detected overflow/column width */
+body.summary-fullscreen .summary-columns-board.summary-density-1 {
+  --summary-gap: 6px;
+  --summary-col-padding: 5px 6px 6px 6px;
+  --summary-card-padding: 3px 5px;
+  --summary-col-radius: 8px;
+  --summary-card-radius: 7px;
+}
+body.summary-fullscreen .summary-columns-board.summary-density-2 {
+  --summary-gap: 5px;
+  --summary-col-padding: 4px 5px 5px 5px;
+  --summary-card-padding: 2px 5px;
+  --summary-col-radius: 7px;
+  --summary-card-radius: 6px;
+}
+body.summary-fullscreen .summary-columns-board.summary-density-3 {
+  --summary-gap: 4px;
+  --summary-col-padding: 3px 4px 4px 4px;
+  --summary-card-padding: 2px 4px;
+  --summary-col-radius: 5px;
+  --summary-card-radius: 5px;
 }
 
 /* Larger, readable headers on the slide */
