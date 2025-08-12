@@ -2,6 +2,10 @@ import React from 'react';
 import './App.css';
 import KanbanBoard from './KanbanBoard';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
+import { KanbanProvider } from './KanbanContext';
+import Dashboard from './pages/Dashboard';
+import Summary from './pages/Summary';
 
 // Define the custom Kavia theme
 const kaviaTheme = createTheme({
@@ -77,25 +81,56 @@ const kaviaTheme = createTheme({
   }
 });
 
+// PUBLIC_INTERFACE
 function App() {
   return (
     <ThemeProvider theme={kaviaTheme}>
       <CssBaseline />
-      <div className="app">
-        <nav className="navbar">
-          <div className="container">
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-              <div className="logo">
-                <span className="logo-symbol">*</span> Kavia Kanban Board
+      <Router>
+        <KanbanProvider>
+          <div className="app">
+            <nav className="navbar">
+              <div className="container">
+                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                  <div className="logo">
+                    <span className="logo-symbol">*</span> Kavia Kanban
+                  </div>
+                  <div className="nav-links" role="navigation" aria-label="Primary">
+                    <NavLink
+                      to="/"
+                      end
+                      className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+                    >
+                      Dashboard
+                    </NavLink>
+                    <NavLink
+                      to="/product"
+                      className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+                    >
+                      Product
+                    </NavLink>
+                    <NavLink
+                      to="/summary"
+                      className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+                    >
+                      Summary
+                    </NavLink>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </nav>
+            </nav>
 
-        <main>
-          <KanbanBoard />
-        </main>
-      </div>
+            <main>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/product" element={<KanbanBoard />} />
+                <Route path="/summary" element={<Summary />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
+          </div>
+        </KanbanProvider>
+      </Router>
     </ThemeProvider>
   );
 }

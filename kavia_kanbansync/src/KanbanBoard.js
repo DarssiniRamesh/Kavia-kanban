@@ -1,5 +1,4 @@
 import React, { useState, createContext, useContext } from 'react';
-import { KanbanProvider } from './KanbanContext';
 import Toolbar from './components/Toolbar';
 import Column from './components/Column';
 import FilterPanel from './components/FilterPanel';
@@ -226,23 +225,21 @@ export default function KanbanBoard() {
   const [isCompact, setIsCompact] = useState(false);
 
   return (
-    <KanbanProvider>
-      <FeedbackContext.Provider value={{ showToast }}>
-        <ExpandModeContext.Provider value={{ isCompact, setIsCompact }}>
-          <DndProvider backend={HTML5Backend}>
-            <KanbanBoardInner />
-            {toast && (
-              <ToastModal
-                key={toast.id}
-                message={toast.message}
-                type={toast.type}
-                duration={toast.duration}
-                onClose={closeToast}
-              />
-            )}
-          </DndProvider>
-        </ExpandModeContext.Provider>
-      </FeedbackContext.Provider>
-    </KanbanProvider>
+    <FeedbackContext.Provider value={{ showToast }}>
+      <ExpandModeContext.Provider value={{ isCompact, setIsCompact }}>
+        <DndProvider backend={HTML5Backend}>
+          <KanbanBoardInner />
+          {toast && (
+            <ToastModal
+              key={toast.id}
+              message={toast.message}
+              type={toast.type}
+              duration={toast.duration}
+              onClose={closeToast}
+            />
+          )}
+        </DndProvider>
+      </ExpandModeContext.Provider>
+    </FeedbackContext.Provider>
   );
 }

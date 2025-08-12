@@ -168,6 +168,197 @@ body {
   gap: 9px;
   color: var(--color-accent);
 }
+.nav-links {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.nav-link {
+  color: #9c421a;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 9px;
+  border: 1.4px solid transparent;
+  transition: background .15s, color .15s, border .15s, transform .12s;
+}
+.nav-link:hover, .nav-link:focus {
+  color: #E87A41;
+  background: #fff0e7;
+  border-color: #E87A41;
+  outline: none;
+}
+.nav-link.active {
+  color: #fff;
+  background: #E87A41;
+  border-color: #E87A41;
+  box-shadow: 0 2px 10px rgba(232,122,65,0.25);
+}
+
+/* Generic page headers */
+.page-title {
+  margin: 0 0 4px 0;
+  font-size: 1.8rem;
+  color: var(--color-text-main);
+}
+.page-subtitle {
+  margin: 0 0 18px 0;
+  color: var(--text-secondary);
+}
+
+/* Dashboard */
+.dashboard-container {
+  width: 100%;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 10px 0 20px 0;
+}
+.stat-card {
+  background: var(--color-bg-panel);
+  border: 1.4px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: var(--shadow-xs);
+}
+.stat-label {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: .95rem;
+}
+.stat-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--color-accent-strong);
+  margin-top: 6px;
+}
+.panel {
+  background: var(--color-bg-panel);
+  border: 1.4px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.panel-title {
+  font-weight: 800;
+  color: var(--color-accent);
+  margin-bottom: 10px;
+}
+.status-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1.2px solid var(--color-border);
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: var(--color-bg-chip);
+  color: var(--color-chip-text);
+  font-weight: 700;
+}
+.status-chip .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.status-chip .dot.to-do { background: #A0A4AE; }
+.status-chip .dot.in-progress { background: #E1986E; }
+.status-chip .dot.review { background: #D3A94E; }
+.status-chip .dot.done { background: #36B37E; }
+.status-chip .dot.on-hold { background: #D7827F; }
+.status-label { font-weight: 700; }
+.status-count { font-weight: 800; }
+
+/* Simple table */
+.simple-table {
+  display: grid;
+  gap: 4px;
+}
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+}
+.table-row.header {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+  font-weight: 800;
+}
+
+/* Summary */
+.summary-container {
+  width: 100%;
+}
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.summary-row {
+  background: var(--color-bg-panel);
+  border: 1.4px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.summary-row-title {
+  font-weight: 800;
+  color: var(--color-accent-strong);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.summary-row-count {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: .9rem;
+}
+.summary-row-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.summary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1.2px solid var(--color-border);
+  padding: 6px 10px;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--color-text-main);
+  box-shadow: var(--shadow-xs);
+}
+.summary-chip-title {
+  font-weight: 700;
+}
+.summary-assignee-tag {
+  background: var(--color-bg-chip);
+  color: var(--color-chip-text);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: .85rem;
+  font-weight: 700;
+}
+.summary-empty {
+  color: var(--text-secondary);
+  font-style: italic;
+}
 
 .logo-symbol {
   color: var(--color-accent);
