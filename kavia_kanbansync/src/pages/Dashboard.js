@@ -87,7 +87,16 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container dashboard-container" style={{ paddingTop: 96, paddingBottom: 32 }}>
+    <div
+      className="container dashboard-container"
+      style={{
+        paddingTop: 96,
+        paddingBottom: 32,
+        maxWidth: '100vw',         // allow full-width layout for widgets
+        paddingLeft: '2vw',        // responsive side padding to prevent edge collisions
+        paddingRight: '2vw'
+      }}
+    >
       <h1 className="page-title">Dashboard</h1>
       <p className="page-subtitle">Live summary of your product board</p>
 

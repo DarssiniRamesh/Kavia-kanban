@@ -321,6 +321,11 @@ body {
   display: grid;
   gap: 4px;
 }
+.simple-table .table-row > div {
+  /* Ensure grid cells can shrink and wrap content without causing horizontal scroll */
+  min-width: 0;
+  word-break: break-word;
+}
 .table-row {
   display: grid;
   grid-template-columns: 1fr 120px;
